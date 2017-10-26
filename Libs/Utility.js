@@ -27,7 +27,12 @@ class Utility {
 
   static Mag(v1){
     return Math.sqrt((v1.x*v1.x)+(v1.y*v1.y));
+  }
 
+  static Set(v,x,y){
+    v.x = x;
+    v.y = y;
+    return v;
   }
 
   }

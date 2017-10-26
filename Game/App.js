@@ -1,6 +1,8 @@
 
 var game = null;
+
 var mousePos = null;
+
 
 window.onload =  (function(){
 
@@ -21,20 +23,23 @@ class Game {
 
     // define canvas
   	this.canvas = document.getElementById("game_canvas");
+
   	// define canvas context
   	this.ctx = this.canvas.getContext("2d");
 
     // defining world object
     this.world = new World(this.canvasWidth,this.canvasHeight);
 
+    // Begin
     this.gameLoop = new GameLoop(30.0,Utility.Now(),this.tick.bind(this));
 
   }
 
   tick(deltaTime){
+
+    this.world.update(deltaTime);
+
     // console.log("Ticking: " + deltaTime*1000);
-
-
     this.world.draw();
 
   }
