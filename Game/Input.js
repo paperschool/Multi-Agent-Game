@@ -43,13 +43,17 @@ class Input {
       switch(code) {
       case 32:
           key = 'SPACE'; break;
-      case 37:
-          key = 'LEFT'; break;
       case 38:
+      case 87:
           key = 'UP'; break;
+      case 37:
+      case 65:
+          key = 'LEFT'; break;
       case 39:
+      case 68:
           key = 'RIGHT'; break;
       case 40:
+      case 83:
           key = 'DOWN'; break;
       default:
           // Convert ASCII codes to letters

@@ -12,7 +12,7 @@ class Utility {
   }
 
   static Radians(degree){
-    return radian*Math.PI/180;
+    return degree*Math.PI/180;
   }
 
   static VectorAngle(v1,v2){
@@ -35,7 +35,11 @@ class Utility {
     return v;
   }
 
+  static angle(v1,v2){
+    return Math.atan2((v2.y-v1.y),(v2.x-v1.x));
   }
+
+}
 
 
 class Draw {
@@ -50,14 +54,114 @@ class Draw {
     }
   }
 
-  static line(x1,y1,x2,y2){
+  // TODO: Calculate correct offset width and height from those angles
+  static polygonQuad(x, y, w, h,angle) {
+
+    // create point array
+    var points = [];
+
+    // long vs short side ratio
+    var ratio  = (w > h ? w/h : h/w);
+
+    var width  = ((360.0 / (ratio + 1.0)) * ratio)/4.0;
+    var height = (360.0 / (ratio + 1.0))/4.0;
+
+    points.push(new SAT.Vector(
+      w*Math.cos(Utility.Radians(-width)+Utility.Radians(angle))+x,
+      w*Math.sin(Utility.Radians(-width)+Utility.Radians(angle))+y
+    ));
+
+    points.push(new SAT.Vector(
+      w*Math.cos(Utility.Radians(width)+Utility.Radians(angle))+x,
+      w*Math.sin(Utility.Radians(width)+Utility.Radians(angle))+y
+    ));
+
+    points.push(new SAT.Vector(
+      w*Math.cos(Utility.Radians(180-width)+Utility.Radians(angle))+x,
+      w*Math.sin(Utility.Radians(180-width)+Utility.Radians(angle))+y
+    ));
+
+    points.push(new SAT.Vector(
+      w*Math.cos(Utility.Radians(180+width)+Utility.Radians(angle))+x,
+      w*Math.sin(Utility.Radians(180+width)+Utility.Radians(angle))+y
+    ));
+
+    return points;
+
+  }
+
+  static polygonPoints(x, y, radius, sides,angle) {
+
+    // check if polygon is possible
+    if (sides < 3) return;
+
+    // create point array
+    var points = [];
+
+    // calculate inner angle of vertex (2PI divided into side count)
+    var a = ((Math.PI * 2)/sides);
+
+    // iterating over side count
+    for (var i = 0; i < sides; i++) {
+      // calculating x and y points at ofset for polygon
+      points.push({x:radius*Math.cos((a*i)+Utility.Radians(angle))+x,y:radius*Math.sin((a*i)+Utility.Radians(angle))+y});
+    }
+
+    return points;
+
+  }
+
+  // Drawing Polygon from points with undefined fill style
+  static polygonOutline(points){
+    if(Draw.checkGame()){
+      for(var i = 0 ; i < points.length-1 ; i++){
+        Draw.line(points[i].x,points[i].y,points[i+1].x,points[i+1].y,2);
+      }
+      Draw.line(points[points.length-1].x,points[points.length-1].y,points[0].x,points[0].y,2);
+    }
+  }
+
+  // Drawing Polygon from points with undefined fill style
+  static polygon(points){
+    if(Draw.checkGame()){
+      game.ctx.beginPath();
+      game.ctx.moveTo(points[0].x,points[0].y);
+      for(var i = 1 ; i < points.length ; i++){
+        game.ctx.lineTo(points[i].x,points[i].y);
+      }
+      game.ctx.closePath();
+      game.ctx.fill();
+    }
+  }
+
+  static line(x1,y1,x2,y2,w = 1){
     if(Draw.checkGame()){
       game.ctx.beginPath();
       game.ctx.moveTo(x1,y1);
+      game.ctx.lineWidth = w;
       game.ctx.lineTo(x2,y2);
       Draw.stroke();
     }
   }
+
+  // static line(x1,y1,x2,y2){
+  //   if(Draw.checkGame()){
+  //     game.ctx.beginPath();
+  //     game.ctx.moveTo(x1,y1);
+  //     game.ctx.lineTo(x2,y2);
+  //     Draw.stroke();
+  //   }
+  // }
+
+  static circle(x,y,r){
+    if(Draw.checkGame()){
+      game.ctx.beginPath();
+      game.ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+      game.ctx.fill();
+    }
+  }
+
+
 
   static rect(x,y,w,h){
     if(Draw.checkGame()){
@@ -77,7 +181,7 @@ class Draw {
     }
   }
 
-  static fill(r,g,b,a){
+  static fill(r,g,b,a = 1.0){
     if(Draw.checkGame()){
       game.ctx.fillStyle = 'rgba('+Math.floor(r)+','+Math.floor(g)+','+Math.floor(b)+','+Math.floor(a)+')';
     }
@@ -95,8 +199,6 @@ class Draw {
       game.ctx.restore();
     }
   }
-
-
 
   static rotate(angle){
     if(Draw.checkGame()){

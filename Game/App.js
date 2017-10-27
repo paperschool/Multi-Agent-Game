@@ -8,7 +8,7 @@ window.onload =  (function(){
 
   mousePos = new SAT.Vector(0,0);
 
-  game = new Game(500,500);
+  game = new Game(1200,800);
 
 });
 
@@ -21,11 +21,15 @@ class Game {
     this.canvasWidth = canvasW;
     this.canvasHeight = canvasH;
 
+
     // define canvas
   	this.canvas = document.getElementById("game_canvas");
 
   	// define canvas context
   	this.ctx = this.canvas.getContext("2d");
+
+    this.ctx.canvas.width = this.canvasWidth;
+    this.ctx.canvas.height = this.canvasHeight;
 
     // defining world object
     this.world = new World(this.canvasWidth,this.canvasHeight);
