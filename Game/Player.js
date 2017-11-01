@@ -10,7 +10,9 @@ class Player {
 
     // positional data
     this.pos = new SAT.Vector(x,y);
+
     this.acc = new SAT.Vector(0,0);
+
     this.vel = new SAT.Vector(0,0);
 
     // physics
@@ -18,7 +20,9 @@ class Player {
 
     this.size = size;
 
-    this.speed = 10;
+    this.speed = 8;
+
+    this.topSpeed = 20;
 
     this.dir = 0;
 
@@ -26,25 +30,27 @@ class Player {
 
     this.colliding = false;
 
+    this.friction = new SAT.Vector(0.90,0.90);
+
+    // this.grav = new SAT.Vector(0,9);
+
   }
 
-  keyEvent(key){
+  keyEvent(key) {
 
-    console.log(key);
+    // console.log(key);
 
-    switch(key){
-      case "UP" :  this.vel.x = 0;
-                  this.vel.y = -this.speed;
-                  break;
-      case "LEFT" :  this.vel.x = -this.speed;
-                  this.vel.y = 0;
-                  break;
-      case "RIGHT" :  this.vel.x = this.speed;
-                  this.vel.y = 0;
-                  break;
-      case "DOWN" :  this.vel.x = 0;
-                  this.vel.y = this.speed;
-                  break;
+    switch(key) {
+
+      // case "UP"   : this.acc.add(this.acc.,-this.speed); break;
+      // case "DOWN" : this.acc.add(this.acc.x, this.speed); break;
+      // case "LEFT" : this.acc.add(-this.speed,this.acc.y); break;
+      // case "RIGHT": this.acc.add( this.speed,this.acc.y); break;
+
+      case "UP"   : this.applyAcc(0,-this.speed); break;
+      case "DOWN" : this.applyAcc(0, this.speed); break;
+      case "LEFT" : this.applyAcc(-this.speed,0); break;
+      case "RIGHT": this.applyAcc( this.speed,0); break;
     }
 
   }
@@ -59,15 +65,29 @@ class Player {
     // console.log(e);
   }
 
+  applyAcc(x,y){
+
+    if(this.acc.x < this.topSpeed){
+      this.acc.add({x:x,y:0});
+    }
+
+    if(this.acc.y < this.topSpeed){
+      this.acc.add({x:0,y:y});
+    }
+
+  }
+
   applyVelocity(deltaTime){
 
+    this.acc.mul(this.friction)
+
+    if(Math.abs(this.acc.x) < 1) this.acc.x = 0;
+    if(Math.abs(this.acc.y) < 1) this.acc.y = 0;
+
+
+    this.vel.set(this.acc.x,this.acc.y);
+
     this.pos.add(this.vel);
-
-    this.vel.x *= this.acc.x;
-    this.vel.y *= this.acc.y;
-
-    this.acc.x *= 0.99;
-    this.acc.y *= 0.99;
 
   }
 
@@ -83,6 +103,7 @@ class Player {
   update(deltaTime){
 
     this.applyVelocity(deltaTime);
+
     this.dir = Utility.Degrees(Utility.angle(this.pos,mousePos));
 
     // stored points in SAT Object for drawing and collisions

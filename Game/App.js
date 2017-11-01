@@ -3,7 +3,6 @@ var game = null;
 
 var mousePos = null;
 
-
 window.onload =  (function(){
 
   mousePos = new SAT.Vector(0,0);

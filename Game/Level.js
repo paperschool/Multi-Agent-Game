@@ -12,12 +12,17 @@ class Level {
 
     this.player = new Player(200,200,50);
 
+    this.offset = new SAT.Vector(200,200);
+
     this.walls = [];
 
     // top wall
     this.addWall(0,0,20,1);
+
     this.addWall(0,0,1,20);
+
     this.addWall(19,0,1,20);
+
     this.addWall(0,19,20,1);
 
   }
@@ -42,8 +47,8 @@ class Level {
     }
   }
 
-  update(){
-    this.player.update();
+  update(deltaTime){
+    this.player.update(deltaTime);
   }
 
   draw(){

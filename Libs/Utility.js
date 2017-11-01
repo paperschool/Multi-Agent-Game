@@ -39,6 +39,17 @@ class Utility {
     return Math.atan2((v2.y-v1.y),(v2.x-v1.x));
   }
 
+  static linColPosArr(index,cc){
+    return (index%cc);
+  }
+
+  static linRowPosArr(index,cc){
+    return Math.floor(index/cc);
+  }
+
+
+
+
 }
 
 
@@ -111,6 +122,19 @@ class Draw {
 
   }
 
+  static image(i,x,y){
+    if(Draw.checkGame()){
+        game.ctx.drawImage(i,x,y);
+    }
+  }
+
+  // this SO explains the logic https://stackoverflow.com/a/4200413
+  static imageCrop(image, cropX, cropY, cropW, cropH, placeX, placeY, placeW, placeH){
+    if(Draw.checkGame()){
+        game.ctx.drawImage(image, cropX, cropY, cropW, cropH, placeX, placeY, placeW, placeH);
+    }
+  }
+
   // Drawing Polygon from points with undefined fill style
   static polygonOutline(points){
     if(Draw.checkGame()){
@@ -161,7 +185,12 @@ class Draw {
     }
   }
 
-
+  static rectOutline(x,y,w,h){
+    if(Draw.checkGame()){
+      game.ctx.stroke();
+      game.ctx.strokeRect(x,y,w,h);
+    }
+  }
 
   static rect(x,y,w,h){
     if(Draw.checkGame()){
@@ -193,6 +222,11 @@ class Draw {
     }
   }
 
+  static translate(x,y){
+    if(Draw.checkGame()){
+      game.ctx.translate(x,y);
+    }
+  }
 
   static restore(){
     if(Draw.checkGame()){
