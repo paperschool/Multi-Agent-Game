@@ -1,6 +1,6 @@
 class Player {
 
-  constructor(x,y,size){
+  constructor(x,y,size,level){
 
     // player positions
     this.playerBody = null;
@@ -15,19 +15,26 @@ class Player {
 
     this.vel = new SAT.Vector(0,0);
 
+    // rendering
+
+    // player position in the virtual world
+    this.worldPosition = new SAT.Vector(0,0);
+
+    this.levelSize = new SAT.Vector(level.x,level.y);
+
     // physics
-    this.input = new Input(this.mouseMoveEvent.bind(this),this.mouseDownEvent.bind(this),this.keyEvent.bind(this));
 
     this.size = size;
 
-    this.speed = 8;
+    this.speed = 10;
 
-    this.topSpeed = 20;
+    this.topSpeed = 10;
 
     this.dir = 0;
 
     this.colour = null;
 
+    this.collided = false;
     this.colliding = false;
 
     this.friction = new SAT.Vector(0.90,0.90);
@@ -36,33 +43,19 @@ class Player {
 
   }
 
-  keyEvent(key) {
+  input(type,value){
+    if(type === "MOUSE"){
 
-    // console.log(key);
-
-    switch(key) {
-
-      // case "UP"   : this.acc.add(this.acc.,-this.speed); break;
-      // case "DOWN" : this.acc.add(this.acc.x, this.speed); break;
-      // case "LEFT" : this.acc.add(-this.speed,this.acc.y); break;
-      // case "RIGHT": this.acc.add( this.speed,this.acc.y); break;
-
-      case "UP"   : this.applyAcc(0,-this.speed); break;
-      case "DOWN" : this.applyAcc(0, this.speed); break;
-      case "LEFT" : this.applyAcc(-this.speed,0); break;
-      case "RIGHT": this.applyAcc( this.speed,0); break;
     }
-
-  }
-
-  mouseMoveEvent(e){
-    // console.log(e);
-    // this.pos.x = e.x;
-    // this.pos.y = e.y;
-  }
-
-  mouseDownEvent(e){
-    // console.log(e);
+    if(type === "KEYBOARD"){
+      switch (value) {
+        case "UP"   : this.applyAcc(0,-this.speed); break;
+        case "DOWN" : this.applyAcc(0, this.speed); break;
+        case "LEFT" : this.applyAcc(-this.speed,0); break;
+        case "RIGHT": this.applyAcc( this.speed,0); break;
+        default:
+      }
+    }
   }
 
   applyAcc(x,y){
@@ -79,35 +72,64 @@ class Player {
 
   applyVelocity(deltaTime){
 
-    this.acc.mul(this.friction)
+    this.acc.mul(this.friction);
 
     if(Math.abs(this.acc.x) < 1) this.acc.x = 0;
     if(Math.abs(this.acc.y) < 1) this.acc.y = 0;
 
-
     this.vel.set(this.acc.x,this.acc.y);
 
-    this.pos.add(this.vel);
+    this.checkWorldBounds();
+
+    if(this.collided){
+      this.vel.x = 0;
+      this.vel.y = 0;
+    }
+
+    // calculating new world position
+    this.worldPosition.add(this.vel);
+
+  }
+
+  checkWorldBounds(){
+
+    if(this.worldPosition.x + this.vel.x <= 0) this.vel.set(-this.vel.x*0.5,this.vel.y);
+
+    if(this.worldPosition.x + this.vel.x >= this.levelSize.x) this.vel.set(-this.vel.x*0.1,this.vel.y);
+
+    if(this.worldPosition.y + this.vel.y <= 0) this.vel.set(this.vel.x,-this.vel.y*0.5);
+
+    if(this.worldPosition.y + this.vel.y >= this.levelSize.y) this.vel.set(this.vel.x,-this.vel.y*0.5);
+
 
   }
 
   checkCollision(foreignBody){
 
-    if(SAT.testPolygonPolygon(this.playerCol, foreignBody)){
-      this.colliding = true;
+    if(SAT.testPolygonPolygon(this.playerCol, foreignBody.wall)){
+      // console.log("Collided With Wall",r.overlap);
+      foreignBody.colliding = true;
+      this.collided = true;
     } else {
-      this.colliding = false;
+      foreignBody.colliding = false;
+      this.collided = false;
     }
   }
 
   update(deltaTime){
 
+    // calculating velocity from acceleration, friction etc
     this.applyVelocity(deltaTime);
 
     this.dir = Utility.Degrees(Utility.angle(this.pos,mousePos));
 
     // stored points in SAT Object for drawing and collisions
-    this.playerCol.setPoints(Draw.polygonQuad(this.pos.x,this.pos.y,40.0,20.0,this.dir));
+
+    // redrawing polygon as from a normalised position
+    this.playerCol = new SAT.Polygon(
+      new SAT.Vector(this.pos.x,this.pos.y),
+      Draw.polygonQuadNorm(40.0,20.0,this.dir)
+    )
 
   }
 
@@ -121,7 +143,7 @@ class Player {
 
     Draw.polygon('#f00',this.playerCol.getPoints());
 
-    Draw.polygonOutline(this.playerCol.getPoints());
+    Draw.polygonOutline(Draw.polygonQuad(this.pos.x,this.pos.y,40.0,20.0,this.dir));
 
     Draw.line(this.pos.x,this.pos.y,mousePos.x,mousePos.y)
 

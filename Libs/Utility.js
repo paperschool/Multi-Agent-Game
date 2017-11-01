@@ -47,9 +47,6 @@ class Utility {
     return Math.floor(index/cc);
   }
 
-
-
-
 }
 
 
@@ -64,6 +61,11 @@ class Draw {
       game.ctx.clearRect(x,y,w,h);
     }
   }
+
+  static polygonQuadNorm(w, h,angle){
+    return Draw.polygonQuad(0,0,w,h,angle);
+  }
+
 
   // TODO: Calculate correct offset width and height from those angles
   static polygonQuad(x, y, w, h,angle) {
@@ -96,6 +98,23 @@ class Draw {
       w*Math.cos(Utility.Radians(180+width)+Utility.Radians(angle))+x,
       w*Math.sin(Utility.Radians(180+width)+Utility.Radians(angle))+y
     ));
+
+    return points;
+
+  }
+
+  static normalisedAARect(w,h){
+    return Draw.axisAlignedRect(0,0,w,h)
+  }
+
+  static axisAlignedRect(x,y,w,h){
+
+    var points = [];
+
+    points.push(new SAT.Vector(x,y));
+    points.push(new SAT.Vector(x+w,y));
+    points.push(new SAT.Vector(x+w,y+h));
+    points.push(new SAT.Vector(x,y+h));
 
     return points;
 

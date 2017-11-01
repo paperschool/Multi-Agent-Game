@@ -4,77 +4,131 @@ class Level {
 
   constructor(x,y,grid){
 
-    this.levelSize = new SAT.Vector(60,40);
-
+    // size of world in virtual pixels (offscreen and onscreen)
     this.worldSize = new SAT.Vector(x,y);
 
+    // setting grid size variable
     this.gridSize = grid;
 
-    this.player = new Player(200,200,50);
+    // size of level in terms of grid units
+    this.levelSize = new SAT.Vector(100*grid,100*grid);
 
-    this.offset = new SAT.Vector(200,200);
+    // creating player and setting position to center of canvas
+    this.player = new Player(CW/2,CH/2,50,this.levelSize);
 
+    // this.player.worldPosition.set(this.levelSize.x/2,this.levelSize.y/2,);
+
+    this.player.worldPosition.set(100,100);
+
+    // current cumulative offset vector (history of movements)
+    this.worldOffset = new SAT.Vector((CW/2) - this.player.worldPosition.x,(CH/2) - this.player.worldPosition.y);
+
+    // offset vector that is applied for translations (current offset velocity of player)
+    this.offset = new SAT.Vector(0,0);
+
+    // grid for debug/rendering (maybe path finding)
+    this.grid = new Grid(this.levelSize.x,this.levelSize.y,grid);
+
+    // input class with input events and tailored callback info
+    this.input = new Input(this.mouseMoveEvent.bind(this),this.mouseDownEvent.bind(this),this.keyEvent.bind(this));
+
+    // hud map
+    this.hudmap = new HUDMap(this.worldSize,this.levelSize);
+
+    // array for storing walls
     this.walls = [];
 
     // top wall
-    this.addWall(0,0,20,1);
 
-    this.addWall(0,0,1,20);
 
-    this.addWall(19,0,1,20);
+    for(var i = 0 ; i < 5 ; i++){
+      var pos = new SAT.Vector(Utility.Random(0,100),Utility.Random(0,100));
 
-    this.addWall(0,19,20,1);
+      this.addWall(pos.x,pos.y,20,1);
 
-  }
+      this.addWall(pos.x,pos.y,1,20);
 
-  addWall(x,y,w,h){
-    let wall = new Wall(x,y,w,h,this.gridSize);
-    this.walls.push(wall);
-  }
+      this.addWall(pos.x,pos.y,1,20);
 
-  collisionDetection(){
-    for(var wall = 0 ; wall < this.walls.length ; wall++){
+      this.addWall(pos.x,pos.y,20,1);
 
-      Draw.fill(200,0,0);
-
-      if(SAT.testPolygonCircle(this.walls[wall].wall,new SAT.Circle(new SAT.Vector(10,10), 20))){
-          console.log(this.colliding);
-          Draw.fill(200,200,50);
-      }
-      Draw.circle(mousePos.x,mousePos.y,20);
-
-      // this.player.checkCollision(this.walls[wall].wall);
+      this.addWall(pos.x,pos.y,20,2);
     }
+
+
   }
+
 
   update(deltaTime){
+
+    this.player.checkWorldBounds(this.worldSize,this.levelSize);
+
     this.player.update(deltaTime);
+
+    this.hudmap.player.set(this.player.worldPosition.x,this.player.worldPosition.y);
+
+    // returning calculated player position as vector to offset level
+    this.setLevelProjectionOffset(this.player.vel)
+
+    for(var wall = 0 ; wall < this.walls.length ; wall++){
+      // this.walls[wall].setTranslation(this.worldOffset);
+
+      this.walls[wall].setOffset(this.player.vel);
+      this.walls[wall].update();
+
+      this.player.checkCollision(this.walls[wall]);
+    }
+
+
   }
 
   draw(){
 
-    // for(var y = 0 ; y < this.levelSize.y ; y++){
-    //   for(var x = 0 ; x < this.levelSize.x ; x++){
-    //       this.drawTile(x*this.gridSize,y*this.gridSize,this.gridSize);
-    //   }
-    // }
+    // drawing the virtual world bounds
+    Draw.fill(150,150,150);
+    Draw.rect(this.worldOffset.x,this.worldOffset.y,this.worldSize.x,this.worldSize.y);
+
+    // drawing the level world bounds
+    Draw.fill(250,240,240);
+    Draw.rect(this.worldOffset.x,this.worldOffset.y,this.levelSize.x,this.levelSize.y);
 
     for(var wall = 0 ; wall < this.walls.length ; wall++){
-      this.walls[wall].update();
       this.walls[wall].draw();
     }
 
     this.player.draw();
 
-    this.collisionDetection();
+    this.hudmap.player.set(this.player.worldPosition.x,this.player.worldPosition.y);
+    this.hudmap.draw();
 
   }
 
-  drawTile(x,y,size){
-    Draw.fill(230,230,230,1.0);
-    Draw.rect(x,y,size,size);
-    Draw.fill(50,50,50,1.0);
-    Draw.rect(x+1,y+1,size-2,size-2);
+  // method that creates new wall obstacle
+  addWall(x,y,w,h){
+    // creating new wall and pushing to new array
+    this.walls.push(new Wall(x,y,w,h,this.gridSize,this.worldOffset));
+  }
+
+  // setting the rendering offset based of player position`
+  setLevelProjectionOffset(offset){
+    this.worldOffset.add(offset.mul({x:-1,y:-1}));
+  }
+
+  ///////////////////////
+  // event handling /////
+  keyEvent(key) {
+    var type = "KEYBOARD";
+    this.player.input(type,key);
+  }
+
+  mouseMoveEvent(e){
+    // console.log(e);
+    // this.pos.x = e.x;
+    // this.pos.y = e.y;
+  }
+
+  mouseDownEvent(e){
+    // console.log(e);
   }
 
 
