@@ -16,9 +16,7 @@ class Level {
     // creating player and setting position to center of canvas
     this.player = new Player(CW/2,CH/2,50,this.levelSize);
 
-    // this.player.worldPosition.set(this.levelSize.x/2,this.levelSize.y/2,);
-
-    this.player.worldPosition.set(100,100);
+    this.player.worldPosition.set(this.levelSize.x/2,this.levelSize.y/2);
 
     // current cumulative offset vector (history of movements)
     this.worldOffset = new SAT.Vector((CW/2) - this.player.worldPosition.x,(CH/2) - this.player.worldPosition.y);
@@ -39,20 +37,9 @@ class Level {
     this.walls = [];
 
     // top wall
-
-
-    for(var i = 0 ; i < 5 ; i++){
+    for(var i = 0 ; i < 100 ; i++){
       var pos = new SAT.Vector(Utility.Random(0,100),Utility.Random(0,100));
-
-      this.addWall(pos.x,pos.y,20,1);
-
-      this.addWall(pos.x,pos.y,1,20);
-
-      this.addWall(pos.x,pos.y,1,20);
-
-      this.addWall(pos.x,pos.y,20,1);
-
-      this.addWall(pos.x,pos.y,20,2);
+      this.addWall(pos.x,pos.y,5,5);
     }
 
 
@@ -91,6 +78,9 @@ class Level {
     // drawing the level world bounds
     Draw.fill(250,240,240);
     Draw.rect(this.worldOffset.x,this.worldOffset.y,this.levelSize.x,this.levelSize.y);
+
+    // this.grid.setOffset(this.worldOffset);
+    // this.grid.draw();
 
     for(var wall = 0 ; wall < this.walls.length ; wall++){
       this.walls[wall].draw();

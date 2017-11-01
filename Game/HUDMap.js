@@ -4,7 +4,7 @@ class HUDMap{
     this.player = new SAT.Vector(0,0);
     this.world  = new SAT.Vector(world.x,world.y);
     this.level  = new SAT.Vector(level.x,level.y);
-
+    this.view = new SAT.Vector(CW,CH);
     this.size = 200;
     this.margin = 20;
   }
@@ -23,8 +23,20 @@ class HUDMap{
     Draw.fill(0,255,0);
     Draw.rect(this.margin,this.margin,(200/this.world.x)*this.level.x,(200/this.world.y)*this.level.y);
 
+    var pPos = new SAT.Vector((200/this.world.x)*this.player.x,(200/this.world.y)*this.player.y);
+
+    var vpSize = new SAT.Vector((200/this.world.x)*CW,(200/this.world.y)*CH);
+
+    var vpPos = new SAT.Vector(pPos.x - vpSize.x/2,pPos.y - vpSize.y/2);
+
+    Draw.rectOutline(
+      this.margin+vpPos.x,
+      this.margin+vpPos.y,
+      vpSize.x,vpSize.y
+    );
+
     Draw.fill(200,0,0);
-    Draw.rect(this.margin+(200/this.world.x)*this.player.x,this.margin+(200/this.world.y)*this.player.y,2,2);
+    Draw.rect(this.margin+pPos.x,this.margin+pPos.y,2,2);
 
   }
 

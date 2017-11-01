@@ -13,6 +13,10 @@ class World {
     // level object that stores all aspects about the current level
     this.level = new Level(this.size.x,this.size.y,this.gridSize);
 
+    this.levelManager = new LevelManager();
+
+    this.levelManager.loadLevel("levels/1.json");
+
     // // this.i = new Sprite("assets/sprite.png",6,256,256);
     // this.i = [
     //   new Sprite("assets/runningcat.png",512,256,0,0,2),

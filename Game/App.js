@@ -42,7 +42,7 @@ class Game {
     this.world = new World(5000,5000);
 
     // Begin game loop with loop object instantiation
-    this.gameLoop = new GameLoop(30.0,Utility.Now(),this.tick.bind(this));
+    this.gameLoop = new GameLoop(1.0,Utility.Now(),this.tick.bind(this));
 
   }
 
