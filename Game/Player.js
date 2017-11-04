@@ -24,6 +24,8 @@ class Player {
 
     this.levelSize = new SAT.Vector(level.x,level.y);
 
+    this.playerSprite = new Sprite("../assets/sprite.png",96,88,this.pos.x,this.pos.y,0);
+
     // physics
 
     this.size = size;
@@ -156,6 +158,7 @@ class Player {
 
     Draw.text(20,"serif","center",new SAT.Vector(this.pos.x,this.pos.y + this.vel.y*11),Math.floor(this.vel.y));
 
+    this.playerSprite.draw();
 
   }
 
