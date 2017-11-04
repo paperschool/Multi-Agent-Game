@@ -38,19 +38,35 @@ class Game {
     this.ctx.canvas.width = CW;
     this.ctx.canvas.height = CH;
 
-    // defining world object
-    this.world = new World(5000,5000);
+    // Various state index
+    this.START_STATE    = 0;
+    this.PLAY_STATE     = 1;
+    this.GAMEOVER_STATE = 2;
+    this.VICTORY_STATE  = 3;
+
+    // variable to store
+    this.CURRENT_STATE = this.PLAY_STATE;
+
+    // state object array
+    this.states = [
+      new StartState(this),
+      new PlayState(this),
+      new GameOverState(this),
+      new VictoryState(this)
+    ];
 
     // Begin game loop with loop object instantiation
     this.gameLoop = new GameLoop(1.0,Utility.Now(),this.tick.bind(this));
 
   }
 
+  setState(state){
+    this.CURRENT_STATE = state;
+  }
+
   // method that runs everytime game loop returns tick
   tick(deltaTime){
-    // updating and updating world
-    this.world.update(deltaTime);
-    this.world.draw();
+    this.states[this.CURRENT_STATE].tick();
   }
 }
 

@@ -72,7 +72,7 @@ class Sprite {
 
       Draw.translate(mousePos.x,mousePos.x);
 
-      Draw.rotate(Utility.Radians((360/this.frames) * this.frame));
+      // Draw.rotate(Utility.Radians((360/this.frames) * this.frame));
 
       Draw.imageCrop(this.img,c*this.width,r*this.height,this.width,this.height,this.pos.x-this.width/2,this.pos.y-this.height/2,this.width,this.height);
 

@@ -141,18 +141,6 @@ class Draw {
 
   }
 
-  static image(i,x,y){
-    if(Draw.checkGame()){
-        game.ctx.drawImage(i,x,y);
-    }
-  }
-
-  // this SO explains the logic https://stackoverflow.com/a/4200413
-  static imageCrop(image, cropX, cropY, cropW, cropH, placeX, placeY, placeW, placeH){
-    if(Draw.checkGame()){
-        game.ctx.drawImage(image, cropX, cropY, cropW, cropH, placeX, placeY, placeW, placeH);
-    }
-  }
 
   // Drawing Polygon from points with undefined fill style
   static polygonOutline(points){
@@ -177,13 +165,13 @@ class Draw {
     }
   }
 
-  static line(x1,y1,x2,y2,w = 1){
+  static line(x1,y1,x2,y2,w = 1,fill = "#000000"){
     if(Draw.checkGame()){
       game.ctx.beginPath();
       game.ctx.moveTo(x1,y1);
       game.ctx.lineWidth = w;
       game.ctx.lineTo(x2,y2);
-      Draw.stroke();
+      Draw.stroke(w,fill);
     }
   }
 
@@ -206,7 +194,6 @@ class Draw {
 
   static rectOutline(x,y,w,h){
     if(Draw.checkGame()){
-      game.ctx.stroke();
       game.ctx.strokeRect(x,y,w,h);
     }
   }
@@ -217,21 +204,38 @@ class Draw {
     }
   }
 
-  static stroke(){
+  static stroke(w = 1,fill = "#000000"){
     if(Draw.checkGame()){
+      game.ctx.strokeWidth = w;
+      game.ctx.strokeStyle = fill;
       game.ctx.stroke();
     }
   }
 
-  static fill(r,g,b){
+  static image(i,x,y){
     if(Draw.checkGame()){
-      game.ctx.fillStyle = 'rgb('+Math.floor(r)+','+Math.floor(g)+','+Math.floor(b)+')';
+      game.ctx.drawImage(i,x,y);
+    }
+  }
+
+  // this SO explains the logic https://stackoverflow.com/a/4200413
+  static imageCrop(image, cropX, cropY, cropW, cropH, placeX, placeY, placeW, placeH){
+    if(Draw.checkGame()){
+      game.ctx.drawImage(image, cropX, cropY, cropW, cropH, placeX, placeY, placeW, placeH);
+    }
+  }
+
+  static text(size = 40,font = "Ariel",align = "center",position = {x:0,y:0},body = "textbody"){
+    if(Draw.checkGame()){
+      game.ctx.textAlign = align;
+      game.ctx.font = size + "px " + font;
+      game.ctx.fillText(body,position.x,position.y);
     }
   }
 
   static fill(r,g,b,a = 1.0){
     if(Draw.checkGame()){
-      game.ctx.fillStyle = 'rgba('+Math.floor(r)+','+Math.floor(g)+','+Math.floor(b)+','+Math.floor(a)+')';
+      game.ctx.fillStyle = 'rgba('+Math.floor(r)+','+Math.floor(g)+','+Math.floor(b)+','+a+')';
     }
   }
 

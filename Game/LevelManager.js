@@ -4,10 +4,10 @@ class LevelManager {
     this.levels = [];
   }
 
-  loadLevel(src){
+  loadLevel(src,callback){
     this.loadJSON(src,(function(level){
-      this.levels.push(level);
-      console.log("Level Added",level);
+      callback(JSON.parse(level));
+      console.log("Level Successfully Added: " + src);
     }).bind(this));
   }
 
@@ -26,7 +26,5 @@ class LevelManager {
 
   		xobj.send(null);
 	}
-
-
 
 }

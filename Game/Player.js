@@ -8,10 +8,12 @@ class Player {
     // collision surface for player
     this.playerCol = new SAT.Polygon(new SAT.Vector(x,y),this.playerBody);
 
-    // positional data
+    // setting canvas position (constant);
     this.pos = new SAT.Vector(x,y);
 
     this.acc = new SAT.Vector(0,0);
+
+    this.testVel = new SAT.Vector(0,0);
 
     this.vel = new SAT.Vector(0,0);
 
@@ -34,10 +36,7 @@ class Player {
 
     this.colour = null;
 
-    this.collided = false;
-    this.colliding = false;
-
-    this.friction = new SAT.Vector(0.90,0.90);
+    this.friction = new SAT.Vector(0.95,0.95);
 
     // this.grav = new SAT.Vector(0,9);
 
@@ -47,6 +46,7 @@ class Player {
     if(type === "MOUSE"){
 
     }
+
     if(type === "KEYBOARD"){
       switch (value) {
         case "UP"   : this.applyAcc(0,-this.speed); break;
@@ -60,92 +60,101 @@ class Player {
 
   applyAcc(x,y){
 
-    if(this.acc.x < this.topSpeed){
+    if(Math.abs(this.acc.x) < this.topSpeed){
       this.acc.add({x:x,y:0});
     }
 
-    if(this.acc.y < this.topSpeed){
+    if(Math.abs(this.acc.y) < this.topSpeed){
       this.acc.add({x:0,y:y});
     }
 
   }
 
-  applyVelocity(deltaTime){
+  evaluateVelocity(deltaTime){
 
     this.acc.mul(this.friction);
 
-    if(Math.abs(this.acc.x) < 1) this.acc.x = 0;
-    if(Math.abs(this.acc.y) < 1) this.acc.y = 0;
+    if(Math.abs(this.acc.x) <= 1) this.acc.x = 0;
+    if(Math.abs(this.acc.y) <= 1) this.acc.y = 0;
 
-    this.vel.set(this.acc.x,this.acc.y);
+    // applying calculated velocity to test velocity
+    this.testVel.set(this.acc.x,this.acc.y);
 
-    this.checkWorldBounds();
+  }
 
-    if(this.collided){
-      this.vel.x = 0;
-      this.vel.y = 0;
+  checkCollision(foreignBody,response){
+    // returning outcome of collision test
+    return SAT.testPolygonPolygon(this.playerCol, foreignBody.wall,response);
+  }
+
+  evaluateCollisions(level){
+
+    for(var wall = 0 ; wall < level.walls.length ; wall++){
+
+      let testWall = level.walls[wall];
+
+      let r = new SAT.Response();
+
+      // checking horizontal vector first
+      if(SAT.testPolygonPolygon(this.playerCol, testWall.wall,r)){
+        // console.log("collision horizontal: " + this.testVel.x + " : " + this.testVel.y);
+        console.log(testWall.id +  " collision: " + r.overlapV.x + " : " + r.overlapV.y);
+        testWall.colliding = true;
+        r.overlapV.scale(1.001)
+        this.testVel.sub(r.overlapV);
+      }
+
     }
 
-    // calculating new world position
-    this.worldPosition.add(this.vel);
+    // setting final velocity after acceleration
+    this.vel.set(this.testVel.x,this.testVel.y);
+
+    // setting offset position
+    this.worldPosition.add(this.vel)
+
+    // returning calculated player position as vector to offset level
+    level.setLevelProjectionOffset(this.vel);
 
   }
 
-  checkWorldBounds(){
+  // TODO: Fix poor association to parent class
+  update(deltaTime,level){
 
-    if(this.worldPosition.x + this.vel.x <= 0) this.vel.set(-this.vel.x*0.5,this.vel.y);
+    this.input();
 
-    if(this.worldPosition.x + this.vel.x >= this.levelSize.x) this.vel.set(-this.vel.x*0.1,this.vel.y);
-
-    if(this.worldPosition.y + this.vel.y <= 0) this.vel.set(this.vel.x,-this.vel.y*0.5);
-
-    if(this.worldPosition.y + this.vel.y >= this.levelSize.y) this.vel.set(this.vel.x,-this.vel.y*0.5);
-
-
-  }
-
-  checkCollision(foreignBody){
-
-    if(SAT.testPolygonPolygon(this.playerCol, foreignBody.wall)){
-      // console.log("Collided With Wall",r.overlap);
-      foreignBody.colliding = true;
-      this.collided = true;
-    } else {
-      foreignBody.colliding = false;
-      this.collided = false;
-    }
-  }
-
-  update(deltaTime){
-
-    // calculating velocity from acceleration, friction etc
-    this.applyVelocity(deltaTime);
-
-    this.dir = Utility.Degrees(Utility.angle(this.pos,mousePos));
-
-    // stored points in SAT Object for drawing and collisions
-
-    // redrawing polygon as from a normalised position
+    // redrawing collision polygon as from a normalised position
     this.playerCol = new SAT.Polygon(
       new SAT.Vector(this.pos.x,this.pos.y),
       Draw.polygonQuadNorm(40.0,20.0,this.dir)
     )
 
+    // calculating angle of player relative to mouse
+    this.dir = Utility.Degrees(Utility.angle(this.pos,mousePos));
+
+    // calculating velocity from acceleration, friction etc
+    this.evaluateVelocity(deltaTime);
+
+    // calculating collision changes
+    this.evaluateCollisions(level);
+
   }
 
   draw(){
-
-    if(this.colliding){
-      Draw.fill(70,51,255,1.0);
-    } else {
-      Draw.fill(100,200,255,1.0);
-    }
 
     Draw.polygon('#f00',this.playerCol.getPoints());
 
     Draw.polygonOutline(Draw.polygonQuad(this.pos.x,this.pos.y,40.0,20.0,this.dir));
 
-    Draw.line(this.pos.x,this.pos.y,mousePos.x,mousePos.y)
+    Draw.line(this.pos.x,this.pos.y,mousePos.x,mousePos.y);
+
+    Draw.line(this.pos.x,this.pos.y,this.pos.x,this.pos.y + this.vel.y*10);
+
+    Draw.line(this.pos.x,this.pos.y,this.pos.x + this.vel.x*10,this.pos.y);
+
+    Draw.fill(255,0,0);
+    Draw.text(20,"serif","center",new SAT.Vector(this.pos.x + this.vel.x*11,this.pos.y),Math.floor(this.vel.x));
+
+    Draw.text(20,"serif","center",new SAT.Vector(this.pos.x,this.pos.y + this.vel.y*11),Math.floor(this.vel.y));
 
 
   }
