@@ -15,19 +15,28 @@ class World {
 
     this.levelManager = new LevelManager();
 
-    this.levelManager.loadLevel("levels/1.json",this.addLevel.bind(this));
+    // creating new camera objext
+    this.camera = new Camera(0,0,CW,CH,w,h);
+
+    this.levelManager.loadLevel("Game/Assets/Levels/1.json",this.addLevel.bind(this));
 
     this.currentLevel = -1;
+
     this.levelCount = 0;
 
     this.p1 = new SAT.Vector(200,300);
-    this.p2 = new SAT.Vector(600,600)
+
+    this.p2 = new SAT.Vector(600,600);
 
   }
 
   addLevel(data){
+
     this.levelCount++;
+
     this.currentLevel = 0;
+
+    // create new Level;
     this.levels.push(
       new Level(
         this.size,
@@ -37,6 +46,7 @@ class World {
       )
     );
 
+    // create all walls within level
     for(var wall = 0 ; wall < data.level.walls.length ; wall++){
       this.levels[this.levelCount-1].addWall(
         data.level.walls[wall].x,
@@ -47,16 +57,27 @@ class World {
       )
     }
 
+    // add world pickups
+    for(var pickup = 0 ; pickup < data.level.pickups.length ; pickup++){
+      this.levels[this.levelCount-1].addPickup(
+        data.level.pickups[pickup].x,
+        data.level.pickups[pickup].y,
+        data.level.pickups[pickup].type
+      )
+    }
+
+    // set camera focus
+    this.camera.setFocus(this.levels[this.levelCount-1].player,new SAT.Vector(CW/2,CH/2));
+
+
   }
 
   update(deltaTime){
-      // if(this.currentLevel >= 0)
-      //   this.levels[this.currentLevel].update();
-      //
-      //
-      //
 
+      if(this.currentLevel >= 0)
+        this.levels[this.currentLevel].update(deltaTime);
 
+      this.camera.update();
 
 
   }
@@ -65,26 +86,11 @@ class World {
 
     Draw.clear(0,0,this.size.x,this.size.y);
 
-    Draw.fill(this.phaser,200,100,1.0);
+    // Draw.fill(51,51,51);
+    // Draw.rect(0,0,this.size.x,this.size.y);
 
-    Draw.fill(51,51,51);
-
-    Draw.rect(0,0,this.size.x,this.size.y);
-
-    // if(this.currentLevel >= 0)
-    //   this.levels[this.currentLevel].draw();
-
-
-    Draw.fill(250,250,250);
-
-    Draw.circle(this.p1.x,this.p1.y,4);
-    Draw.line(this.p1.x,this.p1.y,this.p1.x,this.p1.y+100,2,"#FFFFFF");
-    Draw.line(this.p1.x,this.p1.y,this.p1.x+100,this.p1.y,2,"#FFFFFF");
-
-
-    Draw.circle(this.p2.x,this.p2.y,4);
-    Draw.line(this.p2.x,this.p2.y,this.p2.x,this.p2.y+100,2,"#FFFFFF");
-    Draw.line(this.p2.x,this.p2.y,this.p2.x+100,this.p2.y,2,"#FFFFFF");
+    if(this.currentLevel >= 0)
+      this.levels[this.currentLevel].draw(this.camera.getOffset());
 
 
   }

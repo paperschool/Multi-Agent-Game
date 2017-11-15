@@ -3,10 +3,12 @@
 var game = null;
 
 // global mouse position object
-var mousePos = null;
+var input = null
 
 // canvas size and width
 var CW = 0,CH = 0;
+
+
 
 // function that runs on window load
 window.onload =  (function(){
@@ -14,6 +16,9 @@ window.onload =  (function(){
   // settting canvas dimensions based on DOM inner width/height
   CW = window.innerWidth;
   CH = window.innerHeight;
+
+  // Input Object instantiation
+  input = new Input();
 
   // create mouse position vector
   mousePos = new SAT.Vector(0,0);
@@ -66,7 +71,7 @@ class Game {
 
   // method that runs everytime game loop returns tick
   tick(deltaTime){
-    this.states[this.CURRENT_STATE].tick();
+    this.states[this.CURRENT_STATE].tick(deltaTime);
   }
 }
 
@@ -100,7 +105,7 @@ class GameLoop {
       this.lastTime = this.now;
       // running callback with delta time
       if(typeof this.callBack == "function") {
-        this.callBack(deltaTime);
+        this.callBack(deltaTime*100);
       }
     }
 

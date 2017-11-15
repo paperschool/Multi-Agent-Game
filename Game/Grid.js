@@ -5,8 +5,6 @@ class Grid {
 
     this.levelSize = new SAT.Vector(x,y);
 
-    this.offset = new SAT.Vector(0,0);
-
     this.drawGrid = true;
     this.drawPath = true;
 
@@ -47,10 +45,6 @@ class Grid {
 
   }
 
-  setOffset(offset){
-    this.offset.set(offset.x,offset.y);
-  }
-
   search(start,end){
 
     if(!this.checkGraphBound(start)) return;
@@ -68,11 +62,23 @@ class Grid {
     return this.result;
   }
 
-  draw(){
+  draw(camera){
+
+    // checking input for render options
+    if(input.isDown("G")) this.drawGrid ^= true;
+    if(input.isDown("H")) this.drawPath ^= true;
 
     if(this.drawGrid) {
       for(var y = 0 ; y < this.graph.grid.length ; y++){
         for(var x = 0 ; x < this.graph.grid[y].length ; x++){
+
+          let offsetPos = new SAT.Vector(-camera.x + (x*this.gridSize),-camera.y + (y*this.gridSize));
+
+          // ignore drawing any squares that fall off screen
+          if((offsetPos.x < 0 || offsetPos.x > CW) || (offsetPos.y < 0 || offsetPos.y > CH)){
+            continue;
+          }
+
           if(this.graph.grid[x][y].closed){
             Draw.stroke(1,"#000000");
           } else {
@@ -81,7 +87,7 @@ class Grid {
           if(this.graph.grid[x][y].visted){
             Draw.stroke(1,"#0000FF");
           }
-          Draw.rectOutline(this.offset.x + (x*this.gridSize),this.offset.y + (y*this.gridSize),this.gridSize,this.gridSize);
+          Draw.rectOutline(offsetPos.x,offsetPos.y,this.gridSize,this.gridSize);
         }
       }
     }
@@ -89,7 +95,7 @@ class Grid {
     if(this.drawPath){
       for(var node = 0 ; node < this.result.length ; node++){
         Draw.fill(51,51,51);
-        Draw.rect(this.offset.x + (this.result[node].x*this.gridSize),this.offset.y + (this.result[node].y*this.gridSize),this.gridSize,this.gridSize)
+        Draw.rect(-camera.x + (this.result[node].x*this.gridSize),-camera.y + (this.result[node].y*this.gridSize),this.gridSize,this.gridSize)
       }
     }
 

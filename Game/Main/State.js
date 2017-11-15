@@ -8,26 +8,23 @@ class StartState {
     this.game = game;
 
     // input class with input events and tailored callback info
-    this.input = new Input(this.keyEvent.bind(this),this.keyEvent.bind(this),this.keyEvent.bind(this));
+    // this.input = new Input(this.keyEvent.bind(this),this.keyEvent.bind(this),this.keyEvent.bind(this));
 
-  }
-
-  keyEvent(key){
-    ///
-    if(key === "SPACE") this.game.setState(1);
   }
 
   tick(deltaTime){
+
+    if(input.isDown("SPACE")) this.game.setState(1);
 
     Draw.fill(51,51,51,0.05);
     Draw.rect(0,0,CW,CH);
 
     for(var i = 0 ; i < Math.floor(Utility.Random(30,70)) ; i++){
       switch(Math.floor(Utility.Random(0,4))){
-        case 0: Draw.line(0,Utility.Random(0,CH),mousePos.x,mousePos.y,Utility.Random(0.5,3),"#4274f4"); break;
-        case 1: Draw.line(Utility.Random(0,CW),0,mousePos.x,mousePos.y,Utility.Random(0.5,3),"#6541f4"); break;
-        case 2: Draw.line(CW,Utility.Random(0,CH),mousePos.x,mousePos.y,Utility.Random(0.5,3),"#6541f4"); break;
-        case 3: Draw.line(Utility.Random(0,CW),CH,mousePos.x,mousePos.y,Utility.Random(0.5,3),"#f441cd"); break;
+        case 0: Draw.line(0,Utility.Random(0,CH),input.mouse.x,input.mouse.y,Utility.Random(0.5,3),"#4274f4"); break;
+        case 1: Draw.line(Utility.Random(0,CW),0,input.mouse.x,input.mouse.y,Utility.Random(0.5,3),"#6541f4"); break;
+        case 2: Draw.line(CW,Utility.Random(0,CH),input.mouse.x,input.mouse.y,Utility.Random(0.5,3),"#6541f4"); break;
+        case 3: Draw.line(Utility.Random(0,CW),CH,input.mouse.x,input.mouse.y,Utility.Random(0.5,3),"#f441cd"); break;
       }
     }
 
@@ -46,7 +43,7 @@ class StartState {
 class PlayState {
 
   constructor(){
-    
+
     // defining world object
     this.world = new World(5000,5000);
 
@@ -56,6 +53,28 @@ class PlayState {
     // updating and updating world
     this.world.update(deltaTime);
     this.world.draw();
+  }
+
+}
+
+class PauseState {
+
+  constructor(){
+
+  }
+
+  tick(deltaTime){
+    // updating and updating world
+    this.world.update(deltaTime);
+    this.world.draw();
+  }
+
+  update(){
+
+  }
+
+  draw(){
+
   }
 
 }

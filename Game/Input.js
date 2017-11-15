@@ -1,10 +1,19 @@
 class Input {
 
   constructor(mmoveC,mdownC,kdownC){
+
+    this.pressedKeys = {};
+
+    this.singleClickedKeys = {};
+
     this.currentKey = null;
 
+    this.mouse = {x:0,y:0,click:false,button:"null"}
+
     this.mouseMoveCallback = mmoveC;
+
     this.mouseDownCallback = mdownC;
+
     this.keyboardCallback  = kdownC;
 
     document.addEventListener('keydown', (function(e) {
@@ -19,27 +28,64 @@ class Input {
         this.mouseMoveEvent(e);
     }).bind(this));
 
+    document.addEventListener('mousedown', (function(e){
+        this.mouseDownEvent(e);
+    }).bind(this));
+
+    document.addEventListener('mouseup', (function(e){
+        this.mouseUpEvent(e);
+    }).bind(this));
+
 
   }
 
   mouseMoveEvent(e){
-    // console.log(e);
-    mousePos.x = e.offsetX;
-    mousePos.y = e.offsetY;
-    var me = {x:e.offsetX,y:e.offsetY}
-    this.mouseMoveCallback(me);
+
+    this.mouse.x = e.offsetX;
+    this.mouse.y = e.offsetY;
+
+  }
+
+  mouseDownEvent(e){
+
+    //TODO : Add single click logic ( add a system for checking something has only been clicked once rather than checking if down )
+
+
+
+    switch (e.button) {
+        case 0:
+            this.mouse.click = true;
+            this.mouse.button = "LEFT";
+        break;
+        case 1:
+            console.log('Middle button clicked.');
+            this.mouse.click = true;
+            this.mouse.button = "MIDDLE";
+        break;
+        case 2:
+            console.log('Right button clicked.');
+            this.mouse.click = true;
+            this.mouse.button = "RIGHT";
+        break;
+    }
+
+
+
+  }
+
+  mouseUpEvent(e){
+
+    this.mouse.click = false;
+    this.mouse.button = "NULL";
+
   }
 
   keyboardEvent(event, status) {
 
-      if(!status){
-        key = "NULL";
-        return;
-      }
-
       var code = event.keyCode;
       var key;
 
+      // add specific keycodes here if need be
       switch(code) {
       case 32:
           key = 'SPACE'; break;
@@ -60,10 +106,21 @@ class Input {
           key = String.fromCharCode(code);
       }
 
-      this.keyboardCallback(key);
+      this.pressedKeys[key] = status;
+
+      if(typeof this.keyboardCallback === 'function'){
+        this.keyboardCallback(key);
+      }
+
   }
 
+  isDown(key){
+    return this.pressedKeys[key.toUpperCase()];
+  }
 
+  isClicked(key){
+    return this.singleClickedKeys[key.toUpperCase()].down;
+  }
 
 
 }

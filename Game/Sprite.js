@@ -78,8 +78,6 @@ class Sprite {
 
       Draw.restore();
 
-      console.log(c*this.width,r*this.height);
-
        // since the context is rotated, the image will be rotated also
       //  game.ctx.drawImage(this.i,-this.i.width/2,-this.i.height/2);
 

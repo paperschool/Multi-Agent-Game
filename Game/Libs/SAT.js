@@ -233,9 +233,9 @@
    * @param {Vector}  other The vector to multiply with this one.
    * @return {number} The multiplied vector.
    */
-  Vector.prototype['set'] = Vector.prototype.set = function(x,y) {
-    this['x'] = x;
-    this['y'] = y;
+  Vector.prototype['set'] = Vector.prototype.set = function(other) {
+    this['x'] = other.x;
+    this['y'] = other.y;
     return this;
   };
 
