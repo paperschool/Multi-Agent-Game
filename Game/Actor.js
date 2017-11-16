@@ -1,8 +1,14 @@
-class Actor extends Entity {
+class Actor extends Rectangle {
 
   constructor(x,y,fx = 0.9,fy = 0.9,s = 1.0,ts = 10.0) {
 
     super(x,y,0,0);
+
+    // living state of actor
+    this.alive = true;
+
+    // lifespan
+    this.lifespan = 0;
 
     // direction value in degrees
     this.direction = 0;
@@ -17,14 +23,22 @@ class Actor extends Entity {
     this.friction = new SAT.Vector(0.9,0.9);
 
     // player speed increment
-    this.speed = 3.0;
+    this.speed = s;
 
     // speed cap
-    this.topSpeed = 6.0;
+    this.topSpeed = ts;
 
     // weapon actor is holding
     this.weapon = null;
 
+  }
+
+  getShot(){
+    return this.shot;
+  }
+
+  getAlive(){
+    return this.alive;
   }
 
   getDirection(){
@@ -55,8 +69,16 @@ class Actor extends Entity {
     return this.weapon;
   }
 
+  getLifespan(){
+    return this.lifespan;
+  }
+
+  setAlive(alive){
+    this.alive = alive;
+  }
+
   setDirection(direction){
-    this.direction.set(direction);
+    this.direction = direction;
   }
 
   setAcc(acc){
@@ -80,21 +102,19 @@ class Actor extends Entity {
   }
 
   setWeapon(weapon){
-    console.log("Actor Recieved Weapon");
     this.weapon = weapon;
   }
 
-  givePickUp(pickup){
+  setLifespan(lifespan){
+    this.lifespan = lifespan;
+  }
 
-    switch(pickup.type){
-      case PickupType.GENERIC: break;
+  setShot(shot){
+    this.shot = shot;
+  }
 
-      case PickupType.HEALTH: break;
-
-      case PickupType.GUN: break;
-
-    }
-
+  flipDirection(){
+      this.direction += 180;
   }
 
   applyAcc(newAcc){
@@ -118,6 +138,12 @@ class Actor extends Entity {
     this.direction = Utility.Degrees(Utility.angle(pointFrom,pointTo));
   }
 
+  update(deltaTime){
+    super.update(deltaTime);
+  }
 
+  draw(camera){
+    super.draw(camera);
+  }
 
 }

@@ -25,9 +25,9 @@ class Entity {
   }
 
 
-  update(){}
+  update(deltaTime){}
 
-  draw(){}
+  draw(camera){}
 
 }
 
@@ -41,6 +41,10 @@ class Circle extends Entity {
 
   constructor(x,y,r){
     super(x,y,r,r);
+  }
+
+  update(deltaTime){
+    super.update(deltaTime);
   }
 
   draw(camera){
@@ -64,6 +68,10 @@ class Rectangle extends Entity {
     super(x,y,w,h);
   }
 
+  update(deltaTime){
+    super.update(deltaTime);
+  }
+
   draw(camera){
     Draw.fillCol(this.colour);
     Draw.rect(this.pos.x-camera.x,this.pos.y-camera.y,this.size.x,this.size.y);
@@ -81,5 +89,34 @@ class Rectangle extends Entity {
     return (this.pos.x <= rectangle.pos.x && this.pos.x + this.size.x >= rectangle.pos.x + rectangle.size.x &&
             this.pos.y <= rectangle.pos.y && this.pos.y + this.size.y >= rectangle.pos.y + rectangle.size.y);
   }
+
+  checkSide(point){
+    if(this.checkLeft(point))   return "LEFT";
+    if(this.checkRight(point))  return "RIGHT";
+    if(this.checkTop(point))    return "TOP";
+    if(this.checkBottom(point)) return "BOTTOM";
+  }
+
+  checkLeft(point){
+    return (point.x <= this.pos.x && point.y >= this.pos.y && point.y <= this.pos.y + this.size.y);
+  }
+
+  checkRight(point){
+    return (point.x >= this.pos.x + this.size.x && point.y >= this.pos.y && point.y <= this.pos.y + this.size.y);
+  }
+
+  checkTop(point){
+    return (point.x >= this.pos.x && point.x <= this.pos.x + this.size.x && point.y <= this.pos.y);
+  }
+
+  checkBottom(point){
+    return (point.x >= this.pos.x && point.x <= this.pos.x + this.size.x && point.y >= this.pos.y + this.size.y);
+  }
+
+
+
+
+
+
 
 }

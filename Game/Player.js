@@ -6,13 +6,12 @@ class Player extends Actor {
     super(x,y,0.9,0.9,3.0,6.0);
 
     this.setSpeed(1.0);
+
     this.setTopSpeed(10.0);
 
-    // COLLISIONS
-    this.playerCol = new SAT.Polygon (
-      new SAT.Vector(this.pos.x,this.pos.y),
-      Draw.polygonQuadNorm(40.0,20.0,this.direction)
-    )
+    this.collider = new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction));
+
+    // this.collider = new CircularCollider(this.pos.x,this.pos.y,40);
 
   }
 
@@ -38,7 +37,7 @@ class Player extends Actor {
 
     if(input.mouse.click && input.mouse.button === "LEFT"){
       if(this.weapon !== null)
-        this.weapon.fire();
+        this.weapon.fire(this);
     }
 
   }
@@ -57,6 +56,9 @@ class Player extends Actor {
 
     this.vel.scale(deltaTime);
 
+    // adding velocity to position vector
+    this.pos.add(this.vel);
+
   }
 
   // TODO: Fix poor association to parent class
@@ -68,10 +70,9 @@ class Player extends Actor {
     this.checkMouseInput();
 
     // redrawing collision polygon from a normalised position
-    this.playerCol = new SAT.Polygon (
-      new SAT.Vector(this.pos.x,this.pos.y),
-      Draw.polygonQuadNorm(40.0,20.0,this.direction)
-    )
+    this.collider = new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction));
+    // this.collider = new CircularCollider(this.pos.x,this.pos.y,40);
+    // this.collider.setPos(this.pos);
 
     // calculating angle of player relative to mouse (Kinda hacky as i know player is centered)
     this.calculateDirection({x:CW/2,y:CH/2},input.mouse);
@@ -79,32 +80,22 @@ class Player extends Actor {
     // calculating velocity from acceleration, friction etc
     this.evaluateVelocity(deltaTime);
 
-    // adding velocity to position vector
-    this.pos.add(this.vel);
+
+    if(this.weapon) this.weapon.update();
 
   }
 
   draw(camera){
 
     Draw.fillCol(this.colour)
+
+    // Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,40);
+
     Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
+
     Draw.line(this.pos.x-camera.x,this.pos.y-camera.y,input.mouse.x,input.mouse.y);
 
-
-
-    // Draw.fill(51,255,51);
-    // Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,10)
-
-    // Draw.line(this.pos.x-camera.x,this.pos.y-camera.y,this.pos.x,this.pos.y + this.vel.y*10);
-    //
-    // Draw.line(this.pos.x-camera.x,this.pos.y-camera.y,this.pos.x + this.vel.x*10,this.pos.y);
-    //
-    // Draw.fill(255,0,0);
-    // Draw.text(20,"serif","center",new SAT.Vector(this.pos.x + this.vel.x*11,this.pos.y),Math.floor(this.vel.x));
-    //
-    // Draw.text(20,"serif","center",new SAT.Vector(this.pos.x,this.pos.y + this.vel.y*11),Math.floor(this.vel.y));
-
-    // this.playerSprite.draw();
+    if(this.weapon) this.weapon.draw(camera);
 
   }
 

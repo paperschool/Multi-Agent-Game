@@ -13,12 +13,16 @@ class Level {
     // size of level in terms of grid units
     this.levelSize = new SAT.Vector(levelsize.x*grid,levelsize.y*grid);
 
+    // collision manager
+    this.CollisionManager = new CollisionManager(this);
+
     // creating player and setting position to center of canvas
     this.player = new Player(playerpos.x*this.gridSize,playerpos.y*this.gridSize);
 
+    this.enemy = new Agent(500,500);
+
     // manager for handling pickup related events
     this.pickups = new PickupManager();
-
 
     // grid for debug/rendering (maybe path finding)
     this.grid = new Grid(this.levelSize.x/grid,this.levelSize.y/grid,grid);
@@ -32,7 +36,7 @@ class Level {
     this.walls = [];
 
     // astar search tick cooldown
-    this.pfCoolDown = 20;
+    this.pfCoolDown = 1;
     this.pfCoolDownCounter = 0;
 
 
@@ -41,43 +45,33 @@ class Level {
 
   update(deltaTime){
 
+    for(var i = 0 ; i < this.walls.length ; i++)
+      this.walls[i].update(deltaTime);
+
+    if(this.player.weapon)
+      for(var i = 0 ; i < this.player.weapon.bullets.length ; i++)
+          this.player.weapon.bullets[i].update(deltaTime);
+
     // update player
     this.player.update(deltaTime);
 
-    var r = new SAT.Response();
+    this.enemy.update(deltaTime);
 
-    for(var wall = 0 ; wall < this.walls.length ; wall++){
-
-      // checking horizontal vector first
-      if(SAT.testPolygonPolygon(this.player.playerCol, this.walls[wall].wall,r)) {
-        // console.log(this.walls[wall].id +  " collision: " + r.overlapV.x + " : " + r.overlapV.y);
-        this.walls[wall].colliding = true;
-        r.overlapV.scale(1.001)
-        this.player.pos.sub(r.overlapV);
-      }
-
-      r.clear();
-
-      this.walls[wall].update(deltaTime);
-
-    }
-
-
-    this.pickups.update(this.player);
-
-
+    this.pickups.update(deltaTime,this.player);
 
     this.hudmap.player.set(this.player.pos);
 
-    // this.pfCoolDownCounter++;
-    // if(this.pfCoolDownCounter === this.pfCoolDown){
-    //   for(var i = 0 ; i < 1 ; i++)
-    //     this.grid.search(
-    //       new SAT.Vector(Math.floor(this.player.pos.x/this.gridSize),Math.floor(this.player.pos.y/this.gridSize)),
-    //       new SAT.Vector(3,3)
-    //     )
-    //   this.pfCoolDownCounter = 0;
-    // }
+    this.CollisionManager.checkAll();
+
+    this.pfCoolDownCounter++;
+    if(this.pfCoolDownCounter === this.pfCoolDown){
+      for(var i = 0 ; i < 5 ; i++)
+        this.grid.search(
+          new SAT.Vector(Math.floor(this.player.pos.x/this.gridSize),Math.floor(this.player.pos.y/this.gridSize)),
+          new SAT.Vector(3,3)
+        )
+      this.pfCoolDownCounter = 0;
+    }
 
   }
 
@@ -91,20 +85,21 @@ class Level {
     Draw.fill(250,240,240,0.8);
     Draw.rect(-camera.x,-camera.y,this.levelSize.x,this.levelSize.y);
 
+    this.grid.draw(camera);
+
+    this.player.draw(camera);
+
+    this.enemy.draw(camera);
+
     for(var wall = 0 ; wall < this.walls.length ; wall++){
       this.walls[wall].draw(camera);
     }
 
-    this.player.draw(camera);
+    this.hudmap.player.set(this.player.pos);
 
+    this.hudmap.draw();
 
     this.pickups.draw(camera);
-
-
-    // this.grid.draw(camera);
-
-    this.hudmap.player.set(this.player.pos);
-    this.hudmap.draw();
 
   }
 

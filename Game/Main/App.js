@@ -8,6 +8,8 @@ var input = null
 // canvas size and width
 var CW = 0,CH = 0;
 
+var diagnostic = null
+
 
 
 // function that runs on window load
@@ -16,6 +18,9 @@ window.onload =  (function(){
   // settting canvas dimensions based on DOM inner width/height
   CW = window.innerWidth;
   CH = window.innerHeight;
+
+  // setup diagnostic input
+  diagnostic = new DiagnosticHUD(0,0);
 
   // Input Object instantiation
   input = new Input();
@@ -61,7 +66,7 @@ class Game {
     ];
 
     // Begin game loop with loop object instantiation
-    this.gameLoop = new GameLoop(1.0,Utility.Now(),this.tick.bind(this));
+    this.gameLoop = new GameLoop(120.0,Utility.Now(),this.tick.bind(this));
 
   }
 
@@ -80,33 +85,51 @@ class GameLoop {
 
   constructor(fps,lastTime,callBack){
 
-      // fps as a value over 1000 ms (1 second)
-      this.fps = fps/1000.0;
+      // fps as a value over 1 second ( 1000 miliseconds / '30' fps ) = 33.3 ms before next tick
+      this.fps = 1000.0 / fps;
+
       // variable to store time of current tick
       this.now = lastTime;
+
       // variable to store time of last tick
       this.lastTime = lastTime;
+
       // call back to run on tick fire
       this.callBack = callBack;
+
       // beginning tick method
       this.tick();
+
+      this.deltaTime = 0;
   }
 
   // recursive tick call back
   tick(){
+
     // getting current time
     this.now = Date.now();
+
     // setting delta as current time minus previous time in seconds
-    var deltaTime = (this.now - this.lastTime) / 1000.0;
+    this.deltaTime = (this.now - this.lastTime);
 
     // checking if delta time is greater then fps requirement
-    if(deltaTime >= this.fps){
+    if(this.deltaTime >= this.fps){
+
       // setting previous tick to the current tick time
       this.lastTime = this.now;
+
       // running callback with delta time
       if(typeof this.callBack == "function") {
-        this.callBack(deltaTime*100);
+
+        diagnostic.updateLine("------- FPS",Math.floor(1000.0 / this.fps));
+
+        diagnostic.updateLine("Current FPS",Math.floor(1000.0 / this.deltaTime));
+
+        // calling return call back with new delta time
+        this.callBack(this.deltaTime/15);
+
       }
+
     }
 
     // requesting next frame

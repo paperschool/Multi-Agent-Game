@@ -11,24 +11,19 @@ class Wall extends Rectangle {
     // id
     this.id = id;
 
-    // building colider
-    this.rebuildCollider();
+    // collider object
+    this.collider = new PolygonCollider(this.pos.x,this.pos.y,Draw.normalisedAARect(this.size.x,this.size.y));
 
     // collision state of wall
     this.colliding = false;
 
   }
 
-  rebuildCollider(){
-    this.wall = new SAT.Polygon(
-      new SAT.Vector(this.pos.x,this.pos.y),
-      Draw.normalisedAARect(this.size.x,this.size.y)
-    )
-  }
-
   update(){
+
     // rebuilding collider
-    this.rebuildCollider();
+    // this.collider.rebuild(this.pos.x,this.pos.y,Draw.normalisedAARect(this.size.x,this.size.y))
+
   }
 
   draw(camera){

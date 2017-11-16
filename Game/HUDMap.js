@@ -1,4 +1,4 @@
-class HUDMap{
+class HUDMap {
 
   constructor(world,level){
     this.player = new SAT.Vector(0,0);
@@ -37,6 +37,36 @@ class HUDMap{
 
     Draw.fill(200,0,0);
     Draw.rect(this.margin+pPos.x,this.margin+pPos.y,2,2);
+
+  }
+
+}
+
+class DiagnosticHUD extends Entity {
+
+  constructor(x,y){
+    super(x,y,0,0);
+
+    this.lines = {};
+
+  }
+
+  updateLine(key,value){
+    this.lines[key] = value;
+  }
+
+  draw(){
+
+    var row = 0;
+
+    for(var key in this.lines){
+      row++;
+      Draw.fillCol(new Colour(51,51,51));
+      Draw.text(20,"mono","right",new SAT.Vector(CW-50,row*30),this.lines[key] + " : " + key);
+    }
+
+
+
 
   }
 

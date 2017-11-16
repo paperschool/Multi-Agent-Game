@@ -93,6 +93,8 @@ class World {
       this.levels[this.currentLevel].draw(this.camera.getOffset());
 
 
+    diagnostic.draw();
+
   }
 
 }
