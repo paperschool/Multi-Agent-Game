@@ -14,9 +14,10 @@
         { "x":300,"y":100,"type":"hp" },
         { "x":400,"y":100,"type":"hp" },
         { "x":500,"y":100,"type":"hp" },
-        { "x":200,"y":400,"type":"gun" },
-        { "x":300,"y":400,"type":"gun" },
-        { "x":400,"y":400,"type":"gun" }
+        { "x":200,"y":400,"type":"pistol" },
+        { "x":300,"y":400,"type":"machinegun" },
+        { "x":400,"y":400,"type":"shotgun" },
+        { "x":500,"y":400,"type":"flamethrower" }
       ],
     "walls":
     [

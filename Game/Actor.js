@@ -130,6 +130,26 @@ class Actor extends Rectangle {
 
   }
 
+  evaluateVelocity(deltaTime){
+
+    // zeroing velocity when its too low
+    if(Math.abs(this.acc.x) <= 0.0001) this.acc.x = 0;
+    if(Math.abs(this.acc.y) <= 0.0001) this.acc.y = 0;
+
+    // calling friction applicator
+    this.applyFriction();
+
+    // applying calculated velocity to test velocity
+    this.vel.set(this.acc);
+
+    // scaling velocity to deltatime
+    this.vel.scale(deltaTime);
+
+    // adding velocity to position vector
+    this.pos.add(this.vel);
+
+  }
+
   applyFriction(){
     this.acc.scale(this.friction.x,this.friction.y);
   }

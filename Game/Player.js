@@ -42,25 +42,6 @@ class Player extends Actor {
 
   }
 
-  evaluateVelocity(deltaTime){
-
-    // zeroing velocity when its too low
-    if(Math.abs(this.acc.x) <= 0.0001) this.acc.x = 0;
-    if(Math.abs(this.acc.y) <= 0.0001) this.acc.y = 0;
-
-    // calling friction applicator
-    this.applyFriction();
-
-    // applying calculated velocity to test velocity
-    this.vel.set(this.acc);
-
-    this.vel.scale(deltaTime);
-
-    // adding velocity to position vector
-    this.pos.add(this.vel);
-
-  }
-
   // TODO: Fix poor association to parent class
   update(deltaTime){
 
@@ -81,7 +62,7 @@ class Player extends Actor {
     this.evaluateVelocity(deltaTime);
 
 
-    if(this.weapon) this.weapon.update();
+    if(this.weapon) this.weapon.update(deltaTime);
 
   }
 

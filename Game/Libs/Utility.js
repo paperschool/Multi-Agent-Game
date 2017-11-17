@@ -10,6 +10,11 @@ class Utility {
     return val*val
   }
 
+  static Map(value,oldmin,oldmax,newmin,newmax){
+    return (((value - oldmin) * (newmax - newmin)) / (oldmax - oldmin)) + newmin;
+  }
+
+
   // returns a random int between @min and @max
   static Random(min,max){
     return Math.random() * (max - min) + min;

@@ -31,11 +31,9 @@ class Pickup extends Actor {
   draw(camera){
 
     if(this.getAlive()){
-
       super.draw(camera)
       Draw.fillCol(this.colour);
       Draw.rect(this.pos.x-camera.x,this.pos.y-camera.y,this.size.x,this.size.y);
-
     }
 
   }
@@ -48,6 +46,12 @@ class Pickup_Gun extends Pickup {
     super(x,y,w,h,radius);
 
     this.type = PickupType.GUN;
+
+    this.ricochetCount = 2;
+
+    this.fireRate = 25;
+
+    this.range = 100;
 
     this.setAlive(true);
 
@@ -69,6 +73,58 @@ class Pickup_Gun extends Pickup {
 
 }
 
+class Pickup_Pistol_Gun extends Pickup_Gun {
+
+  constructor(x,y,w,h,radius){
+    super(x,y,w,h,radius);
+
+    this.type = PickupType.PISTOL;
+
+    // setting colour of actor
+    this.colour = new Colour(51,255,51);
+  }
+
+}
+
+class Pickup_Shot_Gun extends Pickup_Gun {
+
+  constructor(x,y,w,h,radius){
+    super(x,y,w,h,radius);
+
+    this.type = PickupType.SHOTGUN;
+
+    // setting colour of actor
+    this.colour = new Colour(51,51,255);
+  }
+
+}
+
+class Pickup_Machine_Gun extends Pickup_Gun {
+
+  constructor(x,y,w,h,radius){
+    super(x,y,w,h,radius);
+
+    this.type = PickupType.MACHINEGUN;
+
+    // setting colour of actor
+    this.colour = new Colour(255,51,51);
+  }
+
+}
+
+
+class Pickup_Flamethrower extends Pickup_Gun {
+
+  constructor(x,y,w,h,radius){
+    super(x,y,w,h,radius);
+
+    this.type = PickupType.FLAMETHROWER;
+
+    // setting colour of actor
+    this.colour = new Colour(51,51,51);
+  }
+
+}
 
 class Pickup_Health extends Pickup {
 

@@ -11,6 +11,14 @@ class Entity {
 
   }
 
+  getPos(){
+    return this.pos;
+  }
+
+  getSize(){
+    return this.Size;
+  }
+
   setPos(pos){
     this.pos.set(pos);
   }

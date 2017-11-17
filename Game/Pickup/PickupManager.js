@@ -3,7 +3,11 @@ var PickupType = {
 
   GENERIC:"generic",
   HEALTH:"hp",
-  GUN:"gun"
+  GUN:"gun",
+  PISTOL:"pistol",
+  SHOTGUN:"shotgun",
+  MACHINEGUN:"machinegun",
+  FLAMETHROWER:"flamethrower"
 
 }
 
@@ -43,7 +47,27 @@ class PickupManager  {
             break;
           case PickupType.GUN:
             player.setColour(p.colour);
-            player.setWeapon(new Gun(p.pos.x,p.pos.y,10,3));
+            player.setWeapon(new Gun(p.pos.x,p.pos.y));
+            p.setAlive(false);
+            break;
+          case PickupType.PISTOL:
+            player.setColour(p.colour);
+            player.setWeapon(new Pistol(p.pos.x,p.pos.y));
+            p.setAlive(false);
+            break;
+          case PickupType.MACHINEGUN:
+            player.setColour(p.colour);
+            player.setWeapon(new Machinegun(p.pos.x,p.pos.y));
+            p.setAlive(false);
+            break;
+          case PickupType.SHOTGUN:
+            player.setColour(p.colour);
+            player.setWeapon(new Shotgun(p.pos.x,p.pos.y));
+            p.setAlive(false);
+            break;
+          case PickupType.FLAMETHROWER:
+            player.setColour(p.colour);
+            player.setWeapon(new Flamethrower(p.pos.x,p.pos.y));
             p.setAlive(false);
             break;
         }
@@ -69,11 +93,23 @@ class PickupManager  {
         break;
       case PickupType.GUN:
         this.pickups.push(new Pickup_Gun(x,y,50,50,50));
-        console.log(" > Pickup Manager : Added Gun Pickup")
+        break;
+      case PickupType.PISTOL:
+        this.pickups.push(new Pickup_Pistol_Gun(x,y,50,50,50));
+        break;
+        case PickupType.SHOTGUN:
+        this.pickups.push(new Pickup_Shot_Gun(x,y,50,50,50));
+        break;
+      case PickupType.MACHINEGUN:
+        this.pickups.push(new Pickup_Machine_Gun(x,y,50,50,50));
+        break;
+      case PickupType.FLAMETHROWER:
+        this.pickups.push(new Pickup_Flamethrower(x,y,50,50,50));
         break;
       default:
         this.pickups.push(new Pickup(x,y,50,50,50));
         break;
+
     }
 
   }

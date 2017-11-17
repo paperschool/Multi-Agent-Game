@@ -2,7 +2,7 @@
 class Gun extends Actor {
 
   // x and y specify position, f = fire rate, ss = shot count;
-  constructor(x,y,f,sc){
+  constructor(x,y,f,r,rc){
     super(x,y,1,1,0,0);
 
     // hard coded type (escaping javascripts poor typing)
@@ -17,33 +17,54 @@ class Gun extends Actor {
     // ticks/shot
     this.fireRate = f;
 
-    // defines "spread" but is effectively number of bullets fired per shot
-    this.shotCount = sc;
+    // number of ticks before bullet is despawned
+    this.range = r;
 
     // array to store bullets
     this.bullets = [];
 
   }
 
-  update(player){
+  getRicochetCount(){
+    return this.ricochetCount;
+  }
 
-    super.update(player);
+  getFireRate(){
+    return this.fireRate;
+  }
+
+  getRange(){
+    return this.range;
+  }
+
+  setRicochetCount(rc){
+    this.ricochetCount = rc;
+  }
+
+  setFireRate(firerate){
+    this.fireRate = firerate;
+  }
+
+  setRange(range){
+    this.range = range;
+  }
+
+  update(deltaTime){
+
+    super.update(deltaTime);
 
     this.cycling--;
 
     // iterating through bullets
     for(var bullet = this.bullets.length-1 ; bullet > 0 ; bullet--) {
-
-      this.bullets[bullet].update();
-
+      // updating bullet
+      this.bullets[bullet].update(deltaTime);
       // checking if bullet is dead
       if(!this.bullets[bullet].getAlive()){
         // splicing bullet object from bullet array
         this.bullets.splice(bullet,1);
       }
-
     }
-
   }
 
   draw(camera){
@@ -52,7 +73,6 @@ class Gun extends Actor {
 
     // iterating through bullets
     for(var bullet = this.bullets.length-1 ; bullet > 0; bullet--) {
-
       this.bullets[bullet].draw(camera);
 
     }

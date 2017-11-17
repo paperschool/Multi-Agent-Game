@@ -8,6 +8,22 @@ class Colour {
     this.a = a;
   }
 
+  getR(){
+    return this.r;
+  }
+
+  getG(){
+    return this.g;
+  }
+
+  getB(){
+    return this.b;
+  }
+
+  getA(){
+    return this.a;
+  }
+
   getHex(){
     return "#"+this.r.toString(16).toUpperCase() +
                this.g.toString(16).toUpperCase() +
@@ -32,6 +48,17 @@ class Colour {
     this.b = colour.b || 255;
     this.a = colour.a || 1.0;
     return this;
+  }
+
+}
+
+class PulseColour {
+
+  constructor(primary,secondary,step){
+
+  }
+
+  getColour(){
   }
 
 }

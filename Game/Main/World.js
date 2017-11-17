@@ -83,8 +83,10 @@ class World {
   }
 
   draw(){
+    Draw.fill(100,100,222);
+    Draw.rect(0,0,this.size.x,this.size.y);
 
-    Draw.clear(0,0,this.size.x,this.size.y);
+    // Draw.clear(-200,-200,this.size.x,200);
 
     // Draw.fill(51,51,51);
     // Draw.rect(0,0,this.size.x,this.size.y);

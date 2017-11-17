@@ -19,7 +19,12 @@ class Level {
     // creating player and setting position to center of canvas
     this.player = new Player(playerpos.x*this.gridSize,playerpos.y*this.gridSize);
 
-    this.enemy = new Agent(500,500);
+    this.enemy = [];
+
+    for(var i = 0 ; i < 0 ; i++){
+      this.enemy.push(new Agent(Utility.Random(100,1000),Utility.Random(100,1000)));
+    }
+
 
     // manager for handling pickup related events
     this.pickups = new PickupManager();
@@ -39,7 +44,6 @@ class Level {
     this.pfCoolDown = 1;
     this.pfCoolDownCounter = 0;
 
-
   }
 
 
@@ -55,7 +59,11 @@ class Level {
     // update player
     this.player.update(deltaTime);
 
-    this.enemy.update(deltaTime);
+    for(var i = 0 ; i < this.enemy.length ; i++){
+      this.enemy[i].update(deltaTime);
+    }
+
+
 
     this.pickups.update(deltaTime,this.player);
 
@@ -82,14 +90,17 @@ class Level {
     // Draw.rect(-camera.x,-camera.y,this.worldSize.x,this.worldSize.y);
 
     // drawing the level world bounds
-    Draw.fill(250,240,240,0.8);
+    // Draw.fillCol(new Colour(Utility.Random(100,200),Utility.Random(100,200),Utility.Random(100,200),0.4));
+    Draw.fill(70,70,70,1)
     Draw.rect(-camera.x,-camera.y,this.levelSize.x,this.levelSize.y);
 
     this.grid.draw(camera);
 
     this.player.draw(camera);
 
-    this.enemy.draw(camera);
+    for(var i = 0 ; i < this.enemy.length ; i++){
+      this.enemy[i].draw(camera);
+    }
 
     for(var wall = 0 ; wall < this.walls.length ; wall++){
       this.walls[wall].draw(camera);

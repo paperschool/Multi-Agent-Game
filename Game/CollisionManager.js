@@ -9,20 +9,29 @@ class CollisionManager {
 
   checkAll(){
 
-
-
-
-
-
     for(var wall = 0 ; wall < this.level.walls.length ; wall++){
 
       if(this.level.player.weapon){
+
         for(var bullet = 0 ; bullet < this.level.player.weapon.bullets.length ; bullet++){
 
           this.checkBulletPlayer(this.level.player.weapon.bullets[bullet],this.level.player);
 
+          for(var i = 0 ; i < this.level.enemy.length ; i++){
+            if(this.level.enemy[i].getAlive()){
+              this.checkBulletEnemy(this.level.player.weapon.bullets[bullet],this.level.enemy[i]);
+            }
+          }
+
           this.checkWallBullet(this.level.walls[wall],this.level.player.weapon.bullets[bullet]);
 
+        }
+
+      }
+
+      for(var i = 0 ; i < this.level.enemy.length ; i++){
+        if(this.level.enemy[i].getAlive()){
+          this.checkWallEnemy(this.level.walls[wall],this.level.enemy[i]);
         }
       }
 
@@ -68,8 +77,15 @@ class CollisionManager {
     }
   }
 
-  checkWallEnemy(){
-
+  checkWallEnemy(wall,enemy){
+    let r = wall.collider.test(enemy.collider);
+    if(r){
+      enemy.collider.getPos().add(r.overlapV);
+      enemy.pos.set(enemy.collider.getPos());
+      enemy.isColliding = true;
+    } else {
+      enemy.collider.setPos(enemy.pos);
+    }
   }
 
   checkBulletPlayer(bullet,player){
@@ -81,54 +97,14 @@ class CollisionManager {
     }
   }
 
+  checkBulletEnemy(bullet,enemy){
+    let r = enemy.collider.test(bullet.collider);
+    if(r){
+      bullet.setAlive(false);
+      enemy.setShot(true);
+    }
+  }
+
+
+
 }
-
-
-
-// for(var wall = 0 ; wall < this.level.walls.length ; wall++){
-//
-//   let w = this.level.walls[wall];
-//
-//   let r = w.collider.test(this.level.player.collider);
-//
-//   if(r){
-//
-//     this.level.player.collider.getPos().add(r.overlapV);
-//
-//     this.level.player.pos.set(this.level.player.collider.getPos());
-//
-//   } else {
-//
-//     this.level.player.collider.setPos(this.level.player.pos);
-//
-//   }
-//
-//   if(this.level.player.weapon){
-//
-//     for(var bullet = 0 ; bullet < this.level.player.weapon.bullets.length ; bullet++){
-//
-//       let b = this.level.player.weapon.bullets[bullet];
-//
-//       let r = w.collider.test(b.collider);
-//
-//       if(r){
-//         // b.alive = false;
-//         b.collider.getPos().add(r.overlapV);
-//         b.pos.set(b.collider.getPos());
-//
-//         b.setRicochetCount(b.getRicochetCount()-1);
-//
-//         switch (w.checkSide(b.collider.getPos())) {
-//           case "LEFT":   b.setDirection(180 - b.getDirection()); break;
-//           case "RIGHT":  b.setDirection(180 - b.getDirection()); break;
-//           case "TOP":    b.setDirection(360 - b.getDirection()); break;
-//           case "BOTTOM": b.setDirection(360 - b.getDirection()); break;
-//           default:
-//         };
-//
-//       } else {
-//         b.collider.setPos(b.pos);
-//       }
-//     }
-//   }
-// }
