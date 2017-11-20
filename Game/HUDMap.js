@@ -49,6 +49,8 @@ class DiagnosticHUD extends Entity {
 
     this.lines = {};
 
+    this.lineCount = 0;
+
   }
 
   updateLine(key,value){
@@ -57,6 +59,9 @@ class DiagnosticHUD extends Entity {
 
   draw(){
 
+    Draw.fill(100,100,100);
+    Draw.rect(CW-300,0,CW-50,this.lineCount*35);
+
     var row = 0;
 
     for(var key in this.lines){
@@ -64,6 +69,8 @@ class DiagnosticHUD extends Entity {
       Draw.fillCol(new Colour(51,51,51));
       Draw.text(20,"mono","right",new SAT.Vector(CW-50,row*30),this.lines[key] + " : " + key);
     }
+
+    this.lineCount = row;
 
 
 

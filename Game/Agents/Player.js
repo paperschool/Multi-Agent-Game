@@ -52,8 +52,6 @@ class Player extends Actor {
 
     // redrawing collision polygon from a normalised position
     this.collider = new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction));
-    // this.collider = new CircularCollider(this.pos.x,this.pos.y,40);
-    // this.collider.setPos(this.pos);
 
     // calculating angle of player relative to mouse (Kinda hacky as i know player is centered)
     this.calculateDirection({x:CW/2,y:CH/2},input.mouse);
@@ -62,7 +60,15 @@ class Player extends Actor {
     this.evaluateVelocity(deltaTime);
 
 
-    if(this.weapon) this.weapon.update(deltaTime);
+    if(this.weapon) {
+      this.weapon.setPos(this.getPos());
+      this.weapon.setDirection(this.getDirection());
+      this.weapon.update(deltaTime);
+    }
+
+    this.sprite.setDirection(this.getDirection());
+
+    this.sprite.setPos(this.getPos())
 
   }
 
@@ -75,6 +81,8 @@ class Player extends Actor {
     Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
 
     Draw.line(this.pos.x-camera.x,this.pos.y-camera.y,input.mouse.x,input.mouse.y);
+
+    this.sprite.draw(camera);
 
     if(this.weapon) this.weapon.draw(camera);
 

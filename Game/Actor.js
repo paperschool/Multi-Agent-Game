@@ -31,6 +31,17 @@ class Actor extends Rectangle {
     // weapon actor is holding
     this.weapon = null;
 
+    this.initialLife = 100;
+
+    // life variable
+    this.life = 100;
+
+    this.sprite = new Sprite("Game/Assets/Sprites/topDown.gif",250,213,this.pos.x,this.pos.y,1);
+
+  }
+
+  getLife(){
+    return this.life;
   }
 
   getShot(){
@@ -71,6 +82,10 @@ class Actor extends Rectangle {
 
   getLifespan(){
     return this.lifespan;
+  }
+
+  setLife(life){
+    this.life = life;
   }
 
   setAlive(alive){
@@ -115,6 +130,14 @@ class Actor extends Rectangle {
 
   flipDirection(){
       this.direction += 180;
+  }
+
+  applyDamage(bullet){
+
+    // function that applies damage to the player
+    diagnostic.updateLine("-Bullet Dmg",Math.floor(20 * ((1.0 / bullet.getInitialLifeSpan()) * bullet.getLifespan())));
+    this.life -= 20 * ((1.0 / bullet.getInitialLifeSpan()) * bullet.getLifespan());
+
   }
 
   applyAcc(newAcc){

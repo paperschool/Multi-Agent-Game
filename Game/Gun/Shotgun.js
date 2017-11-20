@@ -4,24 +4,22 @@ class Shotgun extends Gun {
     super(x,y,0,0);
     this.setFireRate(30);
     this.setRange(100);
-    this.setRicochetCount(2)
+    this.setRicochetCount(1)
   }
 
   update(deltaTime){
 
     super.update(deltaTime);
 
-    this.setDirection(this.getDirection()+Utility.Random(-5,5));
-
   }
 
   fire(player){
     if(this.cycling <= 0) {
-      this.bullets.push(new Shotgun_Bullet(player.pos.x+player.vel.x,player.pos.y+player.vel.y,15,player.direction+2,this.getRange(),this.getRicochetCount()));
-      this.bullets.push(new Shotgun_Bullet(player.pos.x+player.vel.x,player.pos.y+player.vel.y,15,player.direction-2,this.getRange(),this.getRicochetCount()));
-      this.bullets.push(new Shotgun_Bullet(player.pos.x+player.vel.x,player.pos.y+player.vel.y,15,player.direction+4,this.getRange(),this.getRicochetCount()));
-      this.bullets.push(new Shotgun_Bullet(player.pos.x+player.vel.x,player.pos.y+player.vel.y,15,player.direction+4,this.getRange(),this.getRicochetCount()));
-      this.bullets.push(new Shotgun_Bullet(player.pos.x+player.vel.x,player.pos.y+player.vel.y,15,player.direction+6,this.getRange(),this.getRicochetCount()));
+      this.bullets.push(new Shotgun_Bullet(this.pos.x,this.pos.y,20,this.direction+2,this.getRange(),this.getRicochetCount(),player.acc));
+      this.bullets.push(new Shotgun_Bullet(this.pos.x,this.pos.y,20,this.direction-2,this.getRange(),this.getRicochetCount(),player.acc));
+      this.bullets.push(new Shotgun_Bullet(this.pos.x,this.pos.y,15,this.direction+4,this.getRange(),this.getRicochetCount(),player.acc));
+      this.bullets.push(new Shotgun_Bullet(this.pos.x,this.pos.y,20,this.direction+4,this.getRange(),this.getRicochetCount(),player.acc));
+      this.bullets.push(new Shotgun_Bullet(this.pos.x,this.pos.y,15,this.direction+6,this.getRange(),this.getRicochetCount(),player.acc));
       this.cycling = this.fireRate;
     }
   }
@@ -29,9 +27,14 @@ class Shotgun extends Gun {
 
 class Shotgun_Bullet extends Bullet {
 
-  constructor(x,y,s,d,l,rc){
+  constructor(x,y,s,d,l,rc,acc){
+
     super(x,y,s,d,l,rc);
-    this.setBulletAccuracy(10);
+
+    this.setBulletAccuracy(4);
+
+    this.colour.setColour(255,0,0,1);
+
   }
 
   update(deltaTime){

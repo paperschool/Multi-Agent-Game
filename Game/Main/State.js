@@ -12,7 +12,7 @@ class StartState {
 
   }
 
-  tick(deltaTime){
+  tick(deltaTime,shouldDraw){
 
     if(input.isDown("SPACE")) this.game.setState(1);
 
@@ -49,10 +49,14 @@ class PlayState {
 
   }
 
-  tick(deltaTime){
+  tick(deltaTime,shouldDraw){
+
     // updating and updating world
     this.world.update(deltaTime);
-    this.world.draw();
+
+    if(shouldDraw)
+      this.world.draw();
+
   }
 
 }

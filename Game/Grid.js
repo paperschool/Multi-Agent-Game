@@ -3,10 +3,7 @@ class Grid {
 
   constructor(x,y,gs){
 
-    this.levelSize = new SAT.Vector(x,y);
-
-    this.drawGrid = true;
-    this.drawPath = true;
+    this.levelSize = new SAT.Vector(x/gs,y/gs);
 
     this.gridSize = gs;
 
@@ -24,11 +21,17 @@ class Grid {
 
     this.graph = new Graph(this.pathMesh,{ diagonal: true });
 
-    // resetting path
-    this.pathMesh = [];
-
     this.result = [];
 
+  }
+
+  rebuildMesh(){
+    this.graph = new Graph(this.pathMesh,{ diagonal: true });
+  }
+
+  // this method will parse a non-grid normalised vector to a grid-normalised vector by rounding to a grid unit then dividing to that grid unit
+  getGridVector(pos){
+    return new SAT.Vector(Utility.roundTo(pos.x,this.gridSize)/this.gridSize,Utility.roundTo(pos.y,this.gridSize)/this.gridSize);
   }
 
   checkGraphBound(bound){
@@ -41,20 +44,28 @@ class Grid {
   }
 
   addObstacle(position){
-    if(this.checkGraphBound(position)) this.graph.grid[position.y][position.x].closed = true;
-
+    if(this.checkGraphBound(position)){
+      this.graph.grid[position.y][position.x].closed = true;
+      this.pathMesh[position.y][position.x] = 1;
+     }
   }
 
   search(start,end){
+
+    // normalising to grid shape
+    start = this.getGridVector(start);
+
+    end   = this.getGridVector(end);
 
     if(!this.checkGraphBound(start)) return;
 
     if(!this.checkGraphBound(end)) return;
 
-
     this.start  = this.graph.grid[start.x][start.y];
     this.end    = this.graph.grid[end.x][end.y];
     this.result = astar.search(this.graph, this.start, this.end, { heuristic: astar.heuristics.diagonal });
+
+    return this.result;
 
   }
 
@@ -64,11 +75,6 @@ class Grid {
 
   draw(camera){
 
-    // checking input for render options
-    if(input.isDown("G")) this.drawGrid ^= true;
-    if(input.isDown("H")) this.drawPath ^= true;
-
-    if(this.drawGrid) {
       for(var y = 0 ; y < this.graph.grid.length ; y++){
         for(var x = 0 ; x < this.graph.grid[y].length ; x++){
 
@@ -89,17 +95,8 @@ class Grid {
           }
           Draw.rectOutline(offsetPos.x,offsetPos.y,this.gridSize,this.gridSize);
         }
-      }
+
     }
-
-    if(this.drawPath){
-      for(var node = 0 ; node < this.result.length ; node++){
-        Draw.fill(51,51,51);
-        Draw.rect(-camera.x + (this.result[node].x*this.gridSize),-camera.y + (this.result[node].y*this.gridSize),this.gridSize,this.gridSize)
-      }
-    }
-
-
   }
 
 }

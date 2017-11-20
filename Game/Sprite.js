@@ -30,7 +30,15 @@ class Sprite {
 
   setFps(fps){  this.fps = fps; }
 
-  setPos(x,y) { this.pos.x = x; this.pos.y = y}
+  setPos(pos)
+  {
+    this.pos.x = pos.x;
+    this.pos.y = pos.y;
+  }
+
+  setDirection(direction){
+    this.direction = direction;
+  }
 
   load(){
     this.img = new Image();
@@ -52,7 +60,7 @@ class Sprite {
     }).bind(this);
   }
 
-  draw(){
+  draw(camera){
 
     var r,c;
 
@@ -70,11 +78,24 @@ class Sprite {
 
       Draw.save();
 
-      Draw.translate(mousePos.x,mousePos.x);
+      Draw.translate(
+        (CW/2),
+        (CH/2)
+      );
 
-      // Draw.rotate(Utility.Radians((360/this.frames) * this.frame));
+      Draw.rotate(this.direction);
 
-      Draw.imageCrop(this.img,c*this.width,r*this.height,this.width,this.height,this.pos.x-this.width/2,this.pos.y-this.height/2,this.width,this.height);
+      Draw.imageCrop(
+        this.img,
+        c*this.width,
+        r*this.height,
+        this.width,
+        this.height,
+        (-this.width*0.5/2),
+        (-this.height*0.5/2),
+        this.width*0.5,
+        this.height*0.5
+      );
 
       Draw.restore();
 

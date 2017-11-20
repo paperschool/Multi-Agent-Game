@@ -9,6 +9,8 @@ class CollisionManager {
 
   checkAll(){
 
+    let agents = this.level.agents.getAgents();
+
     for(var wall = 0 ; wall < this.level.walls.length ; wall++){
 
       if(this.level.player.weapon){
@@ -17,9 +19,9 @@ class CollisionManager {
 
           this.checkBulletPlayer(this.level.player.weapon.bullets[bullet],this.level.player);
 
-          for(var i = 0 ; i < this.level.enemy.length ; i++){
-            if(this.level.enemy[i].getAlive()){
-              this.checkBulletEnemy(this.level.player.weapon.bullets[bullet],this.level.enemy[i]);
+          for(var i = 0 ; i < agents.length ; i++){
+            if(agents[i].getAlive()){
+              this.checkBulletEnemy(this.level.player.weapon.bullets[bullet],agents[i]);
             }
           }
 
@@ -29,9 +31,9 @@ class CollisionManager {
 
       }
 
-      for(var i = 0 ; i < this.level.enemy.length ; i++){
-        if(this.level.enemy[i].getAlive()){
-          this.checkWallEnemy(this.level.walls[wall],this.level.enemy[i]);
+      for(var i = 0 ; i < agents.length ; i++){
+        if(agents[i].getAlive()){
+          this.checkWallEnemy(this.level.walls[wall],agents[i]);
         }
       }
 
@@ -44,11 +46,14 @@ class CollisionManager {
 
   checkWallBullet(wall,bullet){
 
+    if(!wall.collider || !bullet.collider) return;
+
     let r = wall.collider.test(bullet.collider);
 
     if(r){
-      // b.alive = false;
+
       bullet.collider.getPos().add(r.overlapV);
+
       bullet.pos.set(bullet.collider.getPos());
 
       bullet.setRicochetCount(bullet.getRicochetCount()-1);
@@ -61,6 +66,8 @@ class CollisionManager {
         default:
       };
 
+      this.level.ParticleSystem.addParticle(bullet.pos.x,bullet.pos.y,bullet.getDirection(),ParticleType.GENERIC);
+
     } else {
       bullet.collider.setPos(bullet.pos);
     }
@@ -68,6 +75,9 @@ class CollisionManager {
   }
 
   checkWallPlayer(wall,player){
+
+    if(!wall.collider || !player.collider) return;
+
     let r = wall.collider.test(player.collider);
     if(r){
       player.collider.getPos().add(r.overlapV);
@@ -78,6 +88,9 @@ class CollisionManager {
   }
 
   checkWallEnemy(wall,enemy){
+
+    if(!wall.collider || !enemy.collider) return;
+
     let r = wall.collider.test(enemy.collider);
     if(r){
       enemy.collider.getPos().add(r.overlapV);
@@ -89,6 +102,9 @@ class CollisionManager {
   }
 
   checkBulletPlayer(bullet,player){
+
+    if(!bullet.collider || !player.collider) return;
+
     let r = player.collider.test(bullet.collider);
     if(r){
       // console.log("Bullet hit player")
@@ -98,10 +114,16 @@ class CollisionManager {
   }
 
   checkBulletEnemy(bullet,enemy){
+
+    if(!bullet.collider || !enemy.collider) return;
+
     let r = enemy.collider.test(bullet.collider);
     if(r){
-      bullet.setAlive(false);
-      enemy.setShot(true);
+
+      enemy.applyDamage(bullet);
+
+      this.level.ParticleSystem.addParticle(bullet.pos.x,bullet.pos.y,bullet.getDirection(),ParticleType.BLOOD);
+      // enemy.setShot(true);
     }
   }
 

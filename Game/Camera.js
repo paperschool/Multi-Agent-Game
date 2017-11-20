@@ -68,6 +68,9 @@ class Camera{
 
       }
     }
+
+    this.cameraShake(1);
+
   }
 
   setFocus(focus,focusOffset){
@@ -80,6 +83,10 @@ class Camera{
 
   getOffset(){
     return this.camera;
+  }
+
+  cameraShake(shakeValue){
+    this.camera.add(new SAT.Vector(Utility.Random(-shakeValue,shakeValue),Utility.Random(-shakeValue,shakeValue)));
   }
 
 }

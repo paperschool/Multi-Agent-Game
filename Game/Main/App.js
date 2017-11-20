@@ -8,12 +8,10 @@ var input = null
 // canvas size and width
 var CW = 0,CH = 0;
 
+// diagnostic output text
 var diagnostic = null
 
-
-
-// function that runs on window load
-window.onload =  (function(){
+document.addEventListener('DOMContentLoaded', (function(){
 
   // settting canvas dimensions based on DOM inner width/height
   CW = window.innerWidth;
@@ -31,8 +29,7 @@ window.onload =  (function(){
   // instantiating game object
   game = new Game();
 
-});
-
+}), false);
 
 class Game {
 
@@ -66,7 +63,7 @@ class Game {
     ];
 
     // Begin game loop with loop object instantiation
-    this.gameLoop = new GameLoop(120.0,Utility.Now(),this.tick.bind(this));
+    this.gameLoop = new GameLoop(120.0,60.0,Utility.Now(),this.tick.bind(this));
 
   }
 
@@ -75,15 +72,20 @@ class Game {
   }
 
   // method that runs everytime game loop returns tick
-  tick(deltaTime){
-    this.states[this.CURRENT_STATE].tick(deltaTime);
+  tick(deltaTime,shouldDraw){
+    this.states[this.CURRENT_STATE].tick(deltaTime,shouldDraw);
   }
 }
 
 class GameLoop {
 
 
-  constructor(fps,lastTime,callBack){
+  constructor(sps,fps,lastTime,callBack){
+
+      console.log(" > GAME LOOP Started. ");
+
+      // this value represents the number of phsical updates per second
+      this.sps = 1000.0 / sps;
 
       // fps as a value over 1 second ( 1000 miliseconds / '30' fps ) = 33.3 ms before next tick
       this.fps = 1000.0 / fps;
@@ -97,14 +99,20 @@ class GameLoop {
       // call back to run on tick fire
       this.callBack = callBack;
 
+      // tick total
+      this.totalTick = 0;
+
+      this.deltaTime = 0;
+
       // beginning tick method
       this.tick();
 
-      this.deltaTime = 0;
   }
 
   // recursive tick call back
   tick(){
+
+    this.totalTick++;
 
     // getting current time
     this.now = Date.now();
@@ -113,7 +121,7 @@ class GameLoop {
     this.deltaTime = (this.now - this.lastTime);
 
     // checking if delta time is greater then fps requirement
-    if(this.deltaTime >= this.fps){
+    if(this.deltaTime >= this.sps){
 
       // setting previous tick to the current tick time
       this.lastTime = this.now;
@@ -122,11 +130,16 @@ class GameLoop {
       if(typeof this.callBack == "function") {
 
         diagnostic.updateLine("------- FPS",Math.floor(1000.0 / this.fps));
-
         diagnostic.updateLine("Current FPS",Math.floor(1000.0 / this.deltaTime));
+        diagnostic.updateLine("------- SPS",Math.floor(1000.0 / this.sps));
+        diagnostic.updateLine("Current SPS",Math.floor(1000.0 / this.deltaTime));
+        diagnostic.updateLine("Total Frame",this.totalTick);
 
         // calling return call back with new delta time
-        this.callBack(this.deltaTime/15);
+
+        this.callBack(this.deltaTime/15,(this.deltaTime >= this.fps ? true : false));
+
+        //
 
       }
 

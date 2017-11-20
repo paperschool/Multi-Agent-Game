@@ -9,7 +9,7 @@ class Machinegun extends Gun {
 
   fire(player){
     if(this.cycling <= 0) {
-      this.bullets.push(new Bullet(player.pos.x+player.vel.x,player.pos.y+player.vel.y,15,player.direction,this.getRange(),this.getRicochetCount()));
+      this.bullets.push(new Bullet(this.pos.x,this.pos.y,15,this.direction,this.getRange(),this.getRicochetCount()));
       this.cycling = this.fireRate;
     }
   }

@@ -73,6 +73,11 @@ class Utility {
     return Math.sqrt(Utility.pow(v2.x-v1.x)+Utility.pow(v2.y-v1.y));
   }
 
+  static roundTo(value,round)
+  {
+    return Math.floor((value+1)/round)*round;
+  }
+
 
 }
 
@@ -285,7 +290,7 @@ class Draw {
 
   static rotate(angle){
     if(Draw.checkGame()){
-      game.ctx.rotate(Utility.Degrees(angle));
+      game.ctx.rotate(Utility.Radians(angle));
     }
   }
 

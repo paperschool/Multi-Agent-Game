@@ -3,13 +3,11 @@ class Bullet extends Actor {
   constructor(x,y,s,d,l,rc){
     super(x,y,0,0,s,0);
 
-    this.colour = new Colour(51,51,51);
+    this.colour = new Colour().random();;
 
-    this.colour.random();
+    this.setSize(new SAT.Vector(5,5));
 
-    this.collider = new CircularCollider(this.pos.x,this.pos.y,5);
-
-    this.initialLifeSpan = l;
+    this.setInitialLifeSpan(l);
 
     this.setLifespan(l);
 
@@ -24,13 +22,14 @@ class Bullet extends Actor {
 
     this.getAcc().scale(this.getSpeed());
 
-
     this.setFriction(new SAT.Vector(0.98,0.98));
 
     this.setAirResistance(1.01);
 
     // 0 implies no random wobble
     this.setBulletAccuracy(0);
+
+    this.collider = new CircularCollider(this.pos.x,this.pos.y,this.size.x);
 
   }
 
@@ -55,6 +54,10 @@ class Bullet extends Actor {
     return this.bulletAccurracy = bulletAccurracy;
   }
 
+  setInitialLifeSpan(lifespan){
+    this.initialLifeSpan = lifespan;
+  }
+
   // a number that multiplies the friction effect on projectiles
   setAirResistance(airResistance){
     this.airResistance = airResistance;
@@ -72,8 +75,6 @@ class Bullet extends Actor {
       Utility.Random(-this.getBulletAccuracy(),this.getBulletAccuracy()),
       Utility.Random(-this.getBulletAccuracy(),this.getBulletAccuracy())
     ));
-
-    // this.setBulletAccuracy(this.getBulletAccuracy()*0.0001);
 
   }
 

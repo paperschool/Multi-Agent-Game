@@ -24,6 +24,22 @@ class Colour {
     return this.a;
   }
 
+  setR(r){
+    this.r = r;
+  }
+
+  setG(g){
+    this.g = g;
+  }
+
+  setB(b){
+    this.b = b;
+  }
+
+  setA(a){
+    this.a = a;
+  }
+
   getHex(){
     return "#"+this.r.toString(16).toUpperCase() +
                this.g.toString(16).toUpperCase() +
@@ -39,6 +55,35 @@ class Colour {
       this.r = Math.floor(Utility.Random(min,max));
       this.g = Math.floor(Utility.Random(min,max));
       this.b = Math.floor(Utility.Random(min,max));
+    return this;
+  }
+
+  randomR(min = 0,max = 255){
+      this.r = Math.floor(Utility.Random(min,max));
+      this.g = 0;
+      this.b = 0;
+    return this;
+  }
+
+  randomG(min = 0,max = 255){
+      this.r = 0;
+      this.g = Math.floor(Utility.Random(min,max));
+      this.b = 0;
+    return this;
+  }
+
+  randomG(min = 0,max = 255){
+      this.r = 0;
+      this.g = 0;
+      this.b = Math.floor(Utility.Random(min,max));
+    return this;
+  }
+
+  randomGrey(min = 0,max = 255){
+      let grey = Math.floor(Utility.Random(min,max))
+      this.r = grey;
+      this.g = grey;
+      this.b = grey;
     return this;
   }
 

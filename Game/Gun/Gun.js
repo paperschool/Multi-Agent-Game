@@ -53,6 +53,8 @@ class Gun extends Actor {
 
     super.update(deltaTime);
 
+    this.getPos().add(new SAT.Vector(Math.cos(Utility.Radians(this.direction)),Math.sin(Utility.Radians(this.direction))).scale(20));
+
     this.cycling--;
 
     // iterating through bullets
@@ -65,6 +67,7 @@ class Gun extends Actor {
         this.bullets.splice(bullet,1);
       }
     }
+
   }
 
   draw(camera){

@@ -57,6 +57,15 @@ class World {
       )
     }
 
+    // add enemy agents
+    for(var agent = 0 ; agent < data.level.enemy.length ; agent++){
+      this.levels[this.levelCount-1].addAgent(
+        data.level.enemy[agent].x,
+        data.level.enemy[agent].y,
+        data.level.enemy[agent].type
+      )
+    }
+
     // add world pickups
     for(var pickup = 0 ; pickup < data.level.pickups.length ; pickup++){
       this.levels[this.levelCount-1].addPickup(
@@ -83,13 +92,9 @@ class World {
   }
 
   draw(){
-    Draw.fill(100,100,222);
+
+    Draw.fill(200,200,200,0.2);
     Draw.rect(0,0,this.size.x,this.size.y);
-
-    // Draw.clear(-200,-200,this.size.x,200);
-
-    // Draw.fill(51,51,51);
-    // Draw.rect(0,0,this.size.x,this.size.y);
 
     if(this.currentLevel >= 0)
       this.levels[this.currentLevel].draw(this.camera.getOffset());

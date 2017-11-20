@@ -2,17 +2,22 @@
 class Agent extends Actor {
 
   constructor(x,y){
+
     super(x,y,0.9,0.9,3.0,6.0);
+
+    this.setLife(10000);
 
     this.setAlive(true);
 
-    this.setSpeed(0.5);
+    this.setSpeed(0.2);
 
     this.setTopSpeed(10.0);
 
     this.setSize(new SAT.Vector(50,50));
 
-    this.colour = new Colour().random();
+    this.path = null;
+
+    this.colour = new Colour(255,100,100);
 
     this.collider = new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction));
 
@@ -20,24 +25,44 @@ class Agent extends Actor {
 
     this.isColliding = false;
 
-    this.setShot(false);
+  }
 
+  getPath(){
+    return this.path;
+  }
+
+  getNext(){
+    return this.path[1];
+  }
+
+  setPath(path){
+    this.path = path;
+  }
+
+  getPathDirection(){
+    if(this.getPath().length > 1) {
+      return this.calculateDirection(this.getPos(),this.getNext());
+    } else {
+      return null;
+    }
   }
 
   update(deltaTime){
+
+    if(this.life <= 0) {  this.alive = false; return; }
+
+
     super.update(deltaTime)
 
-    if(this.getShot()){
-      this.setAlive(false);
-    }
+    // if(this.isColliding){
+    //
+    //   this.setDirection(this.getDirection() + Utility.Random(1,50));
+    //
+    //   this.isColliding = false;
+    //
+    // }
 
-    if(this.isColliding){
-
-      this.setDirection(this.getDirection() + Utility.Random(1,50));
-
-      this.isColliding = false;
-
-    }
+    this.getPathDirection();
 
     this.applyAcc(
         new SAT.Vector(
@@ -51,9 +76,7 @@ class Agent extends Actor {
 
     this.evaluateVelocity(deltaTime);
 
-    // calculating angle of player relative to mouse (Kinda hacky as i know player is centered)
-
-    // this.calculateDirection();
+    this.colour.setA(Utility.Map(this.life,0,this.initialLife,0.0,1.0));
 
 
   }
@@ -62,7 +85,8 @@ class Agent extends Actor {
     // super.draw(camera);
 
     if(this.getAlive()){
-      Draw.fillCol(this.colour)
+
+      Draw.fillCol(this.colour);
       Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
     }
   }
