@@ -1,11 +1,3 @@
-
-var AgentType = {
-  GENERIC:"generic",
-  FOLLOW:"follow",
-  WANDERING:"wander",
-  TRACE:"trace"
-}
-
 class AgentManager {
 
   constructor(level,grid){
@@ -68,14 +60,18 @@ class AgentManager {
 
     let cleanPath = [];
 
-    // create a simpler path object
-    for(var i = 0 ; i < path.length ; i++)
-      cleanPath.push(
-        new SAT.Vector(
-          (path[i].x*this.gridSize) + this.gridSize/2,
-          (path[i].y*this.gridSize) + this.gridSize/2
-        )
-      );
+    if(path){
+      // create a simpler path object
+      for(var i = 0 ; i < path.length ; i++)
+        cleanPath.push(
+          new SAT.Vector(
+            (path[i].x*this.gridSize) + this.gridSize/2,
+            (path[i].y*this.gridSize) + this.gridSize/2
+          )
+        );
+    }
+
+
 
     return cleanPath;
   }

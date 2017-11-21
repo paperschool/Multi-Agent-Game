@@ -1,12 +1,4 @@
 
-var ParticleType = {
-  GENERIC :0,
-  BURN    :1,
-  SMOKE   :2,
-  BLOOD   :3,
-  DEBRIS  :4
-}
-
 class ParticleSystem {
 
   constructor(){

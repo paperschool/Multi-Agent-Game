@@ -12,10 +12,11 @@ class StartState {
 
   }
 
-  tick(deltaTime,shouldDraw){
-
+  update(deltaTime){
     if(input.isDown("SPACE")) this.game.setState(1);
+  }
 
+  draw(){
     Draw.fill(51,51,51,0.05);
     Draw.rect(0,0,CW,CH);
 
@@ -35,7 +36,6 @@ class StartState {
       Draw.fill(240,240,240);
       Draw.text(50,"pixelated","center",new SAT.Vector(Utility.Random(-10,10)+(CW/2),Utility.Random(-10,10)+200),"PRESS SPACE TO START");
     }
-
   }
 
 }
@@ -49,14 +49,13 @@ class PlayState {
 
   }
 
-  tick(deltaTime,shouldDraw){
-
+  update(deltaTime){
     // updating and updating world
     this.world.update(deltaTime);
+  }
 
-    if(shouldDraw)
-      this.world.draw();
-
+  draw(){
+    this.world.draw();
   }
 
 }

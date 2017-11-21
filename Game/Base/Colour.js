@@ -40,11 +40,12 @@ class Colour {
     this.a = a;
   }
 
+  getHexComponent(v){
+    return
+  }
+
   getHex(){
-    return "#"+this.r.toString(16).toUpperCase() +
-               this.g.toString(16).toUpperCase() +
-               this.b.toString(16).toUpperCase() +
-               this.a.toString(16).toUpperCase();
+    return "#" + ((1 << 24) + (Math.floor(this.r) << 16) + (Math.floor(this.g) << 8) + Math.floor(this.b)).toString(16).slice(1);
   }
 
   getRGBA(){

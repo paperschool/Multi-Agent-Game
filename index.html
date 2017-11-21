@@ -22,13 +22,35 @@
 		}
 	</style>
 
+
+
+	<!-- Libries -->
+
+	<script src="Game/Libs/ASTAR.js" type="text/javascript"></script>
+
+	<script src="Game/Libs/SAT.js" type="text/javascript"></script>
+
+	<script src="Game/Libs/Utility.js" type="text/javascript"></script>
+
 	<!-- Base Class Imports -->
 
-	<script src="Game/Entity.js" type="text/javascript"></script>
+	<script src="Game/Base/Entity.js" type="text/javascript"></script>
+
+	<script src="Game/Base/Constants.js" type="text/javascript"></script>
+
+	<script src="Game/Base/Input.js" type="text/javascript"></script>
+
+	<script src="Game/Base/Wall.js" type="text/javascript"></script>
+
+	<!-- GUI Classes -->
+
+	<script src="Game/HUD/HUDMap.js" type="text/javascript"></script>
+
+	<script src="Game/HUD/Diagnostics.js" type="text/javascript"></script>
 
 	<!-- Agent Imports -->
 
-	<script src="Game/Actor.js" type="text/javascript"></script>
+	<script src="Game/Base/Actor.js" type="text/javascript"></script>
 
 	<script src="Game/Agents/AgentManager.js" type="text/javascript"></script>
 
@@ -38,15 +60,13 @@
 
 	<!-- Utility Classes -->
 
-	<script src="Game/Camera.js" type="text/javascript"></script>
+	<script src="Game/Base/Camera.js" type="text/javascript"></script>
 
-	<script src="Game/Colour.js" type="text/javascript"></script>
+	<script src="Game/Base/Colour.js" type="text/javascript"></script>
 
 	<script src="Game/Grid.js" type="text/javascript"></script>
 
-	<script src="Game/Input.js" type="text/javascript"></script>
-
-	<script src="Game/Sprite.js" type="text/javascript"></script>
+	<script src="Game/Base/Sprite.js" type="text/javascript"></script>
 
 	<!-- Particle System -->
 
@@ -68,13 +88,11 @@
 
 	<!-- Collision Classes -->
 
-	<script src="Game/CollisionManager.js" type="text/javascript"></script>
+	<script src="Game/Collisions/CollisionManager.js" type="text/javascript"></script>
 
-	<script src="Game/Collider.js" type="text/javascript"></script>
+	<script src="Game/Collisions/Collider.js" type="text/javascript"></script>
 
-	<!-- GUI Classes -->
 
-	<script src="Game/HUDMap.js" type="text/javascript"></script>
 
 
 	<!-- Level Classes -->
@@ -82,9 +100,6 @@
 	<script src="Game/Level/Level.js" type="text/javascript"></script>
 
 	<script src="Game/Level/LevelManager.js" type="text/javascript"></script>
-
-	<script src="Game/Wall.js" type="text/javascript"></script>
-
 
 	<!-- Main Game Imports -->
 
@@ -102,18 +117,10 @@
 
 	<script src="Game/Pickup/Health.js" type="text/javascript"></script>
 
-	<!-- Libries -->
 
-	<script src="Game/Libs/ASTAR.js" type="text/javascript"></script>
-
-	<script src="Game/Libs/SAT.js" type="text/javascript"></script>
-
-	<script src="Game/Libs/Utility.js" type="text/javascript"></script>
 
 </head>
 <body>
 	<canvas id="game_canvas" width="500" height="500"></canvas>
 </body>
 </html>
-
-<!-- <script src="" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g=" crossorigin="anonymous"></script> -->

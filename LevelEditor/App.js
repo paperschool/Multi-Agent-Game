@@ -8,10 +8,6 @@ var input = null
 // canvas size and width
 var CW = 0,CH = 0;
 
-// diagnostic output text
-var diagnostic = null
-
-var chart = null;
 
 document.addEventListener('DOMContentLoaded', (function(){
 
@@ -19,23 +15,15 @@ document.addEventListener('DOMContentLoaded', (function(){
   CW = window.innerWidth;
   CH = window.innerHeight;
 
-  // setup diagnostic input
-  diagnostic = new DiagnosticHUD(0,0);
-
-  chart = new Chart(50,400,200,0,60);
-
   // Input Object instantiation
   input = new Input();
 
-  // create mouse position vector
-  mousePos = new SAT.Vector(0,0);
-
   // instantiating game object
-  game = new Game();
+  game = new Main();
 
 }), false);
 
-class Game {
+class Main {
 
   constructor(){
 
@@ -49,44 +37,20 @@ class Game {
     this.ctx.canvas.width = CW;
     this.ctx.canvas.height = CH;
 
-    // Various state index
-    this.START_STATE    = 0;
-    this.PLAY_STATE     = 1;
-    this.GAMEOVER_STATE = 2;
-    this.VICTORY_STATE  = 3;
-
-    // variable to store
-    this.CURRENT_STATE = this.PLAY_STATE;
-
-    // state object array
-    this.states = [
-      new StartState(this),
-      new PlayState(this),
-      new GameOverState(this),
-      new VictoryState(this)
-    ];
-
     // Begin game loop with loop object instantiation
-    this.gameLoop = new GameLoop(120.0,60.0,this.update.bind(this),this.draw.bind(this));
+    this.gameLoop = new MainLoop(120.0,60.0,this.update.bind(this),this.draw.bind(this));
 
     // this.gameLoop = MainLoop.setUpdate(this.update.bind(this)).setDraw(this.draw.bind(this)).setEnd(this.end.bind(this)).start();
+    this.world = new World();
 
-
-  }
-
-  setState(state){
-    this.CURRENT_STATE = state;
   }
 
   update(deltaTime){
-    this.states[this.CURRENT_STATE].update(deltaTime/15);
+    this.world.update(deltaTime);
   }
 
   draw(deltaTime){
-    this.states[this.CURRENT_STATE].draw();
-
-    diagnostic.draw();
-    chart.draw();
+    this.world.draw();
   }
 
   end(){
@@ -100,12 +64,10 @@ class Game {
   }
 }
 
-class GameLoop {
+class MainLoop {
 
 
   constructor(sps,fps,updateCallback,drawCallback){
-
-      console.log(" > GAME LOOP Started. ");
 
       // this value represents the number of phsical updates per second
       this.sps = 1000.0 / sps;
@@ -156,28 +118,10 @@ class GameLoop {
 
       this.lastTime = this.now - (this.deltaTime % this.sps);
 
-      // if(this.totalTick % 120 === 0)
-      //   console.log("FRAME: " + this.deltaTime);
-
-      // setting previous tick to the current tick time
-      diagnostic.updateLine("------- SPS",Math.floor(1000.0 / this.sps));
-      diagnostic.updateLine("Current SPS",Math.floor(1000.0 / this.deltaTime));
-      diagnostic.updateLine("Total Frame",this.totalTick);
-
-      // running callback with delta time
-      //   calling return call back with new delta time
-        // if(typeof this.callBack == "function") {}
-
       this.updateCallback(this.deltaTime);
 
       if(this.deltaTime > this.fps){
-
         this.drawCallback();
-
-        chart.addSample(1000.0 / this.deltaTime)
-
-        diagnostic.updateLine("------- FPS",Math.floor(1000.0 / this.fps));
-        diagnostic.updateLine("Current FPS",Math.floor(1000.0 / this.deltaTime));
       }
 
 
@@ -189,5 +133,46 @@ class GameLoop {
     return window.performance.now();
   }
 
+}
+
+class LEV {
+
+  constructor(x = 0,y = 0,z = 0){
+
+    this.x = x;
+    this.y = y;
+    this.z = z;
+
+  }
+
+  set(other){
+    this.x = other.x;
+    this.y = other.y;
+    this.z = other.z;
+  }
+
+  mul(other){
+    this.x *= other.x;
+    this.y *= other.y;
+    this.z *= other.z;
+  }
+
+  div(other){
+    this.x /= other.x;
+    this.y /= other.y;
+    this.z /= other.z;
+  }
+
+  add(other){
+    this.x += other.x;
+    this.y += other.y;
+    this.z += other.z;
+  }
+
+  sub(other){
+    this.x -= other.x;
+    this.y -= other.y;
+    this.z -= other.z;
+  }
 
 }

@@ -1,16 +1,3 @@
-
-var PickupType = {
-
-  GENERIC:"generic",
-  HEALTH:"hp",
-  GUN:"gun",
-  PISTOL:"pistol",
-  SHOTGUN:"shotgun",
-  MACHINEGUN:"machinegun",
-  FLAMETHROWER:"flamethrower"
-
-}
-
 class PickupManager  {
 
   constructor(){

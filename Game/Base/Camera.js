@@ -12,7 +12,7 @@ var AXIS = {
 
 };
 
-class Camera{
+class Camera {
 
   constructor(cameraX, cameraY, viewPortWidth, viewPortHeight, worldWidth, worldHeight){
 
@@ -69,7 +69,7 @@ class Camera{
       }
     }
 
-    this.cameraShake(1);
+    this.cameraShake(0);
 
   }
 

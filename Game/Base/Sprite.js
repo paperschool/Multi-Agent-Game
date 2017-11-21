@@ -41,6 +41,7 @@ class Sprite {
   }
 
   load(){
+
     this.img = new Image();
 
     this.img.src = this.src;
@@ -58,6 +59,7 @@ class Sprite {
       this.frames = this.frameCY*this.frameCX;
 
     }).bind(this);
+    
   }
 
   draw(camera){

@@ -1,12 +1,3 @@
-
-var ColliderType = {
-  GENERIC:"generic",
-  POINT  :"point",
-  CIRCLE :"circle",
-  BOX    :"box",
-  POLYGON:"polygon"
-}
-
 class Collider {
 
   constructor(){
