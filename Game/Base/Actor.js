@@ -38,6 +38,13 @@ class Actor extends Rectangle {
 
     this.sprite = new Sprite("Game/Assets/Sprites/topDown.gif",250,213,this.pos.x,this.pos.y,1);
 
+    // switch debug draw on or off
+    this.debugOn = false;
+
+  }
+
+  getDebugOn(){
+    return this.debugOn;
   }
 
   getLife(){
@@ -82,6 +89,10 @@ class Actor extends Rectangle {
 
   getLifespan(){
     return this.lifespan;
+  }
+
+  setDebugOn(debugOn){
+    this.debugOn = debugOn;
   }
 
   setLife(life){
@@ -179,6 +190,25 @@ class Actor extends Rectangle {
 
   calculateDirection(pointFrom,pointTo){
     this.direction = Utility.Degrees(Utility.angle(pointFrom,pointTo));
+  }
+
+  pointInVision(other){
+
+    // normalised vector from center of cone to other position
+    let ab = Utility.pointsToVector(this.getPos(),other);
+    ab.normalize();
+
+    // get normalised vector of center of cone
+    let a = new SAT.Vector()
+    a.set(this.getPos());
+    a.normalize()
+
+    let dab = Utility.Dot(a,ab);
+
+    let angle = Math.acos(dab);
+
+    console.log(Utility.Degrees(angle),this.direction);
+
   }
 
   update(deltaTime){

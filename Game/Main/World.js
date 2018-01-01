@@ -92,8 +92,8 @@ class World {
   }
 
   draw(){
-
-    Draw.fill(200,200,200,0.2);
+    Draw.stroke(1,'#FFFFFF');
+    Draw.fill(200,200,200,1);
     Draw.rect(0,0,this.size.x,this.size.y);
 
     if(this.currentLevel >= 0)

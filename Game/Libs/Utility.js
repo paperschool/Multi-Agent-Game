@@ -59,6 +59,10 @@ class Utility {
     return Math.atan2((v2.y-v1.y),(v2.x-v1.x));
   }
 
+  static pointsToVector(v1,v2){
+    return new SAT.Vector(Math.abs(v1.x-v2.x),Math.abs(v1.y-v2.y));
+  }
+
   // takes an index and a column count and calculates the column position
   static linColPosArr(index,cc){
     return (index%cc);
@@ -215,6 +219,16 @@ class Draw {
     }
   }
 
+  static circleOutline(x,y,r){
+    if(Draw.checkGame()){
+      game.ctx.beginPath();
+      game.ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+      game.ctx.stroke()
+    }
+  }
+
+
+
   static rectOutline(x,y,w,h){
     if(Draw.checkGame()){
       game.ctx.strokeRect(x,y,w,h);
@@ -229,9 +243,9 @@ class Draw {
 
   static stroke(w = 1,fill = "#000000"){
     if(Draw.checkGame()){
+      game.ctx.stroke();
       game.ctx.strokeWidth = w;
       game.ctx.strokeStyle = fill;
-      game.ctx.stroke();
     }
   }
 

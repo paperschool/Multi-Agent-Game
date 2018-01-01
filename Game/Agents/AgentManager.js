@@ -12,15 +12,23 @@ class AgentManager {
 
     this.drawDebugPath = false;
     this.drawDebugGrid = false;
+    this.drawDebugVision = false;
 
   }
 
-  setDrawDebugGrid(state){
-    this.drawDebugGrid = state;
+  toggleDrawDebugGrid(){
+    this.drawDebugGrid ^= true;;
   }
 
-  setDrawDebugPath(state){
-    this.drawDebugPath = state;
+  toggleDrawDebugPath(){
+    this.drawDebugPath ^= true;;
+  }
+
+  toggleDrawDebugVision(){
+    this.drawDebugVision ^= true;
+    for(var agent = 0 ; agent < this.agents.length ; agent++) {
+      this.agents[agent].setDebugOn(this.drawDebugVision);
+    }
   }
 
   getAgents(){
@@ -44,7 +52,8 @@ class AgentManager {
 
     switch (type) {
       case AgentType.GENERIC  :
-        this.agents.push(new Agent(x,y));
+        // passing reference to level implies agent has access to all level information
+        this.agents.push(new Agent(x,y,this.level));
         break;
       case AgentType.FOLLOW   : break;
       case AgentType.WANDERING: break;
@@ -81,8 +90,9 @@ class AgentManager {
     diagnostic.updateLine("---- Agents",this.agents.length);
 
     // checking input for render options
-    if(input.isDown("G")) this.drawDebugGrid ^= true;
-    if(input.isDown("H")) this.drawDebugPath ^= true;
+    if(input.isDown("G")) this.toggleDrawDebugGrid();
+    if(input.isDown("H")) this.toggleDrawDebugPath();
+    if(input.isDown("J")) this.toggleDrawDebugVision();
 
 
     for(var agent = this.agents.length - 1 ; agent >= 0 ; agent--) {
@@ -123,5 +133,7 @@ class AgentManager {
     }
 
   }
+
+
 
 }

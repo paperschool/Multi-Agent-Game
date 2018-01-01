@@ -233,11 +233,20 @@
    * @param {Vector}  other The vector to multiply with this one.
    * @return {number} The multiplied vector.
    */
-  Vector.prototype['set'] = Vector.prototype.set = function(other) {
-    this['x'] = other.x;
-    this['y'] = other.y;
-    return this;
-  };
+   Vector.prototype['set'] = Vector.prototype.set = function(other) {
+     this['x'] = other.x;
+     this['y'] = other.y;
+     return this;
+   };
+
+   // same as set exepct allowing for individual allocation of x and y
+   Vector.prototype['set2'] = Vector.prototype.set2 = function(x=0,y=0) {
+     this['x'] = x;
+     this['y'] = y;
+     return this;
+   };
+
+
 
   // Get the dot product of this vector and another.
   /**
