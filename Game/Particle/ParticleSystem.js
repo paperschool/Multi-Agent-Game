@@ -108,7 +108,7 @@ class Particle_Blood extends Particle {
 
     this.colour.randomR(150,255);
 
-    this.life = 100;
+    this.life = 20;
 
     this.setPos(new SAT.Vector(x,y));
 

@@ -96,6 +96,13 @@ class Colour {
     return this;
   }
 
+  setRGBA(r,g,b,a){
+    this.r = r || 255;
+    this.g = g || 255;
+    this.b = b || 255;
+    this.a = a || 1.0;
+  }
+
 }
 
 class PulseColour {

@@ -1,4 +1,3 @@
-
 // object that stores game
 var game = null;
 
@@ -56,7 +55,7 @@ class Game {
     this.VICTORY_STATE  = 3;
 
     // variable to store
-    this.CURRENT_STATE = this.PLAY_STATE;
+    this.CURRENT_STATE = this.START_STATE;
 
     // state object array
     this.states = [
@@ -68,8 +67,6 @@ class Game {
 
     // Begin game loop with loop object instantiation
     this.gameLoop = new GameLoop(120.0,60.0,this.update.bind(this),this.draw.bind(this));
-
-    // this.gameLoop = MainLoop.setUpdate(this.update.bind(this)).setDraw(this.draw.bind(this)).setEnd(this.end.bind(this)).start();
 
 
   }
@@ -84,15 +81,11 @@ class Game {
 
   draw(deltaTime){
     this.states[this.CURRENT_STATE].draw();
-
-    diagnostic.draw();
-    chart.draw();
   }
 
   end(){
 
   }
-
 
   // method that runs everytime game loop returns tick
   tick(deltaTime,shouldDraw){

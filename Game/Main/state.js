@@ -13,6 +13,7 @@ class StartState {
   }
 
   update(deltaTime){
+    // change this to be for something else
     if(input.isDown("SPACE")) this.game.setState(1);
   }
 
@@ -42,10 +43,12 @@ class StartState {
 
 class PlayState {
 
-  constructor(){
+  constructor(game,lobby){
+
+    this.game = game;
 
     // defining world object
-    this.world = new World(5000,5000);
+    this.world = new World(5000,5000,lobby);
 
   }
 

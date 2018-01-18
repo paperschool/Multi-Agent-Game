@@ -1,5 +1,3 @@
-
-
 class World {
 
   constructor(w,h){
@@ -13,12 +11,12 @@ class World {
     // level array
     this.levels = [];
 
-    this.levelManager = new LevelManager();
+    // this.levelManager = new LevelManager();
 
     // creating new camera objext
     this.camera = new Camera(0,0,CW,CH,w,h);
 
-    this.levelManager.loadLevel("Game/Assets/Levels/1.json",this.addLevel.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/1.json",this.addLevel.bind(this));
 
     this.currentLevel = -1;
 
@@ -57,6 +55,9 @@ class World {
       )
     }
 
+    // do a final build of the graph object
+    this.levels[this.levelCount-1].agents.grid.rebuildMesh();
+
     // add enemy agents
     for(var agent = 0 ; agent < data.level.enemy.length ; agent++){
       this.levels[this.levelCount-1].addAgent(
@@ -83,8 +84,8 @@ class World {
 
   update(deltaTime){
 
-      if(this.currentLevel >= 0)
-        this.levels[this.currentLevel].update(deltaTime);
+      // if(this.currentLevel >= 0)
+      //   this.levels[this.currentLevel].update(deltaTime);
 
       this.camera.update();
 
@@ -92,12 +93,13 @@ class World {
   }
 
   draw(){
-    Draw.stroke(1,'#FFFFFF');
+
     Draw.fill(200,200,200,1);
+
     Draw.rect(0,0,this.size.x,this.size.y);
 
-    if(this.currentLevel >= 0)
-      this.levels[this.currentLevel].draw(this.camera.getOffset());
+    // if(this.currentLevel >= 0)
+    //   this.levels[this.currentLevel].draw(this.camera.getOffset());
 
   }
 

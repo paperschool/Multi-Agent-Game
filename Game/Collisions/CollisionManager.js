@@ -31,11 +31,11 @@ class CollisionManager {
 
       }
 
-      for(var i = 0 ; i < agents.length ; i++){
-        if(agents[i].getAlive()){
-          this.checkWallEnemy(this.level.walls[wall],agents[i]);
-        }
-      }
+      // for(var i = 0 ; i < agents.length ; i++){
+      //   if(agents[i].getAlive()){
+      //     this.checkWallEnemy(this.level.walls[wall],agents[i]);
+      //   }
+      // }
 
       this.checkWallPlayer(this.level.walls[wall],this.level.player);
 
@@ -122,6 +122,10 @@ class CollisionManager {
 
       enemy.applyDamage(bullet);
 
+      // remove particle on collision
+      bullet.setAlive(false);
+
+      // adding blood particles to world when shot
       this.level.ParticleSystem.addParticle(bullet.pos.x,bullet.pos.y,bullet.getDirection(),ParticleType.BLOOD);
       // enemy.setShot(true);
     }

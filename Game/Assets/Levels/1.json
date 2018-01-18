@@ -9,12 +9,7 @@
       "y":5
     },
     "enemy":[
-      {"x":100,"y":1000,"type":"generic"},
-      {"x":1000,"y":1000,"type":"generic"},
-      {"x":100,"y":400,"type":"generic"},
-      {"x":300,"y":300,"type":"generic"},
-      {"x":400,"y":600,"type":"generic"},
-      {"x":1000,"y":600,"type":"generic"}
+      {"x":100,"y":1000,"type":"generic"}
     ],
     "pickups":
       [
@@ -31,7 +26,7 @@
     [
       {
         "x":0,
-        "y":0,
+        "y":1,
         "w":100,
         "h":2
       },

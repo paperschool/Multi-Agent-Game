@@ -83,8 +83,8 @@ class Chart {
       Draw.line(prevV.x,prevV.y,nextV.x,nextV.y,2,c);
     }
 
-    Draw.line(this.topLeft.x,this.topLeft.y,this.topLeft.x,this.botRight.y,5,new Colour(255,255,255).getHex());
-    Draw.line(this.topLeft.x,this.botRight.y,this.botRight.x,this.botRight.y,5,new Colour(255,255,255).getHex());
+    Draw.line(this.topLeft.x,this.topLeft.y,this.topLeft.x,this.botRight.y,3,new Colour(255,255,255).getHex());
+    Draw.line(this.topLeft.x,this.botRight.y,this.botRight.x,this.botRight.y,3,new Colour(255,255,255).getHex());
 
   }
 

@@ -36,8 +36,12 @@ class Player extends Actor {
   checkMouseInput(){
 
     if(input.mouse.click && input.mouse.button === "LEFT"){
-      if(this.weapon !== null)
+      if(this.weapon !== null){
+        this.setFiring(true);
         this.weapon.fire(this);
+      }
+    } else {
+      this.setFiring(false);
     }
 
   }

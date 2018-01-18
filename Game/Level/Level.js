@@ -28,8 +28,6 @@ class Level {
     // manager for handling pickup related events
     this.pickups = new PickupManager();
 
-    this.enemy = [];
-
     // hud map
     this.hudmap = new HUDMap(this.worldSize,this.levelSize);
 

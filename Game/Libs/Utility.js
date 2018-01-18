@@ -14,10 +14,14 @@ class Utility {
     return (((value - oldmin) * (newmax - newmin)) / (oldmax - oldmin)) + newmin;
   }
 
-
-  // returns a random int between @min and @max
+  // returns a random float between @min and @max
   static Random(min,max){
     return Math.random() * (max - min) + min;
+  }
+
+  // returns a random int between @min and @max
+  static RandomInt(min,max){
+    return Math.floor(Math.random() * (max - min) + min);
   }
 
   // converts @radian to degrees
@@ -80,6 +84,36 @@ class Utility {
   static roundTo(value,round)
   {
     return Math.floor((value+1)/round)*round;
+  }
+
+  static vectorFromAngle(dir){
+    return new SAT.Vector(Math.cos(Utility.Radians(dir)),Math.sin(Utility.Radians(dir)));
+  }
+
+  static isInsideSector(dir,p1,p2,sectorAngle,sectorRadius){
+
+    // direction vector;
+    let direction = Utility.vectorFromAngle(dir);
+    let distance  = new SAT.Vector(p2.x-p1.x,p2.y-p1.y);
+
+    // magnitude
+    let mDirection = Utility.Mag(direction);
+    let mDistance  = Utility.Mag(distance);
+
+    // if second point is too far from origin of sector
+    if(mDistance > sectorRadius) return false;
+
+    // calculate angle between player and enemy vector
+    let angleBetween = Math.acos(
+      Utility.Dot(direction,distance) / (mDistance*mDirection)
+    );
+
+    // if angle is greater half the sector angle it is outside
+    if(Math.abs(angleBetween) > Utility.Radians(sectorAngle/2)) return false;
+
+    // return true as sector is intersected
+    return true;
+
   }
 
 
@@ -201,7 +235,7 @@ class Draw {
     }
   }
 
-  static line(x1,y1,x2,y2,w = 1,fill = "#000000"){
+  static line(x1,y1,x2,y2,w,fill){
     if(Draw.checkGame()){
       game.ctx.beginPath();
       game.ctx.moveTo(x1,y1);
@@ -213,8 +247,19 @@ class Draw {
 
   static circle(x,y,r){
     if(Draw.checkGame()){
+      // Draw.sector(x,y,r,0,360);
       game.ctx.beginPath();
       game.ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+      game.ctx.fill();
+    }
+  }
+
+  static sector(x,y,r,s,f){
+    if(Draw.checkGame()){
+      game.ctx.beginPath();
+      game.ctx.moveTo(x,y);
+      game.ctx.arc(x, y, r, Utility.Radians(s), Utility.Radians(f), false);
+      game.ctx.lineTo(x,y);
       game.ctx.fill();
     }
   }
@@ -243,9 +288,16 @@ class Draw {
 
   static stroke(w = 1,fill = "#000000"){
     if(Draw.checkGame()){
-      game.ctx.stroke();
-      game.ctx.strokeWidth = w;
+      game.ctx.lineWidth = w;
       game.ctx.strokeStyle = fill;
+      game.ctx.stroke();
+    }
+  }
+
+  static resetStroke(){
+    if(Draw.checkGame()){
+      game.ctx.lineWidth = 1;
+      game.ctx.steokStyle = '#000000'
     }
   }
 

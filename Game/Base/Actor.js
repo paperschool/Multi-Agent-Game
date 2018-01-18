@@ -13,6 +13,9 @@ class Actor extends Rectangle {
     // direction value in degrees
     this.direction = 0;
 
+    this.leftShoulder = new SAT.Vector(0,0);
+    this.rightShoulder = new SAT.Vector(0,0);
+
     // calulcated Acceleration based off of input / friction
     this.acc = new SAT.Vector(0,0);
 
@@ -28,19 +31,39 @@ class Actor extends Rectangle {
     // speed cap
     this.topSpeed = ts;
 
+    // turning speed
+    this.turningSpeed = 0.01;
+
     // weapon actor is holding
     this.weapon = null;
 
+    // boolean for weapon firing state
+    this.firing = false;
+
+    // life at beginning
     this.initialLife = 100;
 
     // life variable
-    this.life = 100;
+    this.life = this.initialLife;
 
     this.sprite = new Sprite("Game/Assets/Sprites/topDown.gif",250,213,this.pos.x,this.pos.y,1);
 
     // switch debug draw on or off
     this.debugOn = false;
 
+
+  }
+
+  getLeftShoulder(){
+    return this.leftShoulder;
+  }
+
+  getRightShoulder(){
+    return this.rightShoulder;
+  }
+
+  getFiring(){
+    return this.firing;
   }
 
   getDebugOn(){
@@ -89,6 +112,10 @@ class Actor extends Rectangle {
 
   getLifespan(){
     return this.lifespan;
+  }
+
+  setFiring(firing){
+    this.firing = firing;
   }
 
   setDebugOn(debugOn){
@@ -182,6 +209,19 @@ class Actor extends Rectangle {
     // adding velocity to position vector
     this.pos.add(this.vel);
 
+    // updating should positions
+    this.leftShoulder.set2(
+      50*Math.cos(Utility.Radians(this.getDirection()-90))+this.getPos().x,
+      50*Math.sin(Utility.Radians(this.getDirection()-90))+this.getPos().y
+    );
+
+    this.rightShoulder.set2(
+      50*Math.cos(Utility.Radians(this.getDirection()+90))+this.getPos().x,
+      50*Math.sin(Utility.Radians(this.getDirection()+90))+this.getPos().y
+    );
+
+
+
   }
 
   applyFriction(){
@@ -192,22 +232,16 @@ class Actor extends Rectangle {
     this.direction = Utility.Degrees(Utility.angle(pointFrom,pointTo));
   }
 
-  pointInVision(other){
+  // turning with considerations on turning speed
+  turnTo(pointFrom,pointTo){
 
-    // normalised vector from center of cone to other position
-    let ab = Utility.pointsToVector(this.getPos(),other);
-    ab.normalize();
+    let dir =  Utility.Degrees(Utility.angle(pointFrom,pointTo));
 
-    // get normalised vector of center of cone
-    let a = new SAT.Vector()
-    a.set(this.getPos());
-    a.normalize()
+    if(Math.abs(dir-this.direction) <= 1) return;
 
-    let dab = Utility.Dot(a,ab);
+    let s = Math.sign(dir - this.direction);
 
-    let angle = Math.acos(dab);
-
-    console.log(Utility.Degrees(angle),this.direction);
+    this.direction += s*this.turnSpeed;
 
   }
 

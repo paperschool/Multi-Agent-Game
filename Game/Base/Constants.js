@@ -13,6 +13,13 @@ var AgentType = {
   TRACE:"trace"
 }
 
+var AgentPathFindingFocus = {
+  PLAYER:"player",
+  NEARPLAYER:"nplayer",
+  WANDER:"wander",
+  PATROL:"patrol"
+}
+
 var ColliderType = {
   GENERIC:"generic",
   POINT  :"point",
