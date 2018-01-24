@@ -10,6 +10,8 @@ class AgentManager {
 
     this.agents = [];
 
+    this.agentsWeapons = [];
+
     this.drawDebugPath        = false;
     this.drawDebugVision      = false;
     this.drawDebugLineOfSight = false;
@@ -36,7 +38,7 @@ class AgentManager {
     return this.agents;
   }
 
-  addAgent(x,y,type){
+  addAgent(x,y,type,weapon,patrol){
 
     console.log(" > AGENT MANAGER : Agent: " + type + " added!");
 
@@ -47,11 +49,23 @@ class AgentManager {
         break;
       case AgentType.FOLLOW   : break;
       case AgentType.WANDERING: break;
-      case AgentType.TRACE    : break;
+      case AgentType.TRACE    :
+
+        this.agents.push(new Agent_Patrol(x,y,this.level,patrol));
+        break;
       default:
     }
-  }
 
+    let a = this.agents[this.agents.length-1];
+
+    switch(weapon){
+      case PickupType.PISTOL       : a.setWeapon(new Pistol(a.getPos().x,a.getPos().y)); break;
+      case PickupType.MACHINEGUN   : a.setWeapon(new Machinegun(a.getPos().x,a.getPos().y)); break;
+      case PickupType.SHOTGUN      : a.setWeapon(new Shotgun(a.getPos().x,a.getPos().y)); break;
+      case PickupType.FLAMETHROWER : a.setWeapon(new Flamethrower(a.getPos().x,a.getPos().y)); break;
+    }
+
+  }
 
   update(deltaTime){
 

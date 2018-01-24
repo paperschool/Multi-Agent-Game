@@ -55,7 +55,12 @@ class Agent_Behaviour {
 
     BehaviourTree.register('attackPlayer', new BehaviourTree.Sequence({
       title:'attackPlayer',
-      nodes:['withinShootingRange','ShootPlayer']
+      nodes:[
+        'isAgentAlert',
+        'playerWithinLineOfSight',
+        'withinShootingRange',
+        'ShootPlayer'
+      ]
     }));
 
     // Navigation of alerted agent
@@ -228,10 +233,10 @@ class Agent_Behaviour {
 
 
     // this task will update the agents understanding of the player position
-    BehaviourTree.register('setLastKnownPosition', new BehaviourTree.Task({
-      title:'setLastKnownPosition',
+    BehaviourTree.register('setLastKnownPlayerPosition', new BehaviourTree.Task({
+      title:'setLastKnownPlayerPosition',
       run:function(agent){
-        agent.setLastKnownPosition();
+        agent.setLastKnownPlayerPosition();
         this.success();
       }
     }));
@@ -295,7 +300,6 @@ class Agent_Behaviour {
       title:'agentRelaxed',
       nodes:[
         'agentWander'
-        // PUT PATROL BEHAVIOUR HERE
       ]
     }));
 
@@ -338,7 +342,7 @@ class Agent_Behaviour {
     // navigation sequence when player isnt directly visible but is within
     // alert radius and is making noise
     BehaviourTree.register('playerAudible', new BehaviourTree.Sequence({
-      title:'playerAlertable',
+      title:'playerAudible',
       nodes:[
         'playerWithinAlertRange',
         'playerIsShooting',
@@ -346,13 +350,17 @@ class Agent_Behaviour {
       ]
     }));
 
+    // VISUAL DETECTION OF PLAYER
+
     // this sequence will attempt to locate a audible player and then determine if
     // it is within the LOS (Line of sight) of the agent
     BehaviourTree.register('pursueAudiblePlayer', new BehaviourTree.Sequence({
-      title:'pursueVisiblePlayer',
+      title:'pursueAudiblePlayer',
       nodes:[
         'playerAudible',
-        'playerInLOS'
+        'playerInLOS',
+        'setAgentPathfindingFocus-PLAYER',
+        'pursueFocusPosition'
       ]
     }));
 
@@ -387,7 +395,7 @@ class Agent_Behaviour {
       nodes:[
         'playerWithinViewCone',
         'playerWithinLineOfSight',
-        'setLastKnownPosition',
+        'setLastKnownPlayerPosition',
         'setAgentPathfindingFocus-PLAYER',
         'alertAgent'
       ]
@@ -399,6 +407,15 @@ class Agent_Behaviour {
       run:function(agent){
         agent.lookAtPlayer() ? this.success() : this.fail();
       }
+    }));
+
+
+    BehaviourTree.register('playerProximity', new BehaviourTree.Priority({
+      title: 'playerProximity',
+      nodes: [
+        'withinShootingRange',
+        'moveToPlayer'
+      ]
     }));
 
     // this task will move the agent towards the players position
@@ -416,7 +433,7 @@ class Agent_Behaviour {
       title:'pursuePlayer',
       nodes:[
         'lookAtPlayer',
-        'moveToPlayer'
+        'playerProximity'
       ]
     }));
 
@@ -475,5 +492,48 @@ class Agent_Behaviour {
     this.behaviour.step();
   }
 
+}
+
+class Patrol_Agent_Behaviour extends Agent_Behaviour {
+
+  constructor(agentObject){
+    super(agentObject);
+
+    // this selector will attempt to locate the player and perform logical operations
+    // once located
+    BehaviourTree.register('choosePatrolPoint', new BehaviourTree.Task({
+      title: 'choosePatrolPoint',
+      run:function(agent){
+
+        if(agent.agentArrivedFocusPosition()) {
+          agent.setAgentPathfindingFocus(AgentPathFindingFocus.PATROL);
+          agent.choosePatrolPoint();
+          this.success();
+        } else {
+          // simply to jump to next behaviour option (move to focus position)
+          this.fail()
+        }
+
+      }
+    }));
+
+    // this selector will attempt to locate the player and perform logical operations
+    // once located
+    BehaviourTree.register('agentPatrol', new BehaviourTree.Priority({
+      title: 'agentPatrol',
+      nodes: [
+        'choosePatrolPoint',
+        'pursueFocusPosition'
+      ]
+    }));
+
+
+    BehaviourTree.register('agentRelaxed',new BehaviourTree.Sequence({
+      title:'agentRelaxed',
+      // nodes:['Full','Hungry','Critical']
+      nodes:['agentPatrol']
+    }));
+
+  }
 
 }

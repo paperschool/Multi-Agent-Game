@@ -102,8 +102,8 @@ class Level {
 
   }
 
-  addAgent(x,y,type){
-    this.agents.addAgent(x,y,type);
+  addAgent(x,y,type,weapon,patrol){
+    this.agents.addAgent(x,y,type,weapon,patrol);
   }
 
   addPickup(x,y,type){

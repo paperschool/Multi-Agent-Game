@@ -17,7 +17,7 @@ class CollisionManager {
 
         for(var bullet = 0 ; bullet < this.level.player.weapon.bullets.length ; bullet++){
 
-          this.checkBulletPlayer(this.level.player.weapon.bullets[bullet],this.level.player);
+          // this.checkBulletPlayer(this.level.player.weapon.bullets[bullet],this.level.player);
 
           for(var i = 0 ; i < agents.length ; i++){
             if(agents[i].getAlive()){
@@ -29,7 +29,20 @@ class CollisionManager {
 
         }
 
+        // iterate through agents
+        for(var agent = 0 ; agent < agents.length ; agent++)
+          if(agents[agent].getWeapon() !== null)
+            for(var bullet = 0 ; bullet < agents[agent].weapon.bullets.length ; bullet++){
+              this.checkBulletPlayer(agents[agent].weapon.bullets[bullet],this.level.player);
+              this.checkWallBullet(this.level.walls[wall],agents[agent].weapon.bullets[bullet]);
+            }
+
       }
+
+
+
+
+
 
       // for(var i = 0 ; i < agents.length ; i++){
       //   if(agents[i].getAlive()){
@@ -109,7 +122,17 @@ class CollisionManager {
     if(r){
       // console.log("Bullet hit player")
       // bullet.setAlive(false);
-      player.setShot(true);
+      // player.setShot(true);
+
+      player.applyDamage(bullet);
+
+      // remove particle on collision
+      bullet.setAlive(false);
+
+      // adding blood particles to world when shot
+      this.level.ParticleSystem.addParticle(bullet.pos.x,bullet.pos.y,bullet.getDirection(),ParticleType.BLOOD);
+      // enemy.setShot(true);
+
     }
   }
 

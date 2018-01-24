@@ -13,6 +13,9 @@ class Actor extends Rectangle {
     // direction value in degrees
     this.direction = 0;
 
+    this.collider = null;
+    this.isColliding = false;
+
     this.leftShoulder = new SAT.Vector(0,0);
     this.rightShoulder = new SAT.Vector(0,0);
 
@@ -50,6 +53,7 @@ class Actor extends Rectangle {
 
     // switch debug draw on or off
     this.debugOn = true;
+
 
 
   }
@@ -114,6 +118,18 @@ class Actor extends Rectangle {
     return this.lifespan;
   }
 
+  getCollider(){
+    return this.collider;
+  }
+
+  getCollisionState(){
+    return this.isColliding;
+  }
+
+  getTurnSpeed(){
+    return this.turnSpeed;
+  }
+
   setFiring(firing){
     this.firing = firing;
   }
@@ -164,6 +180,18 @@ class Actor extends Rectangle {
 
   setShot(shot){
     this.shot = shot;
+  }
+
+  setCollider(collider){
+    this.collider = collider;
+  }
+
+  setCollisionState(state){
+    this.isColliding = false;
+  }
+
+  setTurnSpeed(turnspeed){
+    this.turnSpeed = turnspeed;
   }
 
   flipDirection(){

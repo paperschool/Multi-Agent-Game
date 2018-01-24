@@ -222,22 +222,100 @@ class Grid {
 
     let path = this.searchMap(from,to);
 
-    let cleanPath = [];
+    return this.simplifyPath(path);
+  }
 
-    if(path){
-      // create a simpler path object
-      for(var i = 0 ; i < path.length ; i++)
-        cleanPath.push(
-          new SAT.Vector(
-            // setting results to invert (search x/y => global y/x grid) and setting
-            // the focus to the center of the grid square
-            (path[i].x*this.gridSize) + this.gridSize/2,
-            (path[i].y*this.gridSize) + this.gridSize/2
-          )
-        );
+
+  // this algorithm will take a path and convert it to a series of pivotal positions
+  // removing all intermediate details from the path
+  simplifyPath(path){
+
+    let primary = null;
+    let secondary = null;
+
+    let dir = null;
+
+    let pdir = null;
+
+    let output = []
+
+    if(typeof path === 'undefined' || path.length === 0){
+      return [];
     }
 
-    return cleanPath;
+    if(path.length === 1){
+      output.push(this.centerCellMap(path[0]));
+      return output;
+    }
+
+    for(var point = 0 ; point < path.length-1 ; point++){
+
+      primary = path[point];
+      secondary = path[point+1];
+
+      if(point === 0){
+
+        dir = this.cartesianDirection(primary,secondary);
+
+        output.push(this.centerCellMap(primary));
+
+      } else {
+
+        pdir = dir;
+        dir = this.cartesianDirection(primary,secondary);
+
+        if(pdir !== dir){
+          output.push(this.centerCellMap(primary));
+        }
+      }
+    }
+
+    output.push(this.centerCellMap(path[path.length-1]));
+
+    // console.log(path.length + " => " + output.length)
+
+    return output;
+
+  }
+
+  // taking grid vector and converting to map position
+  // centering to middle of cell rather then top corner
+  centerCellMap(v1){
+    return new SAT.Vector((v1.x*this.gridSize) + this.gridSize/2,(v1.y*this.gridSize) + this.gridSize/2)
+  }
+
+  // determining cartesian direction from two points (UP, DOWN, LEFT, RIGHT, DIAGONALS)
+  cartesianDirection(v1,v2){
+
+    let dx = Math.sign(v1.x - v2.x);
+    let dy = Math.sign(v1.y - v2.y);
+
+    let dirx = null;
+    let diry = null;
+
+    if((dx === 0 && dy === 0) || (dx === -0 && dy === -0)) return "NONE"
+
+    // right move
+    if(dx === -1){
+      dirx = "RIGHT"
+    // left move
+    } else if(dx === 1){
+      dirx = "LEFT"
+    }
+
+    // down move
+    if(dy === -1){
+      diry = "DOWN"
+    } else {
+      diry = "UP"
+    }
+
+    if(dirx === null && diry !== null ) return diry;
+
+    if(dirx !== null && diry === null ) return dirx;
+
+    return dirx+"_"+diry;
+
   }
 
   // Purpose of his function is to determine if the line between an
@@ -394,19 +472,20 @@ class Grid {
         let offsetPos = new SAT.Vector(-camera.x + (x*this.gridSize),-camera.y + (y*this.gridSize));
 
         // ignore drawing any squares that fall off screen
-        if((offsetPos.x < 0 || offsetPos.x > CW-this.gridSize) || (offsetPos.y < 0 || offsetPos.y > CH-this.gridSize) || this.pathMesh[y][x] === this.EMPTY){
+        if((offsetPos.x < 0 || offsetPos.x > CW-this.gridSize) || (offsetPos.y < 0 || offsetPos.y > CH-this.gridSize /* || this.pathMesh[y][x] === this.EMPTY */)){
+
           continue;
+
         }
 
-        if(this.pathMesh[y][x] === 0)
 
-        Draw.fillCol(new Colour(200,Utility.Map(this.pathMesh[y][x],0,200,0,255),0,0.5));
+        // Draw.fillCol(new Colour(200,Utility.Map(this.pathMesh[y][x],0,this.EMPTY,0,255),Utility.Map(this.pathMesh[y][x],0,this.EMPTY,0,255),0.5));
+        //
+        // Draw.rect(offsetPos.x,offsetPos.y,this.gridSize,this.gridSize);
+        // Draw.fillCol(new Colour(0))
 
-        Draw.rect(offsetPos.x,offsetPos.y,this.gridSize,this.gridSize);
-        Draw.fillCol(new Colour(0))
-
-        // Draw.text(9,"mono","right",new SAT.Vector(offsetPos.x+(this.gridSize/2),offsetPos.y+(this.gridSize/2)),x);
-        // Draw.text(9,"mono","right",new SAT.Vector(offsetPos.x+(this.gridSize/2),offsetPos.y+(this.gridSize/2)+9),y);
+        Draw.text(9,"mono","right",new SAT.Vector(offsetPos.x+(this.gridSize/2),offsetPos.y+(this.gridSize/2)),x);
+        Draw.text(9,"mono","right",new SAT.Vector(offsetPos.x+(this.gridSize/2),offsetPos.y+(this.gridSize/2)+9),y);
 
       }
     }

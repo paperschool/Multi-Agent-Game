@@ -49,13 +49,21 @@ class Gun extends Actor {
     this.range = range;
   }
 
+  updateCycle(){
+
+    if(this.cycling >= 0){
+      this.cycling--;
+    }
+
+  }
+
   update(deltaTime){
 
     super.update(deltaTime);
 
     this.getPos().add(new SAT.Vector(Math.cos(Utility.Radians(this.direction)),Math.sin(Utility.Radians(this.direction))).scale(20));
 
-    this.cycling--;
+    this.updateCycle();
 
     // iterating through bullets
     for(var bullet = this.bullets.length-1 ; bullet >= 0 ; bullet--) {

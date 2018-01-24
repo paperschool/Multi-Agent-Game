@@ -57,10 +57,26 @@ class World {
 
     // add enemy agents
     for(var agent = 0 ; agent < data.level.enemy.length ; agent++){
+
+      let patrol = null;
+
+      if('patrol' in data.level.enemy[agent]){
+        let pdata = data.level.enemy[agent].patrol;
+
+        patrol = new Patrol(pdata.loop,pdata.direction);
+
+        for(var point = 0 ; point < pdata.points.length ; point++){
+          patrol.addPoint(pdata.points[point]);
+        }
+
+      }
+
       this.levels[this.levelCount-1].addAgent(
         data.level.enemy[agent].x*this.gridSize,
         data.level.enemy[agent].y*this.gridSize,
-        data.level.enemy[agent].type
+        data.level.enemy[agent].type,
+        data.level.enemy[agent].weapon,
+        patrol
       )
     }
 

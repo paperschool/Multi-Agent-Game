@@ -9,10 +9,58 @@
       "y":70
     },
     "enemy":[
-      {"x":10,"y":10,"type":"generic"},
-      {"x":10,"y":70,"type":"generic"},
-      {"x":50,"y":70,"type":"generic"},
-      {"x":10,"y":20,"type":"generic"}
+      {"x":10,"y":25,"type":"trace","weapon":"flamethrower",
+        "patrol":{
+          "loop":true,
+          "direction":1,
+          "points":[
+            {"x":10,"y":25},
+            {"x":40,"y":25},
+            {"x":40,"y":35},
+            {"x":75,"y":35},
+            {"x":75,"y":45},
+            {"x":10,"y":45}
+          ]
+        }
+      },
+      {"x":8,"y":9,"type":"trace","weapon":"flamethrower",
+        "patrol":{
+          "loop":false,
+          "direction":1,
+          "points":[
+            {"x":8,"y":9},
+            {"x":90,"y":9},
+            {"x":90,"y":50}
+          ]
+        }
+      },
+      {"x":6,"y":56,"type":"trace","weapon":"pistol",
+        "patrol":{
+          "loop":true,
+          "direction":1,
+          "points":[
+            {"x":6,"y":56},
+            {"x":35,"y":56},
+            {"x":21,"y":73},
+            {"x":21,"y":64},
+            {"x":6,"y":64}
+          ]
+        }
+      },
+      {"x":10,"y":10,"type":"trace","weapon":"pistol",
+        "patrol":{
+          "loop":true,
+          "direction":1,
+          "points":[
+            {"x":46,"y":56},
+            {"x":61,"y":63},
+            {"x":75,"y":56},
+            {"x":75,"y":73},
+            {"x":46,"y":73}
+          ]
+        }
+      },
+      {"x":10,"y":10,"type":"generic","weapon":"pistol"}
     ],
     "pickups":
       [
@@ -22,7 +70,7 @@
       ],
     "walls":[
       {
-        "x":0,"y":0,"w":0,"h":0,"info":"Empty Wall For collision fix"
+        "x":0,"y":0,"w":1,"h":1,"info":"Empty Wall For collision fix"
       },
       {
         "x":0,"y":0,"w":100,"h":2

@@ -15,20 +15,23 @@ class Agent extends Actor {
 
     this.setSize(new SAT.Vector(50,50));
 
-    // array storing all path positions to reach player
-    this.path = null;
-
     // agent colour
-    this.colour = new Colour(255,100,100);
+    this.setColour(new Colour(255,100,100))
 
     // agent collision body
-    this.collider = new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction));
+    this.setCollider(new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction)));
 
     // agent position
-    this.direction = 90;
+    this.setDirection(90)
 
     // collision state
-    this.isColliding = false;
+    this.setCollisionState(false);
+
+    // turning speed of ai
+    this.setTurnSpeed(10);
+
+    // array storing all path positions to reach player
+    this.path = null;
 
     // deltatime variable for access reasons
     this.deltaTime = null;
@@ -46,11 +49,16 @@ class Agent extends Actor {
     // a vector representing the agents pathfinding focus
     this.focusPosition = this.chooseRandomFocusPosition();
 
+    this.pathfindingFocus = AgentPathFindingFocus.WANDER;
+
     // non player focused position
-    this.nonPlayerFocusPosition = this.focusPosition;
+    // this.nonPlayerFocusPosition = this.focusPosition;
 
     // player distance
     this.playerDistance = -1;
+
+    // last position of player
+    this.lastKnownPlayerPosition = new SAT.Vector(-1,-1);
 
     // behaviour tree for agent
     this.behaviour = new Agent_Behaviour(this);
@@ -67,16 +75,23 @@ class Agent extends Actor {
     // boolean representing if player is within line of sight
     this.isWithinLineOfSight = false;
 
-    this.lineOfSightData = [];
+    // minimum distance for firing
+    this.firingDistance = 400;
 
-    // turning speed of ai
-    this.turnSpeed = 10;
+    // boolean to determine if player within firing range
+    this.isWithinFireRange = false;
+
+    // player shooting boolean
+    this.isShooting = false;
+
+    // array of line of sight data
+    this.lineOfSightData = [];
 
     // boolean to determine if player is within alert distance
     this.isAlerted = false;
 
     // min distance required to alert player
-    this.alertDistance = 400;
+    this.alertDistance = 800;
 
     // integer representing alert cool down
     this.alertTimeout = 1000;
@@ -84,22 +99,42 @@ class Agent extends Actor {
     // integer represending alert remaining time
     this.alertRemaining = 0;
 
-    // minimum distance for firing
-    this.firingDistance = 200;
+    // alerted buffs
+    this.alertedSpeed = 0.5;
 
-    // boolean to determine if player within firing range
-    this.isFireRange = false;
+    this.alertedSightAngle = 30;
 
-    // last position of player
-    this.playerLastKnownLocation = new SAT.Vector(-1,-1);
+    this.alertedSightDistance = 1000
 
-    /// COMBAT
+    this.alertedFiringDistance = 600
 
-    this.isShooting = false;
+    // relaxed buffs
+
+    this.relaxedSpeed = 0.3;
+
+    this.relaxedSightAngle = 80;
+
+    this.relaxedSightDistance = 800;
+
+    this.relaxedFiringDistance = 400;
 
   }
 
   // AGENT UTILITY FUNCTIONS
+
+  // getters
+
+  getPath(){
+    return this.path;
+  }
+
+  getNext(){
+    return (this.path[1] !== 'undefined' ? this.path[1] : this.getPos())
+  }
+
+  getPathFindingFocus(){
+    return this.pathfindingFocus;
+  }
 
   getFocusPosition(){
     return this.focusPosition;
@@ -113,12 +148,17 @@ class Agent extends Actor {
     return this.sightDistance;
   }
 
-  getPath(){
-    return this.path;
+  getFiringDistance(){
+    return this.firingDistance;
   }
 
-  getNext(){
-    return (this.path[1] !== 'undefined' ? this.path[1] : this.getPos())
+  // recalculating and returning calculated player distance
+  getPlayerDistance(){
+
+    this.setPlayerDistance(Utility.dist(this.pos,this.getPlayerPosition()));
+
+    return this.playerDistance;
+
   }
 
   /// bad encapsulation ///
@@ -127,11 +167,15 @@ class Agent extends Actor {
     return this.player.getPos();
   }
 
-  setPath(path){
+  ////////////////////////////////
 
-    //if(path.length === 0) console.log("path Impossible")
+  getBehaviour(){
+    return this.behaviour;
+  }
 
-    this.path = path;
+  // getter for fetching last known player position
+  getLastKnownPlayerPosition(){
+    return this.lastKnownPlayerPosition;
   }
 
   getPathDirection(){
@@ -143,67 +187,256 @@ class Agent extends Actor {
     }
   }
 
-  // this method will be used to set the alert state back to true;
-  alertAgent(){
-    this.alertRemaining = this.alertTimeout;
-    this.isAlerted = true;
+  getWithinFieldOfView(){
+    return this.isWithinFieldOfView;
   }
 
+  getWithinLineOfSight(){
+    return this.isWithinLineOfSight;
+  }
+
+  getLineofSightData(){
+    return this.lineOfSightData;
+  }
+
+  getWithinFireRange(){
+    return this.isWithinFireRange;
+  }
+
+  getAlerted(){
+    return this.isAlerted;
+  }
+
+  getShooting(){
+    return this.isShooting;
+  }
+
+  getAlertDistance(){
+    return this.alertDistance;
+  }
+
+  getAlertTimeout(){
+    return this.alertTimeout;
+  }
+
+  getAlertRemaining(){
+    return this.alertRemaining;
+  }
+
+  // getters for alerted version of data
+
+  getAlertedSpeed(){
+    return this.alertedSpeed;
+  }
+
+  getAlertedSightAngle(){
+    return this.alertedSightAngle;
+  }
+
+  getAlertedSightDistance(){
+    return this.alertedSightDistance;
+  }
+
+  getAlertedFiringDistance(){
+    return this.alertedFiringDistance;
+  }
+
+  // getters for relaxed version of data
+
+  getRelaxedSpeed(){
+    return this.relaxedSpeed;
+  }
+
+  getRelaxedSightAngle(){
+    return this.relaxedSightAngle;
+  }
+
+  getRelaxedSightDistance(){
+    return this.relaxedSightDistance;
+  }
+
+  getRelaxedFiringDistance(){
+    return this.relaxedFiringDistance;
+  }
+
+  // setters
+
+  setAlertRemaining(remaining){
+    this.alertRemaining = remaining;
+  }
+
+  setPath(path){
+
+    // if(path.length === 0) console.log("path Impossible")
+
+    this.path = path;
+  }
+
+  setFocusPosition(position){
+    this.focusPosition = position;
+  }
+
+  setBehaviour(behaviour){
+    this.behaviour = behaviour;
+  }
+
+  setSightDistance(distance){
+    this.sightDistance = distance;
+  }
+
+  setSightAngle(angle){
+    this.sightAngle = angle;
+  }
+
+  setFiringDistance(distance){
+    this.firingDistance = distance;
+  }
+
+  setPlayerDistance(distance){
+    this.playerDistance = distance;
+  }
+
+  setTurnSpeed(turnspeed){
+    this.turnSpeed = turnspeed
+  }
+
+  setWithinFieldOfView(state){
+    this.isWithinFieldOfView = state;
+  }
+
+  setWithinLineOfSight(state){
+    this.isWithinLineOfSight = state;
+  }
+
+  setWithinFireRange(state){
+    this.isWithinFireRange = state;
+  }
+
+  setShooting(state){
+    this.isShooting = state;
+  }
+
+  // setters for alerted version of data
+
+  setAlerted(state){
+    this.isAlerted = state;
+  }
+
+  setAlertedSpeed(speed){
+    this.alertedSpeed = speed;
+  }
+
+  setAlertedSightAngle(angle){
+    this.alertedSightAngle = angle;
+  }
+
+  setAlertedSightDistance(distance){
+    this.alertedSightDistance = distance;
+  }
+
+  setAlertedFiringDistance(distance){
+    this.alertedFiringDistance = distance;
+  }
+
+  // setters for relaxed version of data
+
+  setRelaxedSpeed(speed){
+    this.relaxedSpeed = speed;
+  }
+
+  setRelaxedSightAngle(angle){
+    this.relaxedSightAngle = angle;
+  }
+
+  setRelaxedSightDistance(distance){
+    this.relaxedSightDistance = distance;
+  }
+
+  setRelaxedFiringDistance(distance){
+    this.relaxedFiringDistance = distance;
+  }
+
+  setLineOfSightData(data){
+    this.lineOfSightData = data;
+  }
+
+  // this setter updates the agents last known position variable
+  setLastKnownPlayerPosition(){
+
+    this.lastKnownPlayerPosition.set(this.getPlayerPosition());
+
+    // checking last known position is an obstacle or not, if so
+    // updating to this position will damage the behaviour
+
+    //this.setLastKnownPlayerPosition(this.getPlayerPosition())
+
+    // let p = this.grid.getGridVector(this.getPlayerPosition());
+    // if(!this.grid.isObstacle(p)){
+    //   this.playerLastKnownLocation.set(this.getPlayerPosition());
+    // }
+  }
+
+  // functional utility functions
+
+  // this method will be used to set the alert state back to true;
+  alertAgent(){
+    this.setAlertRemaining(this.getAlertTimeout());
+    this.setAlerted(true);
+  }
+
+  // this method will relax the agent
   relaxAgent(){
-    this.alertRemaining = -1;
-    this.isAlerted = false;
+    this.setAlertRemaining(-1);
+    this.setAlerted(false);
   }
 
   updateAlert(){
 
-    if(this.isAlerted && this.alertRemaining > 0){
-      this.alertRemaining-=this.deltaTime
-      this.colour.setRGBA(255,100,100);
-    } else {
-      this.colour.setRGBA(100,255,100);
+    if(this.getAlerted() && this.getAlertRemaining() > 0){
 
-      this.isAlerted = false;
+      this.setAlertRemaining(this.getAlertRemaining() - this.deltaTime);
+      this.colour.setRGBA(255,100,100);
+
+      this.setSpeed(this.getAlertedSpeed());
+      this.setSightDistance(this.getAlertedSightDistance());
+      this.setFiringDistance(this.getAlertedFiringDistance());
+      this.setSightAngle(this.getAlertedSightAngle());
+
+    } else {
+
+      this.setSpeed(this.getRelaxedSpeed());
+      this.setSightDistance(this.getRelaxedSightDistance());
+      this.setFiringDistance(this.getRelaxedFiringDistance());
+      this.setSightAngle(this.getRelaxedSightAngle());
+
+      this.colour.setRGBA(100,255,100);
+      this.relaxAgent()
     }
 
   }
 
   // has last known player position
   canFocusPlayerPosition(){
-    return this.playerLastKnownLocation.x !== -1 &&
-           this.playerLastKnownLocation.y !== -1
+    return this.lastKnownPlayerPosition.x !== -1 &&
+           this.lastKnownPlayerPosition.y !== -1
   }
 
-  // getter for fetching last known player position
-  getLastKnownPlayerLocation(){
-    return this.playerLastKnownLocation;
-  }
-  // this setter updates the agents last known position variable
-  setLastKnownPosition(){
-    // checking last known position is an obstacle or not, if so
-    // updating to this position will damage the behaviour
-
-    let p = this.grid.getGridVector(this.getPlayerPosition());
-
-    if(!this.grid.isObstacle(p)){
-      this.playerLastKnownLocation.set(this.getPlayerPosition());
-    }
-  }
 
   // this method will update the internal focus position state
   setAgentPathfindingFocus(focus = AgentPathFindingFocus.WANDER){
 
-    this.pathfindingFocus = focus;
-
-    // if(!this.getPath() || this.getPath().length <= 0) return
-
-    // console.log("Focus Set: " + focus)
+    // checking if focus state has changed
+    if(this.pathfindingFocus !== focus){
+      this.focusChanged = true;
+      this.pathfindingFocus = focus;
+    }
 
     switch(this.pathfindingFocus){
-      case AgentPathFindingFocus.PLAYER:     this.focusPosition = this.getPlayerPosition();   break;
-      case AgentPathFindingFocus.NEARPLAYER: this.focusPosition = this.getPlayerPosition();   break;
-      case AgentPathFindingFocus.OLDPLAYER:  this.focusPosition = this.playerLastKnownLocation; break;
-      case AgentPathFindingFocus.PATROL:     this.focusPosition = this.nonPlayerFocusPosition;  break;
-      case AgentPathFindingFocus.WANDER:     this.focusPosition = this.nonPlayerFocusPosition;  break;
+      case AgentPathFindingFocus.PLAYER:     this.setFocusPosition(this.getPlayerPosition());   break;
+      case AgentPathFindingFocus.NEARPLAYER: this.setFocusPosition(this.getPlayerPosition());   break;
+      case AgentPathFindingFocus.OLDPLAYER:  this.setFocusPosition(this.getLastKnownPlayerPosition()); break;
+      case AgentPathFindingFocus.PATROL:     /* this.setFocusPosition(this.nonPlayerFocusPosition); */  break;
+      case AgentPathFindingFocus.WANDER:     /* this.setFocusPosition(this.nonPlayerFocusPosition); */  break;
       default: break;
     }
 
@@ -214,22 +447,30 @@ class Agent extends Actor {
   // this method will set the agents focus to a random position on the map
   chooseRandomFocusPosition(){
 
-    this.nonPlayerFocusPosition = this.grid.getRoutableRandomNonObstacleMapPosition(this.getPos());
+    //this.nonPlayerFocusPosition = this.grid.getRoutableRandomNonObstacleMapPosition(this.getPos());
 
-    this.focusPosition = this.nonPlayerFocusPosition
+    // this.setFocusPosition(this.nonPlayerFocusPosition);
 
-    return this.nonPlayerFocusPosition;
+    this.setFocusPosition(this.grid.getRoutableRandomNonObstacleMapPosition(this.getPos()));
+
+    return this.getFocusPosition();
   }
 
   // method that will determine if agent has reached focus position
   agentArrivedFocusPosition(){
-    return this.grid.isAtMapPosition(this.getPos(),this.getFocusPosition());
+
+    if(this.grid.isAtMapPosition(this.getPos(),this.getFocusPosition())){
+      // this.setLastKnownPlayerPosition(new SAT.Vector(-1,-1));
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // AGENT SENSING MECHANICS
 
   playerWithinNavRange(){
-    return this.playerDistance <= this.Distance
+    return this.getPlayerDistance() <= this.getAlertDistance()
   }
 
   // method that checks if player is shooting
@@ -240,45 +481,44 @@ class Agent extends Actor {
   // method checks that player is within agent field of view
   playerWithinFieldOfView(){
     if(Utility.isInsideSector(this.getDirection(),this.getPos(),this.getPlayerPosition(),this.getSightAngle(),this.getSightDistance())){
-      this.isWithinFieldOfView = true;
+      this.setWithinFieldOfView(true);
       return true;
     } else {
-      this.isWithinFieldOfView = false;
+      this.setWithinFieldOfView(false);
       return false;
     }
   }
 
-  // checks line to player is unobstructed
+  // checks line to player is unobstructed, by performing a three step check,
+  // the first checks the players center mass against the line of sight calculation
+  // if this passes the line of sight is set to true and the method ends
+  // if this fails, it attempts the left shoulder then the right one, this
+  // ensures that uncessary checks are avoided where possible
   playerWithinLineOfSight(){
-
-    // return true;
 
     // returning array of paths
     this.grid.lineOfSight(this.grid.getGridVector(this.getPos()),this.grid.getGridVector(this.getPlayerPosition()),       this.lineOfSightData);
 
     if(this.lineOfSightData[0].success) {
-      this.isWithinLineOfSight = true;
+      this.setWithinLineOfSight(true);
       return true;
     }
 
     this.grid.lineOfSight(this.grid.getGridVector(this.getPos()),this.grid.getGridVector(this.player.getLeftShoulder()),  this.lineOfSightData);
 
     if(this.lineOfSightData[0].success) {
-      this.isWithinLineOfSight = true;
+      this.setWithinLineOfSight(true);
       return true;
     }
 
     this.grid.lineOfSight(this.grid.getGridVector(this.getPos()),this.grid.getGridVector(this.player.getRightShoulder()), this.lineOfSightData);
 
     if(this.lineOfSightData[0].success) {
-      this.isWithinLineOfSight = true;
+      this.setWithinLineOfSight(true);
       return true;
     }
 
-    // checking if players center or shoulders are within a line of sight to
-    // the agent
-
-    this.isWithinLineOfSight = false;
+    this.setWithinLineOfSight(false);
     return false;
 
   }
@@ -290,7 +530,7 @@ class Agent extends Actor {
 
     if(!this.path.length) return;
 
-    if(this.pathfindingFocus === AgentPathFindingFocus.PLAYER){
+    if(this.getPathFindingFocus() === AgentPathFindingFocus.PLAYER){
       this.setDirection(Utility.Degrees(Utility.angle(this.getPos(),this.getFocusPosition())));
     } else {
       // this method will return the new direction but also set the direction when its
@@ -340,9 +580,6 @@ class Agent extends Actor {
         )
     );
 
-    // redrawing collision polygon from a normalised position
-    this.collider = new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction));
-
     // evaluate new velocity from current acceleration,direction,speed etc
     this.evaluateVelocity(this.deltaTime);
 
@@ -353,19 +590,23 @@ class Agent extends Actor {
 
   playerWithinFiringRange(){
 
-    if(this.playerDistance <= this.firingDistance){
-      this.isFireRange = true;
-      return true;
+    if(this.getPlayerDistance() <= this.getFiringDistance()){
+      this.setWithinFireRange(true);
     } else {
-      this.isFireRange = false;
+      this.setWithinFireRange(true);
     }
 
-    return false;
+    return this.getWithinFireRange();
   }
 
   shootPlayer(){
 
-    this.isShooting
+    this.setShooting(true);
+
+    if(this.weapon !== null){
+      this.setFiring(true);
+      this.weapon.fire(this);
+    }
 
     return true;
   }
@@ -388,15 +629,13 @@ class Agent extends Actor {
 
     // resetting values
 
-    this.lineOfSightData = [];
+    this.setFiring(false);
 
-    this.isShooting = false;
+    this.setLineOfSightData([]);
 
-    // requesting new search path
-    this.newPath();
-
+    this.setShooting(false);
     // checking if agent is alive
-    if(this.life <= 0) {  this.alive = false; return; }
+    if(this.getLife() <= 0) {  this.setAlive(false); return; }
 
     // updating delta time for other methods that use it
     this.deltaTime = deltaTime;
@@ -405,7 +644,24 @@ class Agent extends Actor {
     this.updateAlert();
 
     // updating player distance from agent for radius violation checks
-    this.playerDistance = Utility.dist(this.pos,this.getPlayerPosition());
+    this.getPlayerDistance();
+
+    // fetching new path
+    this.newPath();
+
+    // this.setPath([])2
+
+    // redrawing collision polygon from a normalised position
+    this.setCollider(new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction)))
+
+    if(this.weapon) {
+      this.weapon.setPos(this.getPos());
+      this.weapon.setDirection(this.getDirection());
+      this.weapon.update(deltaTime);
+
+      for(var i = 0 ; i < this.weapon.bullets.length ; i++)
+          this.weapon.bullets[i].update(deltaTime);
+    }
 
     // stepping through the behaviour tree
     this.behaviour.step();
@@ -420,13 +676,15 @@ class Agent extends Actor {
       Draw.fillCol(this.colour);
       Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
 
-      if(this.isFireRange && this.isShooting){
+      if(this.getWithinFireRange() && this.getShooting()){
         Draw.line(this.pos.x-camera.x,this.pos.y-camera.y,this.getPlayerPosition().x-camera.x,this.getPlayerPosition().y-camera.y);
       }
 
-      Draw.fill(100,100,255,1);
-      Draw.circle(this.leftShoulder.x-camera.x,this.leftShoulder.y-camera.y,5);
-      Draw.circle(this.rightShoulder.x-camera.x,this.rightShoulder.y-camera.y,5);
+      // Draw.fill(100,100,255,1);
+      // Draw.circle(this.leftShoulder.x-camera.x,this.leftShoulder.y-camera.y,5);
+      // Draw.circle(this.rightShoulder.x-camera.x,this.rightShoulder.y-camera.y,5);
+
+      if(this.weapon) this.weapon.draw(camera);
 
       //Draw.line(this.pos.x,this.pos.y,this.getPlayerPosition().x-camera.x,this.getPlayerPosition().y-camera.y);
 
@@ -467,15 +725,6 @@ class Agent extends Actor {
           (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
         );
 
-        Draw.line(
-          this.getPos().x - camera.x,
-          this.getPos().y - camera.y,
-          this.getSightDistance() * Math.cos(Utility.Radians(Utility.VectorAngle(this.getPos(),this.getPlayerPosition()))) + this.getPos().x - camera.x,
-          this.getSightDistance() * Math.sin(Utility.Radians(Utility.VectorAngle(this.getPos(),this.getPlayerPosition()))) + this.getPos().y - camera.y,
-          (this.isWithinFieldOfView ? 3 : 1),
-          (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
-        );
-
         let path = this.getPath();
 
         for(var node = 0 ; node < path.length ; node++){
@@ -508,7 +757,7 @@ class Agent extends Actor {
 
         }
 
-        if(this.isAlerted){
+        if(this.getAlerted()){
 
           Draw.fill(255,0,0,0.9);
 
@@ -517,8 +766,18 @@ class Agent extends Actor {
             this.getPos().y-camera.y,
             20,
             0,
-            Utility.Map(this.alertRemaining,0,this.alertTimeout,0,360)
+            Utility.Map(this.getAlertRemaining(),0,this.getAlertTimeout(),0,360)
           )
+
+          Draw.line(
+            this.getPos().x - camera.x,
+            this.getPos().y - camera.y,
+            this.getSightDistance() * Math.cos(Utility.Radians(Utility.VectorAngle(this.getPos(),this.getPlayerPosition()))) + this.getPos().x - camera.x,
+            this.getSightDistance() * Math.sin(Utility.Radians(Utility.VectorAngle(this.getPos(),this.getPlayerPosition()))) + this.getPos().y - camera.y,
+            (this.getWithinFieldOfView() ? 3 : 1),
+            (this.getWithinFieldOfView() ? '#00FF00' : '#FF0000')
+          );
+
         }
 
       }

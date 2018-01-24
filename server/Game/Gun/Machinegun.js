@@ -9,7 +9,7 @@ class Machinegun extends Gun {
 
   fire(player){
     if(this.cycling <= 0) {
-      this.bullets.push(new Bullet(this.pos.x,this.pos.y,15,this.direction,this.getRange(),this.getRicochetCount()));
+      this.bullets.push(new Machinegun_Bullet(this.pos.x,this.pos.y,15,this.direction,this.getRange(),this.getRicochetCount()));
       this.cycling = this.fireRate;
     }
   }
@@ -27,6 +27,8 @@ class Machinegun_Bullet extends Bullet {
     super.update(deltaTime);
 
     this.direction+=Utility.Random(-0.5,0.5);
+
+    // console.log(this.ricochetCount)
 
   }
 
