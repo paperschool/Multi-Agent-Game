@@ -16,3 +16,12 @@ The Games makes use of several libraries:
  - https://github.com/Calamari/BehaviourTree.js
  - https://github.com/jriecken/sat-js
  - **https://github.com/timohausmann/quadtree-js/** (Not Integrated Yet)
+
+
+### Screen Shots
+
+![](screenshots/home.jpg)
+- - -
+![](screenshots/angry_ai_no_debug.jpg)
+- - -
+![](screenshots/angry_ai_debug.jpg)
