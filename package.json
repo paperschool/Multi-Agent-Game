@@ -16,7 +16,8 @@
   "dependencies":{
     "socket.io":"*",
     "file-system":"*",
-    "express":"*"
+    "express":"*",
+    "morgan":"*"
   },
   "bugs": {
     "url": "https://github.com/paperschool/Multi-Agent-Game/issues"
