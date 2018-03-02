@@ -90,9 +90,7 @@ class Patrol {
       }
     }
 
-
     this.point+=this.direction;
-
     return this.points[this.point];
 
   }
