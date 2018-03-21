@@ -1,37 +1,46 @@
-class Level_Timer {
+class LevelTimer {
 
-  constructor(start,max,direction = -1){
+  constructor(duration,direction = -1,size){
 
-    this.start = start;
-    this.current = start;
-    this.max = max;
+    this.duration = duration;
+
     this.direction = direction;
 
     this.timeString = "00 : 00 : 00 : 0000"
 
+    this.size = new SAT.Vector(size.x,size.y);
+
+    this.endTime = Date.now() + duration;
+
   }
 
   update(deltaTime){
-    this.current += this.direction * deltaTime;
-    // this.getFormatTime();
+  }
+
+  draw(camera){
+
+    Draw.fill(0,0,0,(this.isEnded() ? 0.0 : 0.9));
+    Draw.text(150,"cherry","center",new SAT.Vector((this.size.x/2)-camera.x,(this.size.y/2)-camera.y),this.getFormatTime());
+
+  }
+
+  getPercentageComplete(){
+
+    return (1.0 / this.duration) * (this.endTime - Date.now());
+
   }
 
   getFormatTime(){
 
-    var currentTime = new Date()
-        , timeElapsed = new Date(currentTime - this.start)
-        , hour = timeElapsed.getUTCHours()
-        , min = timeElapsed.getUTCMinutes()
-        , sec = timeElapsed.getUTCSeconds()
-        , ms = timeElapsed.getUTCMilliseconds();
+    let time = new Date(this.endTime - Date.now());
 
+    // hour = (hour > 9 ? hour : "0" + hour);
+    let min  = (time.getMinutes()  > 9 ? time.getMinutes() : "0" + time.getMinutes());
+    let sec  = (time.getSeconds()  > 9 ? time.getSeconds() : "0" + time.getSeconds());
+    let ms   = (time.getMilliseconds() > 99 ? "0" + time.getMilliseconds() : time.getMilliseconds() > 9 ? "00" + time.getMilliseconds() : "000" + time.getMilliseconds());
 
-    hour = (hour > 9 ? hour : "0" + hour);
-    min  = (min  > 9 ? min : "0" + min);
-    sec  = (sec  > 9 ? sec : "0" + sec);
-    // ms   = (ms   > 99 ? "0" + ms : ms > 9 ? "00" + ms : "000" + ms);
-
-    this.timeString = hour + " : " + min + " : " + sec;
+    // this.timeString = hour + ":" + min + ":" + sec;
+    this.timeString =  min + ":" + sec + ":" + ms;
 
 
     return this.timeString;
@@ -41,7 +50,7 @@ class Level_Timer {
   // this multiplies by direction to ensure that the >= will
   // always hold.
   isEnded(){
-    return this.current * this.direction >= this.max
+    return Date.now() >= this.endTime;
   }
 
 }

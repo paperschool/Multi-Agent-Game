@@ -5,23 +5,33 @@
 @font-face {
     font-family: 'aldo';
     src: url('font/AldotheApache.woff2') format('woff2'),
-        url('font/AldotheApache.woff') format('woff');
+         url('font/AldotheApache.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
   font-family: 'techno-hideo';
-  src: url('font/TechnoHideo-Bold.woff2') format('woff2'), url('font/TechnoHideo-Bold.woff') format('woff');
+  src: url('font/TechnoHideo-Bold.woff2') format('woff2'),
+       url('font/TechnoHideo-Bold.woff') format('woff');
   font-weight: bold;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'techno-hideo';
-  src: url('font/TechnoHideo.woff2') format('woff2'), url('font/TechnoHideo.woff') format('woff');
+  src: url('font/TechnoHideo.woff2') format('woff2'),
+       url('font/TechnoHideo.woff') format('woff');
   font-weight: normal;
   font-style: normal;
+}
+
+@font-face {
+    font-family: 'cherry';
+    src: url('font/CherryMonospace-Light.woff2') format('woff2'),
+         url('font/CherryMonospace-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
 }
 
 *{

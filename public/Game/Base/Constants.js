@@ -1,11 +1,20 @@
+
 var GameState = {
   START_STATE:0,
   PLAY_STATE:1,
   GAMEOVER_STATE:2,
   VICTORY_STATE:3,
-  PAUSE_STATE:4
+  PAUSE_STATE:4,
+  LEVEL_SWITCH_STATE:5
 }
 
+var LevelState = {
+  RUNNING:0,
+  ENEMY_DEAD:1,
+  PLAYER_DEAD:2,
+  OBJECTIVE_COMPLETE:3,
+  TIMEOUT:4
+}
 
 var ParticleType = {
   GENERIC :0,

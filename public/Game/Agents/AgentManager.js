@@ -38,9 +38,13 @@ class AgentManager {
     return this.agents;
   }
 
+  getLiveAgents(){
+    return this.agents.reduce( (t,c,i) => t + (c.getAlive()) , 0 );
+  }
+
   addAgent(x,y,type,weapon,patrol){
 
-    console.log(" > AGENT MANAGER : Agent: " + type + " added!");
+    // console.log(" > AGENT MANAGER : Agent: " + type + " added!");
 
     switch (type) {
       case AgentType.GENERIC  :

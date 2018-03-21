@@ -7,10 +7,12 @@ class World {
 
     // state object array
     this.states = [
-      new StartState(this),
-      new PlayState(this),
-      new GameOverState(this),
-      new VictoryState(this)
+      new StartState(null,this.setState.bind(this)),
+      new PlayState(null,this.setState.bind(this),this.reloadLevel.bind(this),this.nextLevel.bind(this)),
+      new GameOverState(null,this.setState.bind(this),this.reloadLevel.bind(this),this.nextLevel.bind(this)),
+      new VictoryState(null,this.setState.bind(this)),
+      new PauseState(null,this.setState.bind(this)),
+      new LevelSwitchState(null,this.setState.bind(this))
     ];
 
     // size of the virtual world (that needs to be projected to the canvas)
@@ -19,42 +21,42 @@ class World {
     // size of grid squares for calculating / etc
     this.gridSize = 20;
 
-    // level array
-    this.levels = [];
+    // array of level seed data
+    this.levelData = new Array(5);
+
+    // current level object
+    this.levels = null;
 
     this.levelManager = new LevelManager();
 
-    // creating new camera objext
-    this.camera = new Camera(0,0,CW,CH,w,h);
+    this.levelManager.loadLevel("Game/Assets/Levels/1.json",0,this.addLevelData.bind(this));
 
-    this.levelManager.loadLevel("Game/Assets/Levels/1.json",this.addLevel.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/2.json",1,this.addLevelData.bind(this));
 
     this.currentLevel = -1;
 
-    this.levelCount = 0;
+  }
 
+  addLevelData(data,index){
+    this.levelData[index] = data;
   }
 
   addLevel(data){
 
-    this.levelCount++;
-
-    this.currentLevel = 0;
+    let newLevel = null;
 
     // create new Level;
-    this.levels.push(
-      new Level(
+    newLevel = new Level(
         this,
         this.size,
         data.level.size,
         {x: data.level.player.x *this.gridSize,y:data.level.player.y *this.gridSize },
         this.gridSize
-      )
-    );
+      );
 
     // create all walls within level
     for(var wall = 0 ; wall < data.level.walls.length ; wall++){
-      this.levels[this.levelCount-1].addWall(
+      newLevel.addWall(
         data.level.walls[wall].x,
         data.level.walls[wall].y,
         data.level.walls[wall].w,
@@ -64,7 +66,7 @@ class World {
     }
 
     // do a final build of the graph object ready for astar searching
-    this.levels[this.levelCount-1].agents.grid.rebuildMesh();
+    newLevel.agents.grid.rebuildMesh();
 
     // add enemy agents
     for(var agent = 0 ; agent < data.level.enemy.length ; agent++){
@@ -82,7 +84,7 @@ class World {
 
       }
 
-      this.levels[this.levelCount-1].addAgent(
+      newLevel.addAgent(
         data.level.enemy[agent].x*this.gridSize,
         data.level.enemy[agent].y*this.gridSize,
         data.level.enemy[agent].type,
@@ -93,37 +95,100 @@ class World {
 
     // add world pickups
     for(var pickup = 0 ; pickup < data.level.pickups.length ; pickup++){
-      this.levels[this.levelCount-1].addPickup(
+      newLevel.addPickup(
         data.level.pickups[pickup].x*this.gridSize,
         data.level.pickups[pickup].y*this.gridSize,
         data.level.pickups[pickup].type
       )
     }
 
-    // set camera focus
-    this.camera.setFocus(this.levels[this.levelCount-1].player,new SAT.Vector(CW/2,CH/2));
     // this.camera.setFocus(this.levels[this.levelCount-1].agents.agents[0],new SAT.Vector(CW/2,CH/2));
+
+    return newLevel;
+
+  }
+
+  reloadLevel(){
+
+    this.level = this.addLevel(this.levelData[this.currentLevel])
+
+    this.states[GameState.PLAY_STATE].setLevel(this.level);
+
+    this.CURRENT_STATE = GameState.PLAY_STATE;
 
 
   }
+
+  nextLevel(){
+
+    // setting game victory state
+    if(this.currentLevel+1 === this.levelData.length){
+
+      this.setState(GameState.VICTORY_STATE);
+
+    } else {
+
+      this.currentLevel++;
+
+      this.level = this.addLevel(this.levelData[this.currentLevel])
+
+      this.level.update(0);
+
+      this.states[GameState.PLAY_STATE].setLevel(this.level);
+
+      this.CURRENT_STATE = GameState.LEVEL_SWITCH_STATE;
+
+      this.states[this.CURRENT_STATE].setup();
+
+    }
+
+  }
+
 
   update(deltaTime){
 
     this.states[this.CURRENT_STATE].update(deltaTime);
 
-    this.camera.update(deltaTime);
-
   }
 
   draw() {
 
-    this.states[this.CURRENT_STATE].draw(this.camera.getOffset());
+    // draw game screen with paused overlay
+    if(this.CURRENT_STATE === GameState.PAUSE_STATE){
+      this.states[GameState.PLAY_STATE].draw();
+      this.states[GameState.PAUSE_STATE].draw();
+    } else if(this.CURRENT_STATE === GameState.LEVEL_SWITCH_STATE) {
+      this.states[GameState.PLAY_STATE].draw();
+      this.states[GameState.LEVEL_SWITCH_STATE].draw();
+    } else if (this.CURRENT_STATE === GameState.GAMEOVER_STATE) {
+      this.states[GameState.PLAY_STATE].draw();
+      this.states[GameState.GAMEOVER_STATE].draw();
+    } else {
+      this.states[this.CURRENT_STATE].draw();
+    }
 
   }
 
-
   setState(state){
-    this.CURRENT_STATE = state;
+
+
+    if(state === GameState.LEVEL_SWITCH_STATE){
+
+      this.nextLevel();
+
+    } else if (state === GameState.PLAY_STATE && this.CURRENT_STATE === GameState.GAMEOVER_STATE) {
+
+      this.reloadLevel();
+
+    } else {
+
+      this.CURRENT_STATE = state;
+
+      this.states[this.CURRENT_STATE].setup();
+
+    }
+
+
   }
 
 }

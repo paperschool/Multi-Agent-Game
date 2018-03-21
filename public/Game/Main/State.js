@@ -1,21 +1,27 @@
 
 class State {
 
-  constructor(game){
-    this.game = game;
+  constructor(level,changeState){
+    this.level = level;
+
+    this.changeState = changeState;
+
   }
 
-  changeState(state = GameState.START_STATE){
-    this.game.setState(state);
+  setLevel(level){
+    this.level = level;
   }
+
+  setup(){}
 
 }
 
 
 class StartState extends State{
 
-  constructor(game){
-    super(game);
+  constructor(level,changeState){
+
+    super(level,changeState);
 
     this.colour = new PulseColour(new Colour().random());
 
@@ -24,7 +30,7 @@ class StartState extends State{
   update(deltaTime){
 
     // change this to be for something else
-    if(input.isDown("SPACE")) this.changeState(GameState.PLAY_STATE);
+    if(input.isDown("SPACE")) this.changeState(GameState.LEVEL_SWITCH_STATE);
 
     this.colour.step();
 
@@ -63,11 +69,13 @@ class StartState extends State{
 
 class PlayState extends State{
 
-  constructor(game){
+  constructor(level,changeState,reloadLevel,nextLevel) {
 
-    super(game);
+    super(level,changeState);
 
-    this.game = game;
+    this.reloadLevel = reloadLevel;
+
+    this.nextLevel = nextLevel;
 
     this.colour = new PulseColour(new Colour().random());
 
@@ -79,12 +87,22 @@ class PlayState extends State{
 
     this.colour.step();
 
-    if(this.game.currentLevel >= 0)
-      this.game.levels[this.game.currentLevel].update(deltaTime);
+    this.level.update(deltaTime);
+
+    if(this.level.getLevelState() === LevelState.PLAYER_DEAD ||
+       this.level.getLevelState() === LevelState.TIMEOUT ){
+       this.changeState(GameState.GAMEOVER_STATE);
+      // this.reloadLevel();
+    }
+
+    if(this.level.getLevelState() === LevelState.ENEMY_DEAD){
+      this.changeState(GameState.LEVEL_SWITCH_STATE);
+      // this.nextLevel();
+    }
 
   }
 
-  draw(camera){
+  draw(){
 
     this.colour.getColour().a = 0.4
 
@@ -92,8 +110,65 @@ class PlayState extends State{
 
     Draw.rect(0,0,CW,CH);
 
-    if(this.game.currentLevel >= 0)
-      this.game.levels[this.game.currentLevel].draw(camera);
+    this.level.draw();
+
+  }
+
+}
+
+
+class GameOverState extends State {
+
+  constructor(level,changeState,reloadLevel,nextLevel){
+
+    super(level,changeState);
+
+    this.reloadLevel = reloadLevel;
+
+    this.nextLevel = nextLevel;
+
+    this.setup();
+
+  }
+
+  setup(){
+
+    this.timer = new LevelTimer(3000,-1,{ x:CW, y:CH });
+
+  }
+
+  update(deltaTime){
+
+    if(this.timer.isEnded()) this.changeState(GameState.PLAY_STATE);
+
+  }
+
+  draw(){
+
+    Draw.fill(255,240,240);
+    Draw.text(100,"techno-hideo","center",new SAT.Vector(Utility.Random(-10,10)+(CW/2),Utility.Random(-10,10)+CH/2),"GAMEOVER");
+
+  }
+
+}
+
+class VictoryState extends State {
+
+  constructor(level,changeState){
+    super(level,changeState);
+  }
+
+  update(deltaTime){
+
+  }
+
+  draw(){
+
+    Draw.fill(0,0,0);
+    Draw.rect(0,0,CW,CH);
+
+    Draw.fill(255,240,240);
+    Draw.text(100,"techno-hideo","center",new SAT.Vector(Utility.Random(-10,10)+(CW/2),Utility.Random(-10,10)+CH/2),"Victory Screen !");
 
   }
 
@@ -101,41 +176,58 @@ class PlayState extends State{
 
 class PauseState extends State {
 
-  constructor(game){
-    super(game);
+  constructor(level,changeState){
+    super(level,changeState);
+  }
+
+  update(deltaTime){
+
+    if(input.isDown("PAUSE")) this.changeState(GameState.PLAY_STATE);
+
+  }
+
+  draw(){
+
+    Draw.fill(51,51,51);
+    Draw.text(100,"techno-hideo","center",new SAT.Vector(Utility.Random(-10,10)+(CW/2),Utility.Random(-10,10)+CH/2),"PAUSED");
+    Draw.rect(Utility.Random(-10,10)+(CW/2) - 670,(CH/2)-100,1330,20);
+    Draw.rect(Utility.Random(-10,10)+(CW/2) - 670,(CH/2)+30,1330,20);
+
+
+  }
+
+}
+
+class LevelSwitchState extends State {
+
+  constructor(level,changeState){
+
+    super(level,changeState);
+
+    this.setup();
+
+  }
+
+  setup(){
+
+    this.timer = new LevelTimer(1000,-1,new SAT.Vector(100,100));
 
   }
 
   update(deltaTime){
 
-    if(input.isDown("PLAY")) this.changeState(GameState.PAUSE_STATE);
+    if(this.timer.isEnded()) this.changeState(GameState.PLAY_STATE);
 
   }
 
-  draw(camera){
+  draw(){
 
-  }
 
-}
+    Draw.fill(255,255,255,this.timer.getPercentageComplete());
+    Draw.rect(0,0,CW,CH);
 
-class GameOverState extends State {
+    this.timer.draw({x:-CW/2,y:-CH/2});
 
-  constructor(game){
-    super(game);
-  }
-
-  tick(deltaTime){
-  }
-
-}
-
-class VictoryState extends State {
-
-  constructor(game){
-    super(game);
-  }
-
-  tick(deltaTime){
   }
 
 }

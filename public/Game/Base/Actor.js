@@ -54,8 +54,6 @@ class Actor extends Rectangle {
     // switch debug draw on or off
     this.debugOn = true;
 
-
-
   }
 
   getLeftShoulder(){

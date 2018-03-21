@@ -88,8 +88,12 @@ class CollisionManager {
 
     let r = wall.collider.test(player.collider);
     if(r){
+
+      // this.level.camera.resetShake();
+
       player.collider.getPos().add(r.overlapV);
       player.pos.set(player.collider.getPos());
+
     } else {
       player.collider.setPos(player.pos);
     }

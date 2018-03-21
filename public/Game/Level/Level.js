@@ -9,14 +9,18 @@ class Level {
     // size of world in virtual pixels (offscreen and onscreen)
     this.worldSize = new SAT.Vector(worldsize.x,worldsize.y);
 
+    this.levelState = LevelState.RUNNING;
+
     // setting grid size variable
     this.gridSize = grid;
 
     // size of level in terms of grid units
     this.levelSize = new SAT.Vector(levelsize.x*grid,levelsize.y*grid);
 
-    this.timer = new Level_Timer(10000,0,-1);
+    // level count down timer
+    this.timer = new LevelTimer(60000,-1,this.levelSize);
 
+    // background render stuff
     this.background = new Level_Background(this.levelSize);
 
     // grid array for pathfinding
@@ -43,6 +47,13 @@ class Level {
     // array for storing walls
     this.walls = [];
 
+    // creating new camera objext
+    this.camera = new Camera(0,0,CW,CH,this.worldSize.x,this.worldSize.y);
+
+    // set camera focus
+    this.camera.setFocus(this.player,new SAT.Vector(CW/2,CH/2));
+
+
     // astar search tick cooldown
     this.pfCoolDown = 1;
     this.pfCoolDownCounter = 0;
@@ -50,6 +61,8 @@ class Level {
   }
 
   update(deltaTime){
+
+    this.camera.update(deltaTime);
 
     this.background.update(deltaTime);
 
@@ -71,20 +84,21 @@ class Level {
 
     this.grid.update();
 
+    this.updateLevelState();
+
   }
 
-  draw(camera){
+  draw(){
+
+    let camera = this.camera.getOffset();
 
     // drawing the virtual world bounds
-    Draw.fillCol(new Colour(240,240,240,0.3));
+    Draw.fillCol(new Colour(240,240,240,0.4));
     Draw.rect(this.gridSize-camera.x,this.gridSize-camera.y,this.levelSize.x-this.gridSize,this.levelSize.y-this.gridSize);
 
-    // this.timer.draw(camera);
+    this.timer.draw(camera);
 
-    this.background.draw(camera);
-
-    Draw.fill(0,0,0,0.5);
-    Draw.text(300,"aldo","center",new SAT.Vector((this.levelSize.x/2)-camera.x,(this.levelSize.y/2)-camera.y),this.timer.getFormatTime());
+    // this.background.draw(camera);
 
     for(var wall = 0 ; wall < this.walls.length ; wall++){
       this.walls[wall].draw(camera);
@@ -118,11 +132,35 @@ class Level {
   }
 
   addAgent(x,y,type,weapon,patrol){
+
     this.agents.addAgent(x,y,type,weapon,patrol);
+
   }
 
   addPickup(x,y,type){
+
     this.pickups.newPickup(x,y,type);
+
+  }
+
+  updateLevelState(){
+
+    if(!this.player.getAlive()){
+      this.levelState = LevelState.PLAYER_DEAD;
+    }
+
+    if(this.agents.getLiveAgents() <= 0){
+      this.levelState = LevelState.ENEMY_DEAD;
+    }
+
+    if(this.timer.isEnded()){
+      this.levelState = LevelState.TIMEOUT;
+    }
+
+  }
+
+  getLevelState(){
+    return this.levelState;
   }
 
 }

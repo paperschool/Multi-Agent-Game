@@ -54,28 +54,6 @@ $(window).bind("load", function() {
 
 });
 
-// document.addEventListener('DOMContentLoaded', (function(){
-//
-//   // settting canvas dimensions based on DOM inner width/height
-//   CW = window.innerWidth;
-//   CH = window.innerHeight;
-//
-//   // setup diagnostic input
-//   diagnostic = new DiagnosticHUD(0,0);
-//
-//   chart = new Chart(50,400,200,0,60);
-//
-//   // Input Object instantiation
-//   input = new Input();
-//
-//   // create mouse position vector
-//   mousePos = new SAT.Vector(0,0);
-//
-//   // instantiating game object
-//   game = new Game();
-//
-// }), false);
-
 class Game {
 
   constructor(){
@@ -96,17 +74,12 @@ class Game {
     // Begin game loop with loop object instantiation
     this.gameLoop = new GameLoop(120.0,60.0,this.update.bind(this),this.draw.bind(this));
 
-    // MainLoop.setUpdate(this.update.bind(this));
-    // MainLoop.setDraw(this.draw.bind(this));
-
-    // /MainLoop.start();
-
   }
 
   update(deltaTime){
 
     // updating and updating world
-    this.world.update(deltaTime/10);
+    this.world.update(deltaTime);
 
     // diagnostic.updateLine("Total Frame",MainLoop.getFPS());
     // diagnostic.updateLine("------- FPS",1 / this.fps);
@@ -114,9 +87,13 @@ class Game {
   }
 
   draw(deltaTime){
+
     this.world.draw();
+
     chart.draw();
+
     diagnostic.draw();
+
   }
 
   end(){
@@ -194,7 +171,10 @@ class GameLoop {
       //   calling return call back with new delta time
         // if(typeof this.callBack == "function") {}
 
-      this.updateCallback(this.deltaTime);
+      diagnostic.updateLine("deltaTime",this.deltaTime);
+
+
+      this.updateCallback( ( this.deltaTime / 10 < 30 ? this.deltaTime / 10 : 30 ) );
 
     }
 

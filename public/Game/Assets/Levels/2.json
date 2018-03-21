@@ -1,0 +1,115 @@
+{
+  "level":{
+    "size":{
+      "x":100,
+      "y":80
+    },
+    "player":{
+      "x":90,
+      "y":70
+    },
+
+    "enemy":[
+      { "x":10,"y":25,"type":"generic","weapon":"pistol" },
+      { "x":10,"y":25,"type":"generic","weapon":"pistol" },
+      { "x":10,"y":25,"type":"generic","weapon":"pistol" },
+      { "x":10,"y":25,"type":"generic","weapon":"pistol" },
+      { "x":10,"y":25,"type":"generic","weapon":"pistol" },
+      { "x":10,"y":25,"type":"trace","weapon":"shotgun",
+        "patrol":{
+          "loop":true,
+          "direction":1,
+          "points":[
+            {"x":10,"y":25},
+            {"x":40,"y":25},
+            {"x":40,"y":35},
+            {"x":75,"y":35},
+            {"x":75,"y":45},
+            {"x":10,"y":45}
+          ]
+        }
+      },
+      {"x":8,"y":9,"type":"trace","weapon":"shotgun",
+        "patrol":{
+          "loop":false,
+          "direction":1,
+          "points":[
+            {"x":8,"y":9},
+            {"x":90,"y":9},
+            {"x":90,"y":50}
+          ]
+        }
+      },
+      {"x":6,"y":56,"type":"trace","weapon":"shotgun",
+        "patrol":{
+          "loop":true,
+          "direction":1,
+          "points":[
+            {"x":6,"y":56},
+            {"x":35,"y":56},
+            {"x":21,"y":73},
+            {"x":21,"y":64},
+            {"x":6,"y":64}
+          ]
+        }
+      },
+      {"x":10,"y":10,"type":"trace","weapon":"shotgun",
+        "patrol":{
+          "loop":true,
+          "direction":1,
+          "points":[
+            {"x":46,"y":56},
+            {"x":61,"y":63},
+            {"x":75,"y":56},
+            {"x":75,"y":73},
+            {"x":46,"y":73}
+          ]
+        }
+      },
+      {"x":10,"y":10,"type":"generic","weapon":"shotgun"}
+    ],
+    "pickups":
+      [
+        { "x":88,"y":60,"type":"machinegun" },
+        { "x":88,"y":50,"type":"flamethrower" }
+      ],
+    "walls":[
+      {
+        "x":0,"y":0,"w":1,"h":1,"info":"Empty Wall For collision fix"
+      },
+      {
+        "x":0,"y":0,"w":100,"h":2
+      },
+      {
+        "x":0,"y":0,"w":2,"h":80
+      },
+      {
+        "x":0,"y":78,"w":100,"h":2
+      },
+      {
+        "x":98,"y":0,"w":2,"h":80
+      },
+      {
+        "x":80,"y":18,"w":2,"h":62
+      },
+      {
+        "x":15,"y":18,"w":67,"h":2
+      },
+      {
+        "x":0,"y":18,"w":6,"h":2
+      },
+      {
+        "x":0,"y":50,"w":6,"h":2
+      },
+      {
+        "x":15,"y":50,"w":50,"h":2
+      },
+      {
+        "x":75,"y":50,"w":7,"h":2
+      },
+      {
+        "x":40,"y":50,"w":2,"h":30
+      }
+    ]
+  }
+}

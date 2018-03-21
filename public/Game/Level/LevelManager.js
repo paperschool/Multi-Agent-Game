@@ -4,14 +4,14 @@ class LevelManager {
     this.levels = [];
   }
 
-  loadLevel(src,callback){
+  loadLevel(src,index,callback){
     this.loadJSON(src,(function(level){
-      callback(JSON.parse(level));
+      callback(JSON.parse(level),index);
       console.log("Level Successfully Added: " + src);
     }).bind(this));
   }
 
-  loadJSON(src, callback) {
+  loadJSON(src,callback) {
 
   		var xobj = new XMLHttpRequest();
   		xobj.overrideMimeType("application/json");

@@ -9,7 +9,7 @@ class Agent extends Actor {
 
     this.setAlive(true);
 
-    this.setSpeed(0.3);
+    this.setSpeed(0.2);
 
     this.setTopSpeed(10.0);
 
@@ -29,6 +29,9 @@ class Agent extends Actor {
 
     // turning speed of ai
     this.setTurnSpeed(10);
+
+    // disable debuging
+    this.setDebugOn(false);
 
     // array storing all path positions to reach player
     this.path = null;
@@ -100,7 +103,7 @@ class Agent extends Actor {
     this.alertRemaining = 0;
 
     // alerted buffs
-    this.alertedSpeed = 0.5;
+    this.alertedSpeed = 0.6;
 
     this.alertedSightAngle = 30;
 
@@ -109,8 +112,7 @@ class Agent extends Actor {
     this.alertedFiringDistance = 600
 
     // relaxed buffs
-
-    this.relaxedSpeed = 0.3;
+    this.relaxedSpeed = 0.2;
 
     this.relaxedSightAngle = 80;
 
@@ -531,12 +533,18 @@ class Agent extends Actor {
     if(!this.path.length) return;
 
     if(this.getPathFindingFocus() === AgentPathFindingFocus.PLAYER){
-      this.setDirection(Utility.Degrees(Utility.angle(this.getPos(),this.getFocusPosition())));
+
+      // this.setDirection(Utility.Degrees(Utility.angle(this.getPos(),this.getFocusPosition())));
+
+      this.turnTo(this.getPos(),this.getFocusPosition());
+
     } else {
+
       // this method will return the new direction but also set the direction when its
       // calculated
       this.getPathDirection();
       // this.setDirection(this.getNext());
+
     }
 
     return true;
@@ -652,7 +660,7 @@ class Agent extends Actor {
     // this.setPath([])2
 
     // redrawing collision polygon from a normalised position
-    this.setCollider(new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction)))
+    this.setCollider(new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.getDirection())))
 
     if(this.weapon) {
       this.weapon.setPos(this.getPos());
@@ -675,10 +683,15 @@ class Agent extends Actor {
 
         Draw.fillCol(new Colour(255,0,0,0.5));
         Draw.text(60,"san-serif","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"!");
-
         break;
-      case AgentPathFindingFocus.NEARPLAYER: break;
-      case AgentPathFindingFocus.OLDPLAYER:  break;
+
+      case AgentPathFindingFocus.NEARPLAYER:
+      case AgentPathFindingFocus.OLDPLAYER:
+
+        Draw.fillCol(new Colour(255,0,0,0.5));
+        Draw.text(60,"san-serif","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"?");
+        break;
+
       case AgentPathFindingFocus.PATROL:     break;
       case AgentPathFindingFocus.WANDER:     break;
       default: break;
@@ -721,6 +734,7 @@ class Agent extends Actor {
 
         Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.firingDistance);
         Draw.stroke(1,'#FFFF00');
+
         Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.alertDistance);
         Draw.stroke(1,'#00FFFF');
 

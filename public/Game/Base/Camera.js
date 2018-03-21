@@ -69,8 +69,6 @@ class Camera {
       }
     }
 
-    this.cameraShake(0);
-
   }
 
   setFocus(focus,focusOffset){
@@ -85,8 +83,44 @@ class Camera {
     return this.camera;
   }
 
+}
+
+class CameraShudder extends Camera {
+
+  constructor(cameraX, cameraY, viewPortWidth, viewPortHeight, worldWidth, worldHeight){
+
+    super(cameraX,cameraY,viewPortWidth,viewPortHeight,worldWidth,worldHeight);
+
+    this.shakeValue = 0;
+
+  }
+
+  update(){
+
+    super.update();
+
+    this.cameraShake(this.shakeValue);
+
+    this.decrimentShake();
+
+  }
+
+  decrimentShake(){
+
+    if(this.shakeValue != 0 || this.shakeValue < 0.001) {
+      this.shakeValue = 0;
+    } else {
+      this.shakeValue *= 0.98;
+    }
+
+  }
+
+  resetShake(){
+    this.shakeValue = 3;
+  }
+
   cameraShake(shakeValue){
-    this.camera.add(new SAT.Vector(Utility.Random(-shakeValue,shakeValue),Utility.Random(-shakeValue,shakeValue)));
+    this.camera.add(new SAT.Vector(Utility.Random(-this.shakeValue,this.shakeValue),Utility.Random(-this.shakeValue,this.shakeValue)));
   }
 
 }
