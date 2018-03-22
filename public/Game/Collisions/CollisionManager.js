@@ -125,6 +125,8 @@ class CollisionManager {
 
       player.applyDamage(bullet);
 
+      // player.setAlive(false);
+
       // remove particle on collision
       bullet.setAlive(false);
 

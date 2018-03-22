@@ -48,11 +48,12 @@ class Level {
     this.walls = [];
 
     // creating new camera objext
-    this.camera = new Camera(0,0,CW,CH,this.worldSize.x,this.worldSize.y);
+    this.camera = new CameraShudder(0,0,CW,CH,this.worldSize.x,this.worldSize.y);
 
     // set camera focus
     this.camera.setFocus(this.player,new SAT.Vector(CW/2,CH/2));
 
+    this.colour = new PulseColour(new Colour().random());
 
     // astar search tick cooldown
     this.pfCoolDown = 1;
@@ -61,6 +62,8 @@ class Level {
   }
 
   update(deltaTime){
+
+    this.colour.step(- (1/2500 * this.player.getLife() ) + 1/20);
 
     this.camera.update(deltaTime);
 
@@ -90,15 +93,21 @@ class Level {
 
   draw(){
 
+    this.colour.getColour().a = 0.4
+
+    Draw.fillCol(this.colour.getColour())
+
+    Draw.rect(0,0,CW,CH);
+
     let camera = this.camera.getOffset();
 
     // drawing the virtual world bounds
     Draw.fillCol(new Colour(240,240,240,0.4));
     Draw.rect(this.gridSize-camera.x,this.gridSize-camera.y,this.levelSize.x-this.gridSize,this.levelSize.y-this.gridSize);
 
-    this.timer.draw(camera);
-
     // this.background.draw(camera);
+
+    this.timer.draw(camera);
 
     for(var wall = 0 ; wall < this.walls.length ; wall++){
       this.walls[wall].draw(camera);
@@ -106,9 +115,9 @@ class Level {
 
     this.grid.draw(camera);
 
-    this.hudmap.player.set(this.player.pos);
+    // this.hudmap.player.set(this.player.pos);
 
-    this.hudmap.draw(camera);
+    // this.hudmap.draw(camera);
 
     this.ParticleSystem.draw(camera);
 

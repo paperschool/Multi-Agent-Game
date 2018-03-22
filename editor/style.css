@@ -1,0 +1,47 @@
+
+@import url('https://fonts.googleapis.com/css?family=Poiret+One');
+
+@font-face {
+  font-family: pixelated;
+  src: url(fonts/pixelated.woff);
+}
+
+*{
+	left:0;
+	top:0;
+	margin:0;
+	padding:0;
+	overflow: hidden;
+  font-family: 'Poiret One';
+  font-weight: bold;
+}
+
+.toolbar {
+  width: 100%;
+  height: 50px;
+  padding: 5px;
+  margin: 0px;
+  background-color: #f1c40f;
+  display: inline-block;
+}
+
+.toolbar-button{
+  float: left;
+  cursor:pointer;
+  width: 100px;
+  height: 40px;
+  margin-right:5px;
+  padding: 10px;
+  background-color: #f39c12;
+  text-align: center;
+}
+
+.toolbar-button:hover{
+  background-color: #e67e22;
+}
+
+
+.canvas-container {
+  position: absolute;
+  top: 50px;
+}

@@ -3,7 +3,7 @@ class Bullet extends Actor {
   constructor(x,y,s,d,l,rc){
     super(x,y,0,0,s,0);
 
-    this.colour = new Colour().random();;
+    this.colour = new Colour().random();
 
     this.setSize(new SAT.Vector(5,5));
 
@@ -20,6 +20,8 @@ class Bullet extends Actor {
       Math.sin(Utility.Radians(this.getDirection()))
     ));
 
+    this.setBulletDamage(10);
+
     this.getAcc().scale(this.getSpeed());
 
     this.setFriction(new SAT.Vector(0.98,0.98));
@@ -31,6 +33,10 @@ class Bullet extends Actor {
 
     this.collider = new CircularCollider(this.pos.x,this.pos.y,this.size.x);
 
+  }
+
+  getBulletDamage(){
+    return this.bulletDamage;
   }
 
   getBulletAccuracy(){
@@ -52,6 +58,10 @@ class Bullet extends Actor {
 
   setBulletAccuracy(bulletAccurracy){
     return this.bulletAccurracy = bulletAccurracy;
+  }
+
+  setBulletDamage(bulletDamage){
+    this.bulletDamage = bulletDamage;
   }
 
   setInitialLifeSpan(lifespan){

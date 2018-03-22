@@ -65,6 +65,8 @@ class Player extends Actor {
     // calculating velocity from acceleration, friction etc
     this.evaluateVelocity(deltaTime);
 
+    if(this.getLife() <= 0) this.setAlive(false);
+
 
     if(this.weapon) {
       this.weapon.setPos(this.getPos());

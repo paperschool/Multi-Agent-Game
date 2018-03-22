@@ -33,7 +33,7 @@ class Shotgun_Bullet extends Bullet {
 
     this.setBulletAccuracy(4);
 
-    this.colour.setColour(255,0,0,1);
+    this.setColour(new Colour(51,51,51));
 
   }
 

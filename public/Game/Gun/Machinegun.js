@@ -20,6 +20,7 @@ class Machinegun_Bullet extends Bullet {
   constructor(x,y,s,d,l,rc){
     super(x,y,s,d,l,rc);
     this.setBulletAccuracy(1);
+    this.setSpeed(100);
   }
 
   update(deltaTime){

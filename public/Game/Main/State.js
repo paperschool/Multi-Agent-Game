@@ -104,12 +104,6 @@ class PlayState extends State{
 
   draw(){
 
-    this.colour.getColour().a = 0.4
-
-    Draw.fillCol(this.colour.getColour())
-
-    Draw.rect(0,0,CW,CH);
-
     this.level.draw();
 
   }
@@ -145,8 +139,11 @@ class GameOverState extends State {
 
   draw(){
 
-    Draw.fill(255,240,240);
-    Draw.text(100,"techno-hideo","center",new SAT.Vector(Utility.Random(-10,10)+(CW/2),Utility.Random(-10,10)+CH/2),"GAMEOVER");
+    Draw.fill(51,51,51,0.5);
+    Draw.rect(0,0,CW,CH);
+
+    Draw.fill(255,51,51);
+    Draw.text(150,"techno-hideo","center",new SAT.Vector(Utility.Random(-4,4)+(CW/2),Utility.Random(-4,4)+CH/2),"GAMEOVER");
 
   }
 

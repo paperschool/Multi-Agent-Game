@@ -110,6 +110,8 @@ class Particle_Blood extends Particle {
 
     this.life = 20;
 
+    this.setSize(new SAT.Vector(20,20));
+
     this.setPos(new SAT.Vector(x,y));
 
     this.getPos().x += Math.cos(Utility.Radians(Utility.Random(-20,20) + d))*Utility.Random(1,200)

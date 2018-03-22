@@ -92,7 +92,7 @@ class Game {
 
     chart.draw();
 
-    diagnostic.draw();
+    // diagnostic.draw();
 
   }
 

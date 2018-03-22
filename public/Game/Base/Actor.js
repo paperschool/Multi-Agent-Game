@@ -198,11 +198,17 @@ class Actor extends Rectangle {
 
   applyDamage(bullet){
 
+    let d = Math.floor(20 * ((1.0 / bullet.getInitialLifeSpan()) * bullet.getLifespan()));
+
     // function that applies damage to the player
-    diagnostic.updateLine("-Bullet Dmg",Math.floor(20 * ((1.0 / bullet.getInitialLifeSpan()) * bullet.getLifespan())));
-    this.life -= 20 * ((1.0 / bullet.getInitialLifeSpan()) * bullet.getLifespan());
+    // diagnostic.updateLine("-Bullet Dmg",d);
+    // this.life -= d;
+
+    // diagnostic.updateLine("-Bullet Dmg",bullet);
+    this.life -= bullet.getBulletDamage();
 
   }
+
 
   applyAcc(newAcc){
 

@@ -54,6 +54,8 @@ app.get('/editor',function(req,res){
 
   console.log("USER : Local User Accessed Level Editor: " + req.connection.remoteAddress);
 
+  app.use(express.static(EDITOR_DIRECTORY));
+
   res.sendFile(EDITOR_DIRECTORY + '/editor.html');
 
 });

@@ -130,11 +130,11 @@ class PulseColour {
 
   }
 
-  step(){
+  step(inc = 0.01){
 
-    this.cr+=0.01;
-    this.cg+=0.01;
-    this.cb+=0.01;
+    this.cr+=inc;
+    this.cg+=inc;
+    this.cb+=inc;
 
     if(this.cr >= 2*Math.PI) this.cr = 0;
     if(this.cb >= 2*Math.PI) this.cg = 0;
