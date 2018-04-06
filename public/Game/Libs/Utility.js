@@ -10,6 +10,10 @@ class Utility {
     return val*val
   }
 
+  static pyth(x,y){
+    return Math.sqrt( (x*x) + (y*y) );
+  }
+
   static Map(value,oldmin,oldmax,newmin,newmax){
     return (((value - oldmin) * (newmax - newmin)) / (oldmax - oldmin)) + newmin;
   }

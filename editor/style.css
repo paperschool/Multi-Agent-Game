@@ -14,14 +14,20 @@
 	overflow: hidden;
   font-family: 'Poiret One';
   font-weight: bold;
+
+  -moz-box-sizing: border-box;
+ -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+
 }
 
+
 .toolbar {
+  z-index:0;
   width: 100%;
   height: 50px;
-  padding: 5px;
   margin: 0px;
-  background-color: #f1c40f;
+  background-color: #ecf0f1;
   display: inline-block;
 }
 
@@ -30,18 +36,67 @@
   cursor:pointer;
   width: 100px;
   height: 40px;
-  margin-right:5px;
+  margin:5px;
   padding: 10px;
   background-color: #f39c12;
+  color:white;
   text-align: center;
+  overflow: hidden;
 }
+
+.toolbar-button-right {
+  float: right;
+  background-color: #c0392b;
+}
+
 
 .toolbar-button:hover{
   background-color: #e67e22;
 }
 
+.built-level {
+  z-index:10;
+  position: absolute;
+  width: 90%;
+  height: 500px;
+  margin: 5%;
+  background-color: #ecf0f1;
+}
+
+.built-level-content {
+  width: 90%;
+  height: 100%;
+  float: left;
+  padding: 20px;
+  overflow-y: auto;
+  font-family: serif;
+
+}
+
+.built-level-close {
+  float: right;
+  width: 40px;
+  height:40px;
+  background-color: #e74c3c;
+}
+
+.built-level-close:hover{
+  background-color: #c0392b;
+}
+
+.built-level-copy {
+  float: right;
+  width: 40px;
+  height:40px;
+  background-color: #2ecc71;
+}
+
+.built-level-copy:hover{
+  background-color: #27ae60;
+}
 
 .canvas-container {
   position: absolute;
   top: 50px;
+  z-index:0;
 }

@@ -80,6 +80,21 @@ class Colour {
     return this;
   }
 
+  randomRGB(r,g,b){
+    this.r = (r ? Math.floor(Utility.Random(0,255)) : 0);
+    this.g = (g ? Math.floor(Utility.Random(0,255)) : 0);
+    this.b = (b ? Math.floor(Utility.Random(0,255)) : 0);
+    return this
+  }
+
+  randomRGBLock(min = 0,max = 255,r,g,b){
+    let c = Math.floor(Utility.Random(min,max));
+    this.r = (r ? c : 0);
+    this.g = (g ? c : 0);
+    this.b = (b ? c : 0);
+    return this
+  }
+
   randomGrey(min = 0,max = 255){
       let grey = Math.floor(Utility.Random(min,max))
       this.r = grey;

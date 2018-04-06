@@ -5,7 +5,7 @@ class Player extends Actor {
     // calling super with position, friction, speed and top speed values
     super(x,y,0.9,0.9,3.0,6.0);
 
-    this.setSpeed(1.0);
+    this.setSpeed(1);
 
     this.setTopSpeed(10.0);
 
@@ -16,19 +16,19 @@ class Player extends Actor {
   }
 
   // method given to player only for checking input states
-  checkKeyboardInput(){
+  checkKeyboardInput(deltaTime){
 
     // if up is pressed apply a negative vertical acc
-    if(input.isDown("UP"))    this.applyAcc(new SAT.Vector(0.0,-this.speed));
+    if(input.isDown("UP"))    this.applyImpulse(new SAT.Vector(0.0,-this.speed));
 
     // if down is pressed apply a positive vertical acc
-    if(input.isDown("DOWN"))  this.applyAcc(new SAT.Vector(0.0,this.speed));
+    if(input.isDown("DOWN"))  this.applyImpulse(new SAT.Vector(0.0,this.speed));
 
     // if left is pressed apply a negative horizontal acc
-    if(input.isDown("LEFT"))  this.applyAcc(new SAT.Vector(-this.speed,0.0));
+    if(input.isDown("LEFT"))  this.applyImpulse(new SAT.Vector(-this.speed,0.0));
 
     // if right is pressed apply a positive horizontal acc
-    if(input.isDown("RIGHT")) this.applyAcc(new SAT.Vector(this.speed,0.0));
+    if(input.isDown("RIGHT")) this.applyImpulse(new SAT.Vector(this.speed,0.0));
 
   }
 
@@ -39,6 +39,7 @@ class Player extends Actor {
       if(this.weapon !== null){
         this.setFiring(true);
         this.weapon.fire(this);
+
       }
     } else {
       this.setFiring(false);
@@ -50,7 +51,7 @@ class Player extends Actor {
   update(deltaTime){
 
     // checking for user input
-    this.checkKeyboardInput();
+    this.checkKeyboardInput(deltaTime);
 
     this.checkMouseInput();
 
@@ -80,6 +81,11 @@ class Player extends Actor {
     this.sprite.setDirection(this.getDirection());
 
     this.sprite.setPos(this.getPos())
+
+    diagnostic.updateLine("Acc: ",Math.round(Utility.pyth(this.acc.x,this.acc.y) * 1000) / 1000);
+    diagnostic.updateLine("Vel: ",Math.round(Utility.pyth(this.vel.x,this.vel.y) * 1000) / 1000);
+
+
 
   }
 

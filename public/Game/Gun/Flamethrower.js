@@ -2,9 +2,9 @@ class Flamethrower extends Gun {
 
   constructor(x,y){
     super(x,y,0,0);
-    this.setFireRate(1);
+    this.setFireRate(5);
     this.setRange(100);
-    this.setRicochetCount(1)
+    this.setRicochetCount(5)
   }
 
   update(deltaTime){
@@ -15,12 +15,11 @@ class Flamethrower extends Gun {
 
   fire(player){
     if(this.cycling <= 0) {
-
-      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,7 ,this.direction  ,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
-      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,9 ,this.direction+4,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
-      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,8 ,this.direction-4,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
-      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,7 ,this.direction+8,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
-      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,8,this.direction-8,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
+      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,2 ,this.direction  ,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
+      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,2 ,this.direction+5,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
+      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,2 ,this.direction-5,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
+      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,2 ,this.direction+12,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
+      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,2,this.direction-12,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
       this.cycling = this.fireRate;
     }
   }
@@ -36,9 +35,13 @@ class Flamethrower_Bullet extends Bullet {
 
     this.colour.setColour(255,0,0,1);
 
-    this.setSpeed(100);
+    this.setSize(new SAT.Vector(Utility.Random(4,10),Utility.Random(4,10)));
 
-    this.setSize(new SAT.Vector(5,5));
+    this.setFriction(0.95);
+
+    this.applyImpulse(this.getAcc().scale(this.getSpeed()));
+
+    // console.log(this.getAcc());
 
     // this.getAcc().add(acc);
 
@@ -71,7 +74,7 @@ class Flamethrower_Bullet extends Bullet {
       }
 
       Draw.fillCol(this.colour);
-      Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,6);
+      Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,this.size.x);
     }
 
   }

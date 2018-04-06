@@ -10,11 +10,11 @@
     },
 
     "enemy":[
-      { "x":10,"y":25,"type":"generic","weapon":"pistol" },
-      { "x":10,"y":25,"type":"generic","weapon":"pistol" },
-      { "x":10,"y":25,"type":"generic","weapon":"pistol" },
-      { "x":10,"y":25,"type":"generic","weapon":"pistol" },
-      { "x":10,"y":25,"type":"generic","weapon":"pistol" },
+      { "x":10,"y":25,"type":"generic","weapon":"machinegun" },
+      { "x":10,"y":25,"type":"generic","weapon":"machinegun" },
+      { "x":10,"y":25,"type":"generic","weapon":"shotgun" },
+      { "x":10,"y":25,"type":"generic","weapon":"shotgun" },
+      { "x":10,"y":25,"type":"generic","weapon":"shotgun" },
       { "x":10,"y":25,"type":"trace","weapon":"shotgun",
         "patrol":{
           "loop":true,
@@ -70,8 +70,9 @@
     ],
     "pickups":
       [
-        { "x":88,"y":60,"type":"machinegun" },
-        { "x":88,"y":50,"type":"flamethrower" }
+        { "x":88,"y":60,"type":"pistol" },
+        { "x":88,"y":50,"type":"flamethrower" },
+        { "x":88,"y":40,"type":"machinegun" }
       ],
     "walls":[
       {

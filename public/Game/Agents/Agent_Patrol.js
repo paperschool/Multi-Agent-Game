@@ -44,6 +44,8 @@ class Agent_Patrol extends Agent {
     this.setFocusPosition(
       this.grid.centerCellMap(this.patrol.getNextPoint())
     );
+    this.path = null;
+    this.newPath();
   }
 
   setPatrolPath(patrol){
@@ -63,7 +65,7 @@ class Agent_Patrol extends Agent {
 
 class Patrol {
 
-  constructor(loop, direction = 1){
+  constructor(loop = false, direction = 1){
 
     this.points = []
 
@@ -75,9 +77,49 @@ class Patrol {
 
   }
 
+  getLength(){
+    return this.points.length;
+  }
+
+  getLast(){
+    return this.poinss[this.points.length -1];
+  }
+
+  getPoint(index){
+    if(index < 0 || index > this.points.length-1) return null;
+    return this.points[index];
+  }
+
   addPoint(point){
     this.points.push(point);
   }
+
+  peekNext(){
+
+    let p = this.point;
+
+    let d = this.direction;
+
+    if(p === p.length-1 || (p === 0 && d === -1)){
+
+      if(this.loop){
+        p = -1;
+      } else {
+        d *= -1;
+      }
+
+    }
+
+    p+=d;
+
+    if(!(p < 0 || p > this.points.length-1)) {
+      return this.points[p];
+    } else {
+      return -1;
+    }
+
+  }
+
 
   getNextPoint(){
 
@@ -91,6 +133,7 @@ class Patrol {
     }
 
     this.point+=this.direction;
+
     return this.points[this.point];
 
   }

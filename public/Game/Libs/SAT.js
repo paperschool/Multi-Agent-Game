@@ -157,11 +157,19 @@
    *   is not specified, the x scaling factor will be used.
    * @return {Vector} This for chaining.
    */
-  Vector.prototype['scale'] = Vector.prototype.scale = function(x,y) {
-    this['x'] *= x;
-    this['y'] *= y || x;
-    return this;
-  };
+   Vector.prototype['scale'] = Vector.prototype.scale = function(x,y) {
+     this['x'] *= x;
+     this['y'] *= y || x;
+     return this;
+   };
+
+   Vector.prototype['scale2'] = Vector.prototype.scale2 = function(scale) {
+     this['x'] *= scale.x;
+     this['y'] *= scale.y || scale.x;
+     return this;
+   };
+
+
 
   // Project this vector on to another vector.
   /**
@@ -242,7 +250,7 @@
    // same as set exepct allowing for individual allocation of x and y
    Vector.prototype['set2'] = Vector.prototype.set2 = function(x=0,y=0) {
      this['x'] = x;
-     this['y'] = y;
+     this['y'] = y || x;
      return this;
    };
 

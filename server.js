@@ -33,6 +33,7 @@ var game = null;
 // constants for path finding
 var ROOT_DIRECTORY = process.cwd();
 var PUBLIC_DIRECTORY = process.cwd() + '/public';
+var TESTBED_DIRECTORY = process.cwd() + '/testbed';
 var SERVER_DIRECTORY = process.cwd() + "/server";
 var CLIENT_DIRECTORY = process.cwd() + "/client";
 var UTILITY_DIRECTORY = process.cwd() + "/utility";
@@ -59,6 +60,18 @@ app.get('/editor',function(req,res){
   res.sendFile(EDITOR_DIRECTORY + '/editor.html');
 
 });
+
+app.get('/testbed',function(req,res){
+
+
+  console.log("USER : Local User Accessed Level Editor: " + req.connection.remoteAddress);
+
+  app.use(express.static(TESTBED_DIRECTORY));
+
+  res.sendFile(TESTBED_DIRECTORY + '/index.html');
+
+});
+
 
 app.get('/',function(req,res){
 

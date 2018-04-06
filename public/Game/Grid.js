@@ -11,16 +11,20 @@ class Grid {
 
     this.EMPTY = 1
     this.WALL  = 0
-    this.MARGIN = 1000;
+    this.MARGIN = 100;
 
     this.pathMesh = []
 
     this.pathMeshInverted = [];
 
+    // path mesh of non obstacle positions
+    this.pathMeshFree = {};
+
     for(var y = 0 ; y < this.levelSize.y ; y++){
       let row = [];
       for(var x = 0 ; x < this.levelSize.x ; x++){
         row.push(this.EMPTY);
+        this.pathMeshFree[this.hashCode(x,y)] = {'x':x,'y':y};
       }
       this.pathMesh.push(row);
     }
@@ -47,6 +51,11 @@ class Grid {
     // draw grid switch boolean
     this.drawDebugGrid = false;
 
+  }
+
+  // position hash
+  hashCode(x,y){
+    return (((x & 0xff) << 16) + (y & 0xff));
   }
 
   // recreating graph array to fresh search area.
@@ -85,10 +94,12 @@ class Grid {
      }
 
     if(this.pathMesh[position.y][position.x] !== this.WALL || weight === this.WALL){
-
-
       // this.graph.grid[position.y][position.x].closed = true;
       this.pathMesh[position.y][position.x] = weight;
+
+      // deleting object reference in free position collection
+      delete this.pathMeshFree[this.hashCode(position.x,position.y)];
+
       // temp object designed for astar library
       this.pathMeshInverted[position.x][position.y] = weight;
      }
@@ -103,14 +114,10 @@ class Grid {
     for(var obly = -margin + y ; obly < y + h + margin ; obly++)
       for(var oblx = -margin + x ; oblx < x + w + margin ; oblx++){
         if(oblx >= x && oblx < x + w && obly >= y && obly < y + h){
-
           this.addObstacle(new SAT.Vector(oblx,obly),this.WALL);
-
         } else {
-
-          // let obstacleWeight = (Math.abs(margin - Math.abs(w-oblx))*10) + (Math.abs(margin - Math.abs(h-obly))*10)
-          // console.log(obstacleWeight)
-
+          // this.addObstacle(new SAT.Vector(oblx,obly),this.EMPTY);
+          // was laggy af
           this.addObstacle(new SAT.Vector(oblx,obly),this.MARGIN);
         }
       }
@@ -155,8 +162,12 @@ class Grid {
     // fetching a random position from the grid
     let pos = this.getRandomGridPosition();
 
+    let c = 1;
+
     // looping until a position is found that isnt an obstacle
     while(this.isObstacle(pos)){
+      console.log("Random Non-Obs Attempt: ",c);
+      c++;
       // updating position variable to new position
       pos = this.getRandomGridPosition();
     }
@@ -174,9 +185,14 @@ class Grid {
 
       let s = this.searchGrid(_start,p);
 
+      let c = 1;
+
       while(s.length === 0 || s === null || typeof s === 'undefined'){
+        console.log("Route Attempt: ",c);
+        c++;
         p = this.getRandomNonObstacleGridPosition();
         s = this.searchGrid(_start,p);
+
       }
 
       return p;
@@ -248,14 +264,19 @@ class Grid {
 
     let pdir = null;
 
-    let output = []
+    // let output = []
+
+
+    // creating iterable path (saving on graph searching)
+    let output = new Patrol();
+
 
     if(typeof path === 'undefined' || path.length === 0){
-      return [];
+      return output;
     }
 
     if(path.length === 1){
-      output.push(this.centerCellMap(path[0]));
+      output.addPoint(this.centerCellMap(path[0]));
       return output;
     }
 
@@ -268,7 +289,9 @@ class Grid {
 
         dir = this.cartesianDirection(primary,secondary);
 
-        output.push(this.centerCellMap(primary));
+        // output.push(this.centerCellMap(primary));
+
+        output.addPoint(this.centerCellMap(primary));
 
       } else {
 
@@ -276,12 +299,16 @@ class Grid {
         dir = this.cartesianDirection(primary,secondary);
 
         if(pdir !== dir){
-          output.push(this.centerCellMap(primary));
+          output.addPoint(this.centerCellMap(primary));
+
+          // output.push(this.centerCellMap(primary));
         }
       }
     }
 
-    output.push(this.centerCellMap(path[path.length-1]));
+    // output.push(this.centerCellMap(path[path.length-1]));
+
+    output.addPoint(this.centerCellMap(path[path.length-1]));
 
     // console.log(path.length + " => " + output.length)
 
@@ -455,8 +482,10 @@ class Grid {
           continue;
         }
 
-        if(this.pathMeshInverted[x][y] === 0){
+        if(this.pathMeshInverted[x][y] === this.WALL){
           Draw.stroke(0.5,"#FF0000");
+        if(this.pathMeshInverted[x][y] === this.MARGIN)
+          Draw.stroke(0.5,"#000000");
         } else {
           Draw.stroke(0.5,"#000000");
         }
@@ -484,16 +513,22 @@ class Grid {
 
         // ignore drawing any squares that fall off screen
         if((offsetPos.x < 0 || offsetPos.x > CW-this.gridSize) || (offsetPos.y < 0 || offsetPos.y > CH-this.gridSize /* || this.pathMesh[y][x] === this.EMPTY */)){
-
           continue;
+        }
 
+        if(this.pathMesh[y][x] === this.WALL){
+          Draw.fillCol(new Colour(255,0,0,0.5));
+        } else if(this.pathMesh[y][x] === this.MARGIN) {
+          Draw.fillCol(new Colour(0,255,0,0.5));
+        } else {
+          Draw.fillCol(new Colour(0,0,255,0.5));
         }
 
 
-        Draw.fillCol(new Colour(200,Utility.Map(this.pathMesh[y][x],0,this.EMPTY,0,255),Utility.Map(this.pathMesh[y][x],0,this.EMPTY,0,255),0.5));
+        // Draw.fillCol(new Colour(200,Utility.Map(this.pathMesh[y][x],0,this.EMPTY,0,255),Utility.Map(this.pathMesh[y][x],0,this.EMPTY,0,255),0.5));
 
         Draw.rect(offsetPos.x,offsetPos.y,this.gridSize,this.gridSize);
-        Draw.fillCol(new Colour(0))
+        // Draw.fillCol(new Colour(0))
 
         // Draw.text(9,"mono","right",new SAT.Vector(offsetPos.x+(this.gridSize/2),offsetPos.y+(this.gridSize/2)),x);
         // Draw.text(9,"mono","right",new SAT.Vector(offsetPos.x+(this.gridSize/2),offsetPos.y+(this.gridSize/2)+9),y);

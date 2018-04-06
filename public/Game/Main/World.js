@@ -22,16 +22,18 @@ class World {
     this.gridSize = 20;
 
     // array of level seed data
-    this.levelData = new Array(5);
+    this.levelData = new Array(0);
 
     // current level object
     this.levels = null;
 
     this.levelManager = new LevelManager();
 
-    this.levelManager.loadLevel("Game/Assets/Levels/1.json",0,this.addLevelData.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/5.json",0,this.addLevelData.bind(this));
 
-    this.levelManager.loadLevel("Game/Assets/Levels/2.json",1,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/4.json",0,this.addLevelData.bind(this));
+
+    // this.levelManager.loadLevel("Game/Assets/Levels/4.json",0,this.addLevelData.bind(this));
 
     this.currentLevel = -1;
 
@@ -70,6 +72,7 @@ class World {
 
     // add enemy agents
     for(var agent = 0 ; agent < data.level.enemy.length ; agent++){
+    // for(var agent = 0 ; agent < 0 ; agent++){
 
       let patrol = null;
 

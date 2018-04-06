@@ -255,6 +255,13 @@ class Agent_Behaviour {
       }
     }));
 
+    BehaviourTree.register('forceKnowLastKnownPosition', new BehaviourTree.Task({
+      title:'canFocusLastKnownPosition',
+      run:function(agent){
+        agent.setLastKnownPlayerPosition() ? this.success() : this.fail();
+      }
+    }));
+
     // this task will attempt to move to last known position of the player by:
     // - Checking if not yet arrived at current focus
     // - Checking if focus position is Impossible
@@ -467,7 +474,10 @@ class Agent_Behaviour {
     BehaviourTree.register('mainSequence', new BehaviourTree.Sequence({
       title:'mainSequence',
       // nodes:['Full','Hungry','Critical']
-      nodes:['navigateAgent','attackPlayer']
+      nodes:[
+        'navigateAgent',
+        'attackPlayer'
+      ]
     }));
 
     // tree

@@ -15,16 +15,19 @@ class Bullet extends Actor {
 
     this.setRicochetCount(rc);
 
+    // getting the direction of the player in terms of a unit vector
     this.setAcc(new SAT.Vector(
       Math.cos(Utility.Radians(this.getDirection())),
       Math.sin(Utility.Radians(this.getDirection()))
     ));
 
+    this.setSpeed(s);
+
+    this.setFriction(1);
+
     this.setBulletDamage(10);
 
-    this.getAcc().scale(this.getSpeed());
-
-    this.setFriction(new SAT.Vector(0.98,0.98));
+    this.applyImpulse(this.getAcc().scale(this.getSpeed()));
 
     this.setAirResistance(1.01);
 
@@ -78,6 +81,7 @@ class Bullet extends Actor {
   }
 
   evaluateVelocity(deltaTime){
+
     super.evaluateVelocity(deltaTime)
 
     // adding bullet inaccuracy
@@ -89,6 +93,8 @@ class Bullet extends Actor {
   }
 
   update(deltaTime){
+
+    this.evaluateVelocity(deltaTime);
 
     // lifecycle methods
     if(!this.alive) return;
@@ -103,13 +109,10 @@ class Bullet extends Actor {
     if(this.lifespan <= 0) this.setAlive(false);
 
     // killing bullet when its too slow
-    if(this.getAcc().x === 0 && this.getAcc().y === 0) this.setAlive(false);
+    // if(this.getAcc().x === 0 && this.getAcc().y === 0) this.setAlive(false);
 
     // updating collider center position with current position
     this.collider.setPos(this.pos);
-
-    this.evaluateVelocity(deltaTime);
-
 
   }
 

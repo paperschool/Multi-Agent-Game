@@ -49,6 +49,10 @@ class Gun extends Actor {
     this.range = range;
   }
 
+  setShotCount(count){
+    this.shotCount = count;
+  }
+
   updateCycle(){
 
     if(this.cycling >= 0){

@@ -102,10 +102,10 @@ class Level {
     let camera = this.camera.getOffset();
 
     // drawing the virtual world bounds
-    Draw.fillCol(new Colour(240,240,240,0.4));
+    Draw.fillCol(new Colour(240,240,240,1));
     Draw.rect(this.gridSize-camera.x,this.gridSize-camera.y,this.levelSize.x-this.gridSize,this.levelSize.y-this.gridSize);
 
-    // this.background.draw(camera);
+    this.background.draw(camera);
 
     this.timer.draw(camera);
 
@@ -159,7 +159,7 @@ class Level {
     }
 
     if(this.agents.getLiveAgents() <= 0){
-      this.levelState = LevelState.ENEMY_DEAD;
+      // this.levelState = LevelState.ENEMY_DEAD;
     }
 
     if(this.timer.isEnded()){

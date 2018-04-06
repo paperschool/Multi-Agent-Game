@@ -10,6 +10,8 @@ class AgentManager {
 
     this.agents = [];
 
+    this.seperation = 10;
+
     this.agentsWeapons = [];
 
     this.drawDebugPath        = false;
@@ -71,6 +73,45 @@ class AgentManager {
 
   }
 
+  seperateAgents(){
+
+    for(let a = 0 ; a < this.agents.length ; a++){
+      this.agents[a].applyImpluse(this.seperateAgent(a));
+    }
+  }
+
+  seperateAgent(agent){
+
+    let steer = new SAT.Vector();
+
+    for(let a = 0 ; a < this.agents.length ; a++){
+
+      let other = this.agents[a];
+
+      let d = Utility.dist(agent.getPos(),other.getPos());
+
+      if(d > 0 && d < this.seperation){
+        // calculate opposing vector for other agent
+        let opp = new SAT.Vector(agent.getPos().x-other.getPos().x,agent.getPos().y-other.getPos().y);
+
+        opp.normalize();
+        opp.scale(1/d);
+        steer.add(opp);
+      }
+    }
+
+    steer.scale(1/this.agents.length-1);
+
+    return steer;
+
+
+    if(steer.len() > 0){
+      steer.normalize();
+      steer.scale(agent.getSpeed()*2);
+    }
+
+  }
+
   update(deltaTime){
 
     diagnostic.updateLine("---- Agents",this.agents.length);
@@ -80,13 +121,21 @@ class AgentManager {
     if(input.isDown("J")) this.toggleDrawDebugVision();
 
     for(var agent = this.agents.length - 1 ; agent >= 0 ; agent--) {
-      if(!this.agents[agent].getAlive()){
+
+      let a = this.agents[agent];
+
+      if(!a.getAlive()){
         this.agents.splice(agent,1);
         continue;
       } else {
 
+        let sep = this.seperateAgent(a);
+
+        // applying seperation calculation
+        a.applyImpulse(sep);
+
         // update agent internals
-        this.agents[agent].update(deltaTime);
+        a.update(deltaTime);
 
       }
     }

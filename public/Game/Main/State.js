@@ -127,7 +127,7 @@ class GameOverState extends State {
 
   setup(){
 
-    this.timer = new LevelTimer(3000,-1,{ x:CW, y:CH });
+    this.timer = new LevelTimer(1000,-1,{ x:CW, y:CH });
 
   }
 
@@ -142,7 +142,7 @@ class GameOverState extends State {
     Draw.fill(51,51,51,0.5);
     Draw.rect(0,0,CW,CH);
 
-    Draw.fill(255,51,51);
+    Draw.fill(255,0,0);
     Draw.text(150,"techno-hideo","center",new SAT.Vector(Utility.Random(-4,4)+(CW/2),Utility.Random(-4,4)+CH/2),"GAMEOVER");
 
   }

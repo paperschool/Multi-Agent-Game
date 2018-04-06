@@ -4,14 +4,15 @@
 
 	<title>Gunner - Level Editor</title>
 
-	<style>
+	<link href="style.css" rel="stylesheet" />
 
-	</style>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.0/p5.min.js" ></script>
 
 	<script src="editor.js"></script>
-	<link href="style.css" rel="stylesheet" />
+	<script src="grid.js"></script>
+	<script src="components.js"></script>
 
 </head>
 
@@ -19,8 +20,13 @@
 
 	<div class="toolbar">
 		<div class="toolbar-button" id="wall-button" >Wall</div>
-		<div class="toolbar-button" id="player" >Player</div>
-		<div class="toolbar-button" id="enemy" >Enemy</div>
+		<div class="toolbar-button" id="player-button" >Player</div>
+		<div class="toolbar-button" id="enemy-button" >Enemy</div>
+		<div class="toolbar-button" id="pickup-button" >Pickup</div>
+		<div class="toolbar-button" id="build-button" >Build</div>
+		<div class="toolbar-button" id="tool-position" ></div>
+
+		<div class="toolbar-button toolbar-button-right" id="reset-button" >Reset!</div>
 	</div>
 
 	<div class="canvas-container" id="editor_canvas"></div>

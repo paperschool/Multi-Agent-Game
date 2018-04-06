@@ -1,18 +1,114 @@
-function windowResized(){
-  resizeCanvas(innerWidth,innerHeight);
-}
 
-function mouseMoved(){
+// tools, 0 === wall, 1 === player, 2 === enemy, 3 === pickup
+let activeTool = 0;
 
-}
+let wallThickness = 1;
+
+let buildWindowOpen = false;
 
 var can;
 
-var gridSize = 20;
+var gridSize = 10;
 
 var grid = null;
 
 var cursor = null;
+
+function windowResized(){
+  resizeCanvas(innerWidth,innerHeight);
+}
+
+$(document).ready(function(){
+
+  // storing references to dom toolbar buttons
+  let wall   = $('#wall-button');
+  let player = $('#player-button');
+  let enemy  = $('#enemy-button');
+  let pickup = $('#pickup-button');
+  let build  = $('#build-button');
+  let reset  = $('#reset-button');
+
+  //
+  let toolPosition  = $('#tool-position');
+
+  $(window).mousemove(function(event){
+    toolPosition.html(Math.round(event.pageX / gridSize) + ":" + Math.round(event.pageY / gridSize));
+  });
+
+  wall.on('click',function(){
+    activeTool = 0;
+    clicked();
+  });
+
+  player.on('click',function(){
+    activeTool = 1;
+    clicked();
+  });
+
+  enemy.on('click',function(){
+    activeTool = 2;
+    clicked();
+  });
+
+  pickup.on('click',function(){
+    activeTool = 3;
+    clicked();
+  });
+
+  function clicked(){
+    wall.css({'background-color':(activeTool === 0 ? '#e74c3c' : '#f39c12')});
+    player.css({'background-color':(activeTool === 1 ? '#e74c3c' : '#f39c12')});
+    enemy.css({'background-color':(activeTool === 2 ? '#e74c3c' : '#f39c12')});
+    pickup.css({'background-color':(activeTool === 3 ? '#e74c3c' : '#f39c12')});
+  }
+
+  clicked();
+
+  // method that generates the json object for the level files
+  build.on('click',function(){
+
+    buildWindowOpen = true;
+
+    let close = $('<div class="built-level-close"></div>');
+
+    let copy = $('<div class="built-level-copy" id="build-level-copy"></div>');
+
+    let code = $('<div class="built-level-content"><pre>'+JSON.stringify(grid.buildLevel(),null, 2)+'</pre></div>')
+
+    let dialogue = $('<div class="built-level"></div>');
+
+    $('body').find('.built-level').remove();
+
+    $('body').append(dialogue);
+
+    dialogue.append(close);
+    dialogue.append(copy);
+    dialogue.append(code);
+
+    close.on('click',function(){
+      dialogue.remove();
+      buildWindowOpen = false;
+    })
+
+    copy.on('click',function() {
+
+        var sel = document.getSelection();
+        var ran = new Range();
+
+        sel.addRange(ran);
+
+        range.selectNode(document.getElementById("build-level-copy"));
+        window.getSelection().addRange(range);
+        document.execCommand("copy")
+    });
+
+  });
+
+  reset.on('click',function(){
+    grid = new Grid();
+  });
+
+});
 
 function setup(){
 
@@ -41,77 +137,7 @@ function draw(){
 
 }
 
-class Wall {
 
-  constructor(){
-    this.startPos = null;
-    this.endPos = null
-    this.direction = 0; // 1 === horizontal, 2 === vertical
-  }
-
-  start(s){
-    this.startPos = createVector(s.x,s.y);
-  }
-
-  end(e){
-    this.endPos = createVector(e.x,e.y);
-  }
-
-  single(){
-    if(this.endPos === null) return false
-    return this.startPos.x === this.endPos.x && this.startPos.y === this.endPos.y
-  }
-
-  alignment(){
-
-    if(this.startPos === null) return true;
-
-    let c = cursor.get();
-    return this.startPos.x === c.x || this.startPos.y === c.y
-  }
-
-  update(){
-
-
-  }
-
-  draw(){
-
-    fill(255,255,255);
-
-    if(this.startPos != null){
-
-      rect(this.startPos.x,this.startPos.y,gridSize,gridSize);
-
-    }
-
-    if(this.startPos != null && this.endPos === null && this.alignment()){
-      fill(255,255,255,100);
-
-      rect(
-        this.startPos.x,
-        this.startPos.y,
-        (cursor.get().x-this.startPos.x)+gridSize,
-        (cursor.get().y-this.startPos.y)+gridSize
-      )
-    }
-
-    if(this.endPos != null)
-      rect(this.endPos.x,this.endPos.y,gridSize,gridSize);
-
-    if(this.startPos != null && this.endPos != null){
-      rect(
-        this.startPos.x,
-        this.startPos.y,
-        (this.endPos.x-this.startPos.x)+gridSize,
-        (this.endPos.y-this.startPos.y)+gridSize
-      )
-
-    }
-
-  }
-
-}
 
 class Cursor {
 
@@ -129,23 +155,30 @@ class Cursor {
     return this.pos;
   }
 
+  offscreen() {
+    return (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height);
+  }
+
   update(){
 
     this.pos.x = floor( mouseX / gridSize ) * gridSize;
     this.pos.y = floor( mouseY / gridSize ) * gridSize;
 
-    if(grid.newWall != null){
+    if(activeTool === 0){
+      if(grid.newWall != null){
 
-      let ws = grid.newWall.startPos;
-      let we = grid.newWall.endPos;
+        let ws = grid.newWall.startPos;
+        let we = grid.newWall.endPos;
 
-      if(grid.newWall.alignment() && !grid.newWall.single()){
-        this.color = color(0,255,0);
-      } else {
-        this.color = color(255,0,0);
+        if(grid.newWall.alignment() && !grid.newWall.single()){
+          this.color = color(0,255,0);
+        } else {
+          this.color = color(255,0,0);
+        }
+
       }
-
     }
+
 
 
   }
@@ -169,82 +202,12 @@ class Cursor {
       fill(255,255,0);
 
       if(ws != null){
+        textSize(15);
         text("Start: " + ws.x + ":" + ws.y, this.pos.x,this.pos.y-20);
         text("End  : " + this.pos.x + ":"+this.pos.y, this.pos.x,this.pos.y);
 
       }
 
-    }
-
-  }
-
-}
-
-class Grid {
-
-  constructor(){
-
-    this.newWall = null;
-
-    this.mouseDown = false;
-
-    this.drawing = false;
-
-    this.walls = [];
-
-  }
-
-  update(){
-
-    if(this.newWall != null) this.newWall.update();
-
-    if(mouseIsPressed && !this.mouseDown){
-      this.mouseDown = true;
-      this.drawing = true;
-      this.newWall = new Wall();
-      this.newWall.start(cursor.get());
-    }
-
-    if(!mouseIsPressed && this.mouseDown){
-
-      this.mouseDown = false;
-      this.newWall.end(cursor.get());
-
-      if(this.newWall.alignment() && !this.newWall.single()){
-        this.walls.push(this.newWall);
-      }
-
-      this.newWall = null;
-
-    }
-
-  }
-
-  draw(){
-
-    strokeWeight(0.5);
-    stroke(255);
-
-    for(let h = 0 ; h < (width / gridSize) ; h++){
-      line((h*gridSize),0,(h*gridSize),height);
-    }
-
-    for(let v = 0 ; v < height / gridSize ; v++){
-      line(0,(v*gridSize),width,(v*gridSize));
-    }
-
-    noStroke();
-
-    if(mouseIsPressed && this.mouseDown){
-      fill(100,100,100,150);
-      rect(cursor.get().x,0,gridSize,height);
-      rect(0,cursor.get().y,width,gridSize);
-    }
-
-    if(this.newWall != null) this.newWall.draw();
-
-    for(let wall in this.walls){
-      this.walls[wall].draw();
     }
 
   }

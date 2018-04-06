@@ -27,6 +27,11 @@ $(document).on({
    }
 });
 
+$(window).on('resize',function(){
+  CW = window.innerWidth;
+  CH = window.innerHeight;
+});
+
 
 $(window).bind("load", function() {
 
@@ -81,9 +86,6 @@ class Game {
     // updating and updating world
     this.world.update(deltaTime);
 
-    // diagnostic.updateLine("Total Frame",MainLoop.getFPS());
-    // diagnostic.updateLine("------- FPS",1 / this.fps);
-
   }
 
   draw(deltaTime){
@@ -92,7 +94,7 @@ class Game {
 
     chart.draw();
 
-    // diagnostic.draw();
+    diagnostic.draw();
 
   }
 
@@ -110,10 +112,10 @@ class GameLoop {
       console.log(" > GAME LOOP Started. ");
 
       // this value represents the number of phsical updates per second
-      this.sps = 1 / 60;
+      this.sps = 1000 / sps;
 
       // fps as a value over 1 second ( 1000 miliseconds / '30' fps ) = 33.3 ms before next tick
-      this.fps = 1 / 45;
+      this.fps = 1000.0 / fps;
 
       // variable to store time of current tick
       this.now = this.getNow();
@@ -136,8 +138,60 @@ class GameLoop {
 
       this.ticking = true;
 
-      this.tick();
+      // this.tick();
 
+      // new game loop
+
+      this.tickSecond = 0;
+
+      this.lastRender = 0;
+
+      this.lastSecond = this.getNow();
+
+      this.currentFPS = 0;
+
+      window.requestAnimationFrame(this.tick_2.bind(this))
+
+  }
+
+  tick_2(time){
+
+    // incrementing ticks
+    this.totalTick++;
+    // incrementing ticks since last second
+    this.tickSecond++;
+
+    // if the current time minus the time since the last frame poll is more than a second
+    if(time - this.lastSecond > 1000){
+
+      this.currentFPS = this.tickSecond;
+
+      // reset ticks per second
+      this.tickSecond = 0;
+
+      // update last second time
+      this.lastSecond = time;
+
+    }
+
+    // update fps diagnostic and chart
+    diagnostic.updateLine("FPS: ",this.currentFPS);
+    chart.addSample(this.currentFPS);
+
+    let deltaTime = ((time - this.lastRender) / this.fps);
+
+    let progress = (Math.round(deltaTime * 10000) / 10000);
+
+    this.updateCallback(progress);
+    this.drawCallback();
+
+    this.lastRender = time;
+
+    // diagnostic.updateLine("Prog-1: ",Math.round(((time - this.lastRender) / this.fps) * 100) / 100);
+    diagnostic.updateLine("Prog-2: ",progress);
+
+    // requesting new frame
+    window.requestAnimationFrame(this.tick_2.bind(this));
 
   }
 

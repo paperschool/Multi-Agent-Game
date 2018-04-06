@@ -9,10 +9,21 @@
       "y":25
     },
     "enemy":[
-      { "x":5,"y":5,"type":"generic","weapon":"shotgun"},
-      { "x":5,"y":45,"type":"generic","weapon":"shotgun"},
-      { "x":95,"y":5,"type":"generic","weapon":"shotgun"},
-      { "x":95,"y":45,"type":"generic","weapon":"shotgun"}
+      { "x":5,"y":5,  "type":"generic","weapon":"shotgun"},
+      { "x":5,"y":45, "type":"generic","weapon":"shotgun"},
+      { "x":95,"y":5, "type":"generic","weapon":"shotgun"},
+      { "x":95,"y":45,"type":"generic","weapon":"shotgun"},
+      { "x":10,"y":10,"type":"trace",  "weapon":"shotgun",
+        "patrol":{
+          "loop":true,
+          "direction":1,
+          "points":[
+            {"x":10,"y":10},
+            {"x":10,"y":35},
+            {"x":30,"y":30}
+          ]
+        }
+      }
     ],
     "pickups":
       [

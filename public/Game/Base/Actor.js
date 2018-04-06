@@ -26,7 +26,8 @@ class Actor extends Rectangle {
     this.vel = new SAT.Vector(0,0);
 
     // friction applies to acceleration vector before being set to velocity
-    this.friction = new SAT.Vector(0.9,0.9);
+    this.setFriction(0.9);
+
 
     // player speed increment
     this.speed = s;
@@ -157,7 +158,7 @@ class Actor extends Rectangle {
   }
 
   setFriction(friction){
-    this.friction.set(friction);
+    this.friction = friction;
   }
 
   setSpeed(speed){
@@ -212,34 +213,32 @@ class Actor extends Rectangle {
 
   applyAcc(newAcc){
 
-    // checking speed
-    if(Math.abs(this.acc.x) <= this.topSpeed){
-      this.acc.add(new SAT.Vector(newAcc.x,0));
-    }
+    // using acceleration as an impulse rather than as a force
+    // this.acc.set(newAcc);
+    this.acc.set(newAcc);
 
-    if(Math.abs(this.acc.y) <= this.topSpeed){
-      this.acc.add(new SAT.Vector(0,newAcc.y));
-    }
+  }
 
+  applyVel(newVel){
+    this.vel.add(newAcc);
+  }
+
+  applyImpulse(impulse){
+    this.acc.add(impulse);
   }
 
   evaluateVelocity(deltaTime){
 
-    // zeroing velocity when its too low
-    if(Math.abs(this.acc.x) <= 0.0001) this.acc.x = 0;
-    if(Math.abs(this.acc.y) <= 0.0001) this.acc.y = 0;
+    // zeroing acceleration && velocity when its too low
+    // this.vel.x = Math.max(this.vel.x,0.001);
+    // this.vel.y = Math.max(this.vel.y,0.001);
 
-    // calling friction applicator
-    this.applyFriction();
-
-    // applying calculated velocity to test velocity
-    this.vel.set(this.acc);
-
-    // scaling velocity to deltatime
-    this.vel.scale(deltaTime);
-
-    // adding velocity to position vector
+    this.vel.add(this.acc);
     this.pos.add(this.vel);
+
+    this.acc.scale(0);
+
+    this.vel.scale(this.getFriction());
 
     // updating should positions
     this.leftShoulder.set2(
@@ -252,12 +251,25 @@ class Actor extends Rectangle {
       50*Math.sin(Utility.Radians(this.getDirection()+90))+this.getPos().y
     );
 
-
-
   }
 
-  applyFriction(){
-    this.acc.scale(this.friction.x,this.friction.y);
+  applyFriction(deltaTime){
+    // this.acc.scale2(this.getFriction());
+
+    let frictionForce = new SAT.Vector();
+
+    frictionForce.set(this.acc);
+    // frictionForce.normalize();
+    frictionForce.reverse();
+    frictionForce.scale(this.getFriction());
+    // frictionForce.scale(deltaTime);
+
+    this.acc.add(frictionForce);
+    this.vel.add(frictionForce);
+
+    console.log(frictionForce);
+
+
   }
 
   calculateDirection(pointFrom,pointTo){

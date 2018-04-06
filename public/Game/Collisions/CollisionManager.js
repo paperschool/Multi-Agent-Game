@@ -39,11 +39,11 @@ class CollisionManager {
 
       }
 
-      // for(var i = 0 ; i < agents.length ; i++){
-      //   if(agents[i].getAlive()){
-      //     this.checkWallEnemy(this.level.walls[wall],agents[i]);
-      //   }
-      // }
+      for(var i = 0 ; i < agents.length ; i++){
+        if(agents[i].getAlive()){
+          this.checkWallEnemy(this.level.walls[wall],agents[i]);
+        }
+      }
 
       this.checkWallPlayer(this.level.walls[wall],this.level.player);
 
@@ -92,6 +92,7 @@ class CollisionManager {
       // this.level.camera.resetShake();
 
       player.collider.getPos().add(r.overlapV);
+
       player.pos.set(player.collider.getPos());
 
     } else {
@@ -123,9 +124,7 @@ class CollisionManager {
       // bullet.setAlive(false);
       // player.setShot(true);
 
-      player.applyDamage(bullet);
-
-      // player.setAlive(false);
+      // player.applyDamage(bullet);
 
       // remove particle on collision
       bullet.setAlive(false);

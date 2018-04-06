@@ -9,9 +9,9 @@ class Agent extends Actor {
 
     this.setAlive(true);
 
-    this.setSpeed(0.2);
+    this.setSpeed(5);
 
-    this.setTopSpeed(10.0);
+    this.setTopSpeed(100.0);
 
     this.setSize(new SAT.Vector(50,50));
 
@@ -40,6 +40,8 @@ class Agent extends Actor {
     this.deltaTime = null;
 
     // BEHAVIOUR VARIABLES / STATES //
+
+    this.stepBehaviour = false;
 
     // reference to environment for full access when evaluating
     this.level = environment;
@@ -181,8 +183,8 @@ class Agent extends Actor {
   }
 
   getPathDirection(){
-    if(this.getPath().length > 1) {
-      this.calculateDirection(this.getPos(),this.getNext());
+    if(this.getPath().getLength() > 1) {
+      this.calculateDirection(this.getPos(),this.getPath().peekNext());
       return this.getDirection();
     } else {
       return this.getDirection();
@@ -427,19 +429,23 @@ class Agent extends Actor {
   // this method will update the internal focus position state
   setAgentPathfindingFocus(focus = AgentPathFindingFocus.WANDER){
 
-    // checking if focus state has changed
-    if(this.pathfindingFocus !== focus){
-      this.focusChanged = true;
-      this.pathfindingFocus = focus;
-    }
+    let changed = this.pathfindingFocus !== focus;
+
+    this.pathfindingFocus = focus;
 
     switch(this.pathfindingFocus){
       case AgentPathFindingFocus.PLAYER:     this.setFocusPosition(this.getPlayerPosition());   break;
       case AgentPathFindingFocus.NEARPLAYER: this.setFocusPosition(this.getPlayerPosition());   break;
       case AgentPathFindingFocus.OLDPLAYER:  this.setFocusPosition(this.getLastKnownPlayerPosition()); break;
-      case AgentPathFindingFocus.PATROL:     /* this.setFocusPosition(this.nonPlayerFocusPosition); */  break;
-      case AgentPathFindingFocus.WANDER:     /* this.setFocusPosition(this.nonPlayerFocusPosition); */  break;
+      case AgentPathFindingFocus.PATROL:     /* this.setFocusPosition(this.getPath().getNext()); */    break;
+      case AgentPathFindingFocus.WANDER:     /* this.setFocusPosition(this.nonPlayerFocusPosition); */ break;
       default: break;
+    }
+
+    // checking if focus state has changed
+    if(changed){
+      this.path = null;
+      this.newPath();
     }
 
   }
@@ -449,22 +455,33 @@ class Agent extends Actor {
   // this method will set the agents focus to a random position on the map
   chooseRandomFocusPosition(){
 
-    //this.nonPlayerFocusPosition = this.grid.getRoutableRandomNonObstacleMapPosition(this.getPos());
-
-    // this.setFocusPosition(this.nonPlayerFocusPosition);
-
     this.setFocusPosition(this.grid.getRoutableRandomNonObstacleMapPosition(this.getPos()));
 
+    this.path = null;
+
+    this.newPath();
+
     return this.getFocusPosition();
+  }
+
+  // method will determine if agent has reached node in path (to move to next point)
+  agentArrivedAtPathNode(){
+
+    if(this.getPath().peekNext() === -1)
+      return true;
+
+    if(this.grid.isAtMapPosition(this.getPos(),this.getPath().peekNext())){
+      this.getPath().getNextPoint();
+    } else {}
   }
 
   // method that will determine if agent has reached focus position
   agentArrivedFocusPosition(){
 
     if(this.grid.isAtMapPosition(this.getPos(),this.getFocusPosition())){
-      // this.setLastKnownPlayerPosition(new SAT.Vector(-1,-1));
       return true;
     } else {
+      this.agentArrivedAtPathNode()
       return false;
     }
   }
@@ -530,8 +547,6 @@ class Agent extends Actor {
   // this will turn the agent in the direction of the focus position
   lookAtFocus(){
 
-    if(!this.path.length) return;
-
     if(this.getPathFindingFocus() === AgentPathFindingFocus.PLAYER){
 
       // this.setDirection(Utility.Degrees(Utility.angle(this.getPos(),this.getFocusPosition())));
@@ -539,6 +554,8 @@ class Agent extends Actor {
       this.turnTo(this.getPos(),this.getFocusPosition());
 
     } else {
+
+      if(this.getPath() === null || !this.getPath().getLength()) return;
 
       // this method will return the new direction but also set the direction when its
       // calculated
@@ -553,19 +570,30 @@ class Agent extends Actor {
   // this move the agent in the direction specified above
   moveToFocus(){
 
-    // setting current acceleration to speed directed by agent direction
-    this.applyAcc(
-        new SAT.Vector(
-          (this.speed) * Math.cos(Utility.Radians(this.direction)),
-          (this.speed) * Math.sin(Utility.Radians(this.direction))
-        )
-    );
-
-
-    // evaluate new velocity from current acceleration,direction,speed etc
-    this.evaluateVelocity(this.deltaTime);
+    if(!this.focusProximityLimitation()){
+      // setting current acceleration to speed directed by agent direction
+      this.applyImpulse(
+          new SAT.Vector(
+            (this.getSpeed()) * Math.cos(Utility.Radians(this.getDirection())),
+            (this.getSpeed()) * Math.sin(Utility.Radians(this.getDirection()))
+          )
+      );
+    }
 
     return true;
+  }
+
+  focusProximityLimitation(){
+    if(this.pathfindingFocus === AgentPathFindingFocus.PLAYER && Utility.dist(this.getPos(),this.getPlayerPosition()) < 100){
+      this.applyImpulse(
+          new SAT.Vector(
+            (this.getSpeed()*2) * Math.cos(Utility.Radians(this.getDirection()+180)),
+            (this.getSpeed()*2) * Math.sin(Utility.Radians(this.getDirection()+180))
+          )
+      );
+      return true;
+    }
+    return false;
   }
 
   // methods used when player is visible
@@ -580,16 +608,16 @@ class Agent extends Actor {
 
   moveToPlayer(){
 
+    if(this.pathfindingFocus === AgentPathFindingFocus.PLAYER && Utility.dist(this.pos.x,this.pos.y,this.getPlayerPosition().x,this.getPlayerPosition().y) > 100)
+      return true;
+
     // setting current acceleration to speed directed by agent direction
-    this.applyAcc(
+    this.applyImpulse(
         new SAT.Vector(
           (this.speed) * Math.cos(Utility.Radians(this.direction)),
           (this.speed) * Math.sin(Utility.Radians(this.direction))
         )
     );
-
-    // evaluate new velocity from current acceleration,direction,speed etc
-    this.evaluateVelocity(this.deltaTime);
 
     return true;
   }
@@ -621,12 +649,14 @@ class Agent extends Actor {
 
   newPath(){
 
-    this.setPath(
-      this.grid.requestSearchPath(
-        this.getPos(),
-        this.getFocusPosition()
+    if(this.path === null || this.getAlerted()) {
+      this.setPath(
+        this.grid.requestSearchPath(
+          this.getPos(),
+          this.getFocusPosition()
+        )
       )
-    )
+    }
   }
 
   // AGENT UPDATE AND DRAW METHODS
@@ -648,6 +678,11 @@ class Agent extends Actor {
     // updating delta time for other methods that use it
     this.deltaTime = deltaTime;
 
+    // evaluate new velocity from current acceleration,direction,speed etc
+    this.evaluateVelocity(this.deltaTime);
+
+    // console.log(Math.round(this.pos.x),Math.round(this.player.pos.x),Math.round(this.pos.y),Math.round(this.player.pos.y));
+
     // decrimenting alert value
     this.updateAlert();
 
@@ -655,9 +690,9 @@ class Agent extends Actor {
     this.getPlayerDistance();
 
     // fetching new path
-    this.newPath();
+    // this.newPath();
 
-    // this.setPath([])2
+    // this.agentArrivedAtPathNode();
 
     // redrawing collision polygon from a normalised position
     this.setCollider(new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.getDirection())))
@@ -673,6 +708,12 @@ class Agent extends Actor {
 
     // stepping through the behaviour tree
     this.behaviour.step();
+
+    // if(this.stepBehaviour){
+    //   this.stepBehaviour = !this.stepBehaviour;
+    // }
+
+
 
   }
 
@@ -708,9 +749,9 @@ class Agent extends Actor {
       Draw.fillCol(this.colour);
       Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
 
-      if(this.getWithinFireRange() && this.getShooting()){
-        Draw.line(this.pos.x-camera.x,this.pos.y-camera.y,this.getPlayerPosition().x-camera.x,this.getPlayerPosition().y-camera.y);
-      }
+      // if(this.getWithinFireRange() && this.getShooting()){
+      //   Draw.line(this.pos.x-camera.x,this.pos.y-camera.y,this.getPlayerPosition().x-camera.x,this.getPlayerPosition().y-camera.y);
+      // }
 
       // Draw.fill(100,100,255,1);
       // Draw.circle(this.leftShoulder.x-camera.x,this.leftShoulder.y-camera.y,5);
@@ -732,52 +773,61 @@ class Agent extends Actor {
           3,'#FF00FF'
         );
 
-        Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.firingDistance);
-        Draw.stroke(1,'#FFFF00');
-
-        Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.alertDistance);
-        Draw.stroke(1,'#00FFFF');
+        // BASIC RADIUS DEBUG`
+        // Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.firingDistance);
+        // Draw.stroke(1,'#FFFF00');
+        //
+        // Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.alertDistance);
+        // Draw.stroke(1,'#00FFFF');
 
         // Draw.fill('#FFFFFF');
         // Draw.circle(this.playerLastKnownLocation.x-camera.x,this.playerLastKnownLocation.y-camera.y,5);
 
-        Draw.line(
-          this.getPos().x - camera.x,
-          this.getPos().y - camera.y,
-          this.getSightDistance() * Math.cos(Utility.Radians(this.getDirection() - (this.getSightAngle()/2))) + this.getPos().x - camera.x,
-          this.getSightDistance() * Math.sin(Utility.Radians(this.getDirection() - (this.getSightAngle()/2))) + this.getPos().y - camera.y,
-          (this.isWithinFieldOfView ? 3 : 1),
-          (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
-        );
-
-
-        Draw.line(
-          this.getPos().x - camera.x,
-          this.getPos().y - camera.y,
-          this.getSightDistance() * Math.cos(Utility.Radians(this.getDirection() + (this.getSightAngle()/2))) + this.getPos().x - camera.x,
-          this.getSightDistance() * Math.sin(Utility.Radians(this.getDirection() + (this.getSightAngle()/2))) + this.getPos().y - camera.y,
-          (this.isWithinFieldOfView ? 3 : 1),
-          (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
-        );
+        // VIEW CONE
+        // Draw.line(
+        //   this.getPos().x - camera.x,
+        //   this.getPos().y - camera.y,
+        //   this.getSightDistance() * Math.cos(Utility.Radians(this.getDirection() - (this.getSightAngle()/2))) + this.getPos().x - camera.x,
+        //   this.getSightDistance() * Math.sin(Utility.Radians(this.getDirection() - (this.getSightAngle()/2))) + this.getPos().y - camera.y,
+        //   (this.isWithinFieldOfView ? 3 : 1),
+        //   (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
+        // );
+        //
+        //
+        // Draw.line(
+        //   this.getPos().x - camera.x,
+        //   this.getPos().y - camera.y,
+        //   this.getSightDistance() * Math.cos(Utility.Radians(this.getDirection() + (this.getSightAngle()/2))) + this.getPos().x - camera.x,
+        //   this.getSightDistance() * Math.sin(Utility.Radians(this.getDirection() + (this.getSightAngle()/2))) + this.getPos().y - camera.y,
+        //   (this.isWithinFieldOfView ? 3 : 1),
+        //   (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
+        // );
 
         let path = this.getPath();
 
         if(path){
-          for(var node = 0 ; node < path.length ; node++){
+          for(var node = 0 ; node < this.getPath().getLength() ; node++){
 
             Draw.fill(
               100,
-              Utility.Map(node,0,path.length,255,0),
-              Utility.Map(node,0,path.length,0,255)
+              Utility.Map(node,0,path.getLength(),255,0),
+              Utility.Map(node,0,path.getLength(),0,255)
               ,
               0.5
             );
 
             Draw.circle(
-              path[node].x-camera.x,
-              path[node].y-camera.y,
+              path.getPoint(node).x-camera.x,
+              path.getPoint(node).y-camera.y,
               this.grid.gridSize/4
             )
+
+            Draw.line(
+              path.getPoint(node).x-camera.x,
+              path.getPoint(node).y-camera.y,
+              (path.getPoint(node+1) !== null ? path.getPoint(node+1).x : path.getPoint(node).x ) -camera.x,
+              (path.getPoint(node+1) !== null ? path.getPoint(node+1).y : path.getPoint(node).y ) -camera.y
+            );
 
           }
         }
@@ -806,14 +856,14 @@ class Agent extends Actor {
             Utility.Map(this.getAlertRemaining(),0,this.getAlertTimeout(),0,360)
           )
 
-          Draw.line(
-            this.getPos().x - camera.x,
-            this.getPos().y - camera.y,
-            this.getSightDistance() * Math.cos(Utility.Radians(Utility.VectorAngle(this.getPos(),this.getPlayerPosition()))) + this.getPos().x - camera.x,
-            this.getSightDistance() * Math.sin(Utility.Radians(Utility.VectorAngle(this.getPos(),this.getPlayerPosition()))) + this.getPos().y - camera.y,
-            (this.getWithinFieldOfView() ? 3 : 1),
-            (this.getWithinFieldOfView() ? '#00FF00' : '#FF0000')
-          );
+          // Draw.line(
+          //   this.getPos().x - camera.x,
+          //   this.getPos().y - camera.y,
+          //   this.getSightDistance() * Math.cos(Utility.Radians(Utility.VectorAngle(this.getPos(),this.getPlayerPosition()))) + this.getPos().x - camera.x,
+          //   this.getSightDistance() * Math.sin(Utility.Radians(Utility.VectorAngle(this.getPos(),this.getPlayerPosition()))) + this.getPos().y - camera.y,
+          //   (this.getWithinFieldOfView() ? 3 : 1),
+          //   (this.getWithinFieldOfView() ? '#00FF00' : '#FF0000')
+          // );
 
         }
 
