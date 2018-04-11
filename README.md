@@ -20,8 +20,17 @@ The Games makes use of several libraries:
 
 ### Screen Shots
 
-![](screenshots/home.jpg)
+![](screenshots/start_3.png)
 - - -
-![](screenshots/angry_ai_no_debug.jpg)
+![](screenshots/game_2.png)
 - - -
-![](screenshots/angry_ai_debug.jpg)
+![](screenshots/game_3.png)
+- - -
+![](screenshots/game_4.png)
+- - -
+![](screenshots/pause_1.png)
+- - -
+![](screenshots/game_1.png)
+- - -
+![](screenshots/end_2.png)
+- - -
