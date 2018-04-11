@@ -16,12 +16,29 @@ var LevelState = {
   TIMEOUT:4
 }
 
+var InputKeys = {
+  UP:'UP',
+  DOWN:'DOWN',
+  LEFT:'LEFT',
+  RIGHT:'RIGHT',
+  SPACE:'SPACE',
+  SHIFT:'SHIFT',
+  PAUSE:'PAUSE',
+  REPLAY:'REPLAY',
+  DEBUG_GRID:'DEBUG_GRID',
+  DEBUG_AGENT_VISION:'DEBUG_AGENT_VISION',
+  DEBUG_AGENT_PATH:'DEBUG_AGENT_PATH',
+  GODMODE:'GODMODE',
+  TOGGLETHEME:'TOGGLETHEME'
+}
+
 var ParticleType = {
-  GENERIC :0,
-  BURN    :1,
-  SMOKE   :2,
-  BLOOD   :3,
-  DEBRIS  :4
+  GENERIC  :0,
+  BURN     :1,
+  SMOKE    :2,
+  BLOOD    :3,
+  DEBRIS   :4,
+  GUNSMOKE :5
 }
 
 var AgentType = {
@@ -59,6 +76,30 @@ var PickupType = {
 
 }
 
+var SoundLabel = {
+
+  GUN:"gun",
+  PISTOL:"pistol",
+  SHOTGUN:"shotgun",
+  SHOTGUN_L:"shotgunLoad",
+  MACHINEGUN:"machinegun",
+  FLAMETHROWER_S:"flamethrowerStart",
+  FLAMETHROWER_M:"flamethrowerMiddle",
+  FLAMETHROWER_E:"flamethrowerEnd",
+
+  PICKUP_GUN:"pickupGun",
+  PICKUP_SHOTGUN:"pickupGunShotgun",
+  PICKUP_FLAMETHROWER:"pickupGunFlamethrower",
+
+  STATE_PAUSED:"statePaused",
+  STATE_PLAY:"statePlay",
+  STATE_START:"stateStart",
+  STATE_VICTORY:"stateVictory",
+  STATE_GAMEOVER_1:"stateGameover1",
+  STATE_GAMEOVER_2:"stateGameover2"
+
+}
+
 var BulletType = {
   GENERIC:"generic",
   PISTOL:"pistol",
@@ -89,4 +130,24 @@ var DefaultColours = {
   SLIVER:"#bdc3c7",
   CONCRETE:"#95a5a6",
   FLAT:"#7f8c8d"
+}
+
+var LightTheme = {
+  'WALL':DefaultColours.CONCRETE,
+  'FLOOR':DefaultColours.CLOUD,
+  'PLAYER':DefaultColours.SUNFLOWER,
+  'ENEMY-GENERIC':DefaultColours.PURPLE,
+  'ENEMY-PATROL':DefaultColours.DARKPURPLE,
+  'TIMER':DefaultColours.RUBY,
+  'CIRCLES':DefaultColours.CLOUD
+}
+
+var DarkTheme = {
+  'WALL':DefaultColours.CARROT,
+  'FLOOR':DefaultColours.MIDNIGHT,
+  'PLAYER':DefaultColours.SUNFLOWER,
+  'ENEMY-GENERIC':DefaultColours.PURPLE,
+  'ENEMY-PATROL':DefaultColours.DARKPURPLE,
+  'TIMER':DefaultColours.RUBY,
+  'CIRCLES':DefaultColours.CARROT
 }

@@ -28,7 +28,7 @@ class Wall extends Rectangle {
 
   draw(camera){
 
-    Draw.fillHex(DefaultColours.ASPHALT);
+    Draw.fillHex(gameTheme['WALL']);
     // drawing rectangle at tile position (vector position * grid size to allign with grid), and drawing over x,y tiles.
     Draw.polygon(Draw.axisAlignedRect(this.pos.x-camera.x-1,this.pos.y-camera.y-1,this.size.x,this.size.y));
 

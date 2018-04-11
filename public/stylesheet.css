@@ -34,6 +34,14 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'crt';
+    src: url('font/Hacked-CRT.woff2') format('woff2'),
+         url('font/Hacked-CRT.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+
 *{
   left:0;
   top:0;

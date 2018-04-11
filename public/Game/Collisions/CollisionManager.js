@@ -95,6 +95,8 @@ class CollisionManager {
 
       player.pos.set(player.collider.getPos());
 
+      player.updateWeaponPos()
+
     } else {
       player.collider.setPos(player.pos);
     }
@@ -108,6 +110,8 @@ class CollisionManager {
     if(r){
       enemy.collider.getPos().add(r.overlapV);
       enemy.pos.set(enemy.collider.getPos());
+      enemy.updateWeaponPos()
+
       enemy.isColliding = true;
     } else {
       enemy.collider.setPos(enemy.pos);
@@ -124,14 +128,13 @@ class CollisionManager {
       // bullet.setAlive(false);
       // player.setShot(true);
 
-      // player.applyDamage(bullet);
+      player.applyDamage(bullet);
 
       // remove particle on collision
       bullet.setAlive(false);
 
       // adding blood particles to world when shot
       this.level.ParticleSystem.addParticle(bullet.pos.x,bullet.pos.y,bullet.getDirection(),ParticleType.BLOOD);
-      // enemy.setShot(true);
 
     }
   }

@@ -1,0 +1,213 @@
+{
+  "level": {
+    "size": {
+      "x": 104,
+      "y": 81
+    },
+    "player": {
+      "x": 5,
+      "y": 7
+    },
+    "enemy": [
+      {
+        "x": 91,
+        "y": 7,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 4,
+        "y": 18,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 18,
+        "y": 39,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 29,
+        "y": 37,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 44,
+        "y": 20,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 42,
+        "y": 27,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 61,
+        "y": 17,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 79,
+        "y": 37,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 25,
+        "y": 54,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 10,
+        "y": 63,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 78,
+        "y": 52,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 93,
+        "y": 74,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 93,
+        "y": 42,
+        "type": "generic",
+        "weapon": "shotgun"
+      }
+    ],
+    "pickups": [
+      {
+        "x": 7,
+        "y": 7,
+        "type": "machinegun"
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "id": "null wall"
+      },
+      {
+        "id": 1,
+        "x": 0,
+        "y": 0,
+        "w": 101,
+        "h": 2
+      },
+      {
+        "id": 2,
+        "x": 100,
+        "y": 0,
+        "w": 2,
+        "h": 81
+      },
+      {
+        "id": 3,
+        "x": 0,
+        "y": 80,
+        "w": 101,
+        "h": 2
+      },
+      {
+        "id": 4,
+        "x": 0,
+        "y": 0,
+        "w": 2,
+        "h": 81
+      },
+      {
+        "id": 5,
+        "x": 0,
+        "y": 13,
+        "w": 86,
+        "h": 2
+      },
+      {
+        "id": 6,
+        "x": 85,
+        "y": 13,
+        "w": 2,
+        "h": 57
+      },
+      {
+        "id": 7,
+        "x": 2,
+        "y": 42,
+        "w": 42,
+        "h": 2
+      },
+      {
+        "id": 8,
+        "x": 50,
+        "y": 42,
+        "w": 36,
+        "h": 2
+      },
+      {
+        "id": 9,
+        "x": 22,
+        "y": 15,
+        "w": 2,
+        "h": 11
+      },
+      {
+        "id": 10,
+        "x": 22,
+        "y": 31,
+        "w": 2,
+        "h": 11
+      },
+      {
+        "id": 11,
+        "x": 56,
+        "y": 15,
+        "w": 2,
+        "h": 22
+      },
+      {
+        "id": 12,
+        "x": 16,
+        "y": 54,
+        "w": 2,
+        "h": 16
+      },
+      {
+        "id": 13,
+        "x": 32,
+        "y": 54,
+        "w": 2,
+        "h": 16
+      },
+      {
+        "id": 14,
+        "x": 68,
+        "y": 54,
+        "w": 2,
+        "h": 16
+      },
+      {
+        "id": 15,
+        "x": 59,
+        "y": 61,
+        "w": 17,
+        "h": 2
+      }
+    ]
+  }
+}

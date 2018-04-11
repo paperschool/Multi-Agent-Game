@@ -58,7 +58,7 @@ class Grid {
 
     level['level']['walls'] = [];
 
-    level['level']['walls'].push({'x':0,'y':0,'w':0,'h':0,id:'null wall'});
+    level['level']['walls'].push({'x':0,'y':0,'w':1,'h':1,id:'null wall'});
 
     // iterating through array of walls fetching level size object
     if(this.walls.length != 0){

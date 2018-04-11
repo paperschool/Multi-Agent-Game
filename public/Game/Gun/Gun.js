@@ -11,6 +11,9 @@ class Gun extends Actor {
     // setting colour of actor
     this.colour = new Colour(51,51,51);
 
+    // damage per shot
+    this.damage = 10;
+
     // counter to reset fire rate
     this.cycling = 0;
 
@@ -22,6 +25,13 @@ class Gun extends Actor {
 
     // array to store bullets
     this.bullets = [];
+
+    // shot per fire
+    this.shotCount = 1;
+
+    // trigger states
+    this.firing = false;
+    this.attemptFire = false;
 
   }
 
@@ -35,6 +45,14 @@ class Gun extends Actor {
 
   getRange(){
     return this.range;
+  }
+
+  getDamage(){
+    return this.damage;
+  }
+
+  getShotCount(){
+    return this.shotCount;
   }
 
   setRicochetCount(rc){
@@ -53,6 +71,14 @@ class Gun extends Actor {
     this.shotCount = count;
   }
 
+  setDamage(damage){
+    this.damage = damage;
+  }
+
+  setAttemptedFire(firing){
+    this.attemptFire = firing;
+  }
+
   updateCycle(){
 
     if(this.cycling >= 0){
@@ -61,13 +87,54 @@ class Gun extends Actor {
 
   }
 
+  setFiringState(){
+
+    // firing is on and attempting to fire is also true
+    if(this.firing && this.attemptFire){
+      this.stillFiring();
+    }
+
+    // firing is on and attempting to fire is not (not clicking)
+    if(this.firing && !this.attemptFire){
+      this.firing = false;
+      this.endedFiring();
+    }
+
+    // firing is off and attempting to fire is on
+    if(!this.firing && this.attemptFire){
+      this.firing = true;
+      this.startedFiring();
+    }
+
+  }
+
+  startedFiring(){}
+
+  stillFiring(){}
+
+  endedFiring(){}
+
+  setWeaponOffset(){
+    this.getPos().x = Math.cos(Utility.Radians(this.getDirection())+90) + this.getPos().x;
+    this.getPos().y = Math.sin(Utility.Radians(this.getDirection())+90) + this.getPos().y;
+  }
+
   update(deltaTime){
 
     super.update(deltaTime);
 
-    this.getPos().add(new SAT.Vector(Math.cos(Utility.Radians(this.direction)),Math.sin(Utility.Radians(this.direction))).scale(20));
+    this.setWeaponOffset();
+
+    // this.getPos().add(
+    //   new SAT.Vector(
+    //     Math.cos(Utility.Radians(this.direction+90)),
+    //     Math.sin(Utility.Radians(this.direction+90))
+    //   ).scale(20));
+
 
     this.updateCycle();
+
+    this.setFiringState();
 
     // iterating through bullets
     for(var bullet = this.bullets.length-1 ; bullet >= 0 ; bullet--) {
@@ -86,10 +153,12 @@ class Gun extends Actor {
 
     super.draw(camera);
 
+    Draw.fill(255);
+    Draw.circle(this.getPos().x-camera.x,this.getPos().y-camera.y,10);
+
     // iterating through bullets
     for(var bullet = this.bullets.length-1 ; bullet > 0; bullet--) {
       this.bullets[bullet].draw(camera);
-
     }
 
   }
@@ -97,13 +166,13 @@ class Gun extends Actor {
   fire(player){
 
     if(this.cycling <= 0) {
-
-      for(var i = -this.shotCount ; i < this.shotCount-1 ; i++){
+      for(var i = 0 ; i < this.getShotCount() ; i++){
         this.bullets.push(new Bullet(player.pos.x+player.vel.x,player.pos.y+player.vel.y,15,player.direction + i*(10),1000));
       }
-
       this.cycling = this.fireRate;
-
+      return true;
+    } else {
+      return false;
     }
 
   }

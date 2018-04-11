@@ -73,7 +73,7 @@ class Colour {
     return this;
   }
 
-  randomG(min = 0,max = 255){
+  randomB(min = 0,max = 255){
       this.r = 0;
       this.g = 0;
       this.b = Math.floor(Utility.Random(min,max));
@@ -122,11 +122,22 @@ class Colour {
     this.setHex(def + "FF");
   }
 
-  setHex(hex = "#ffffff"){
-    this.r = hex.substring(1,3) || 255;
-    this.g = hex.substring(3,5) || 255;
-    this.b = hex.substring(5,7) || 255;
-    this.a = 1.0;
+  // setHex(hex = "#ffffff"){
+  //   this.r = hex.substring(1,3) || 255;
+  //   this.g = hex.substring(3,5) || 255;
+  //   this.b = hex.substring(5,7) || 255;
+  //   this.a = 1.0;
+  // }
+
+  setHex(hex){
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+
+    if(result.length === 0 || result === null) return this;
+
+    this.r = parseInt(result[1], 16) || 0;
+    this.g = parseInt(result[2], 16) || 0;
+    this.b = parseInt(result[3], 16) || 0;
+    return this;
   }
 
 }

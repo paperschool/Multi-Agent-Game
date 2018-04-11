@@ -44,7 +44,7 @@ class Agent extends Actor {
     this.stepBehaviour = false;
 
     // reference to environment for full access when evaluating
-    this.level = environment;
+    this.setLevel(environment);
 
     this.player = environment.player;
 
@@ -641,7 +641,11 @@ class Agent extends Actor {
 
     if(this.weapon !== null){
       this.setFiring(true);
-      this.weapon.fire(this);
+      if(this.weapon.fire(this)){
+        this.getLevel().ParticleSystem.addParticle(this.getPos().x,this.getPos().y,this.getDirection(),ParticleType.GUNSMOKE);
+        // this.getLevel().camera.resetShake(2);
+      }
+
     }
 
     return true;
@@ -661,9 +665,7 @@ class Agent extends Actor {
 
   // AGENT UPDATE AND DRAW METHODS
 
-  update(deltaTime){
-
-    super.update(deltaTime)
+  update(deltaTime,behaviour = true){
 
     // resetting values
 
@@ -678,8 +680,15 @@ class Agent extends Actor {
     // updating delta time for other methods that use it
     this.deltaTime = deltaTime;
 
+    super.update(deltaTime)
+
     // evaluate new velocity from current acceleration,direction,speed etc
-    this.evaluateVelocity(this.deltaTime);
+    // this.evaluateVelocity(this.deltaTime);
+
+    if(this.getLevel().grid.isOutsideBounds(this.getPos())) {
+      console.log("Agent Out of Bounds");
+      this.rollBackPosition();
+    }
 
     // console.log(Math.round(this.pos.x),Math.round(this.player.pos.x),Math.round(this.pos.y),Math.round(this.player.pos.y));
 
@@ -706,8 +715,11 @@ class Agent extends Actor {
           this.weapon.bullets[i].update(deltaTime);
     }
 
-    // stepping through the behaviour tree
-    this.behaviour.step();
+    if(behaviour){
+      // stepping through the behaviour tree
+      this.behaviour.step();
+    }
+
 
     // if(this.stepBehaviour){
     //   this.stepBehaviour = !this.stepBehaviour;
@@ -722,15 +734,21 @@ class Agent extends Actor {
     switch(this.getPathFindingFocus()){
       case AgentPathFindingFocus.PLAYER:
 
-        Draw.fillCol(new Colour(255,0,0,0.5));
-        Draw.text(60,"san-serif","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"!");
+        Draw.fillCol(new Colour(255,200,200,1));
+        Draw.text(60,"cherry","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"!");
+        Draw.text(60,"cherry","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"!");
+        Draw.text(60,"cherry","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"!");
+        Draw.text(60,"cherry","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"!");
         break;
 
       case AgentPathFindingFocus.NEARPLAYER:
       case AgentPathFindingFocus.OLDPLAYER:
 
-        Draw.fillCol(new Colour(255,0,0,0.5));
-        Draw.text(60,"san-serif","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"?");
+        Draw.fillCol(new Colour(255,0,0,1));
+        Draw.text(60,"cherry","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"?",'bold');
+        Draw.text(60,"cherry","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"?",'bold');
+        Draw.text(60,"cherry","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"?",'bold');
+        Draw.text(60,"cherry","center",new SAT.Vector(-camera.x+this.getPos().x+Utility.RandomInt(-5,5),-camera.y+this.getPos().y-50+Utility.RandomInt(-5,5)),"?",'bold');
         break;
 
       case AgentPathFindingFocus.PATROL:     break;
@@ -746,7 +764,7 @@ class Agent extends Actor {
 
     if(this.getAlive()){
 
-      Draw.fillCol(this.colour);
+      Draw.fillHex(gameTheme['ENEMY-GENERIC']);
       Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
 
       // if(this.getWithinFireRange() && this.getShooting()){
@@ -774,34 +792,34 @@ class Agent extends Actor {
         );
 
         // BASIC RADIUS DEBUG`
-        // Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.firingDistance);
-        // Draw.stroke(1,'#FFFF00');
-        //
-        // Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.alertDistance);
-        // Draw.stroke(1,'#00FFFF');
+        Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.firingDistance);
+        Draw.stroke(1,'#FFFF00');
+
+        Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.alertDistance);
+        Draw.stroke(1,'#00FFFF');
 
         // Draw.fill('#FFFFFF');
         // Draw.circle(this.playerLastKnownLocation.x-camera.x,this.playerLastKnownLocation.y-camera.y,5);
 
         // VIEW CONE
-        // Draw.line(
-        //   this.getPos().x - camera.x,
-        //   this.getPos().y - camera.y,
-        //   this.getSightDistance() * Math.cos(Utility.Radians(this.getDirection() - (this.getSightAngle()/2))) + this.getPos().x - camera.x,
-        //   this.getSightDistance() * Math.sin(Utility.Radians(this.getDirection() - (this.getSightAngle()/2))) + this.getPos().y - camera.y,
-        //   (this.isWithinFieldOfView ? 3 : 1),
-        //   (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
-        // );
-        //
-        //
-        // Draw.line(
-        //   this.getPos().x - camera.x,
-        //   this.getPos().y - camera.y,
-        //   this.getSightDistance() * Math.cos(Utility.Radians(this.getDirection() + (this.getSightAngle()/2))) + this.getPos().x - camera.x,
-        //   this.getSightDistance() * Math.sin(Utility.Radians(this.getDirection() + (this.getSightAngle()/2))) + this.getPos().y - camera.y,
-        //   (this.isWithinFieldOfView ? 3 : 1),
-        //   (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
-        // );
+        Draw.line(
+          this.getPos().x - camera.x,
+          this.getPos().y - camera.y,
+          this.getSightDistance() * Math.cos(Utility.Radians(this.getDirection() - (this.getSightAngle()/2))) + this.getPos().x - camera.x,
+          this.getSightDistance() * Math.sin(Utility.Radians(this.getDirection() - (this.getSightAngle()/2))) + this.getPos().y - camera.y,
+          (this.isWithinFieldOfView ? 3 : 1),
+          (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
+        );
+
+
+        Draw.line(
+          this.getPos().x - camera.x,
+          this.getPos().y - camera.y,
+          this.getSightDistance() * Math.cos(Utility.Radians(this.getDirection() + (this.getSightAngle()/2))) + this.getPos().x - camera.x,
+          this.getSightDistance() * Math.sin(Utility.Radians(this.getDirection() + (this.getSightAngle()/2))) + this.getPos().y - camera.y,
+          (this.isWithinFieldOfView ? 3 : 1),
+          (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
+        );
 
         let path = this.getPath();
 

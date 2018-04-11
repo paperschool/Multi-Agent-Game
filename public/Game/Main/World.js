@@ -29,13 +29,43 @@ class World {
 
     this.levelManager = new LevelManager();
 
-    this.levelManager.loadLevel("Game/Assets/Levels/5.json",0,this.addLevelData.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/1.json",0,this.addLevelData.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/2.json",1,this.addLevelData.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/5.json",2,this.addLevelData.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/6.json",3,this.addLevelData.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/7.json",4,this.addLevelData.bind(this));
 
-    // this.levelManager.loadLevel("Game/Assets/Levels/4.json",0,this.addLevelData.bind(this));
-
-    // this.levelManager.loadLevel("Game/Assets/Levels/4.json",0,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/2.json",0,this.addLevelData.bind(this));
 
     this.currentLevel = -1;
+
+    input.setCallBack(InputKeys.PAUSE,(function(){
+      if(this.CURRENT_STATE === GameState.PAUSE_STATE){
+        this.CURRENT_STATE = GameState.PLAY_STATE;
+        sound.play(SoundLabel.STATE_PLAY);
+      } else if(this.CURRENT_STATE === GameState.PLAY_STATE){
+        this.CURRENT_STATE = GameState.PAUSE_STATE;
+        sound.play(SoundLabel.STATE_PAUSED);
+      }
+    }).bind(this));
+
+    input.setCallBack(InputKeys.REPLAY,(function(){
+      if(this.CURRENT_STATE === GameState.GAMEOVER_STATE){
+        this.setState(GameState.PLAY_STATE);
+      }
+    }).bind(this));
+
+    input.setCallBack(InputKeys.SPACE,(function(){
+      if(this.CURRENT_STATE === GameState.START_STATE){
+        this.setState(GameState.LEVEL_SWITCH_STATE);
+      }
+    }).bind(this));
+
+    input.setCallBack(InputKeys.SPACE,(function(){
+      if(this.CURRENT_STATE === GameState.VICTORY_STATE){
+        this.setState(GameState.START_STATE);
+      }
+    }).bind(this));
 
   }
 
@@ -126,7 +156,6 @@ class World {
 
     // setting game victory state
     if(this.currentLevel+1 === this.levelData.length){
-
       this.setState(GameState.VICTORY_STATE);
 
     } else {
@@ -174,6 +203,7 @@ class World {
 
   setState(state){
 
+    sound.stopAll();
 
     if(state === GameState.LEVEL_SWITCH_STATE){
 

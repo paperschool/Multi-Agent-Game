@@ -25,9 +25,11 @@ class Actor extends Rectangle {
     // final velocity applies to actor
     this.vel = new SAT.Vector(0,0);
 
+    // roll back position
+    this.oldPos = new SAT.Vector(this.getPos().x,this.getPos().y);
+
     // friction applies to acceleration vector before being set to velocity
     this.setFriction(0.9);
-
 
     // player speed increment
     this.speed = s;
@@ -41,6 +43,8 @@ class Actor extends Rectangle {
     // weapon actor is holding
     this.weapon = null;
 
+    this.weaponType = null;
+
     // boolean for weapon firing state
     this.firing = false;
 
@@ -50,7 +54,9 @@ class Actor extends Rectangle {
     // life variable
     this.life = this.initialLife;
 
-    this.sprite = new Sprite("Game/Assets/Sprites/topDown.gif",250,213,this.pos.x,this.pos.y,1);
+    // this.sprite = new Sprite("Game/Assets/Sprites/topDown.gif",250,213,this.pos.x,this.pos.y,1);
+
+    this.sprite = null;
 
     // switch debug draw on or off
     this.debugOn = true;
@@ -129,6 +135,22 @@ class Actor extends Rectangle {
     return this.turnSpeed;
   }
 
+  getLevel(){
+    return this.level;
+  }
+
+  getOldPos(){
+    return this.oldPos;
+  }
+
+  getWeaponType(){
+    return this.weaponType;
+  }
+
+  getSprite(){
+    return this.sprite;
+  }
+
   setFiring(firing){
     this.firing = firing;
   }
@@ -169,8 +191,19 @@ class Actor extends Rectangle {
     this.topSpeed = speed;
   }
 
+  setWeaponType(weaponType){
+    this.weaponType = weaponType;
+  }
+
   setWeapon(weapon){
     this.weapon = weapon;
+  }
+
+  updateWeaponPos(){
+    if(this.weapon){
+      this.weapon.setPos(this.getPos());
+      this.weapon.setWeaponOffset();
+    }
   }
 
   setLifespan(lifespan){
@@ -189,6 +222,23 @@ class Actor extends Rectangle {
     this.isColliding = false;
   }
 
+  setLevel(level){
+    this.level = level;
+  }
+
+  setSprite(sprite){
+    this.sprite = sprite;
+  }
+
+  setOldPos(){
+    this.oldPos.set(this.getPos())
+  }
+
+  rollBackPosition(){
+    this.getPos().set(this.getOldPos());
+    this.updateShoulders();
+  }
+
   setTurnSpeed(turnspeed){
     this.turnSpeed = turnspeed;
   }
@@ -201,15 +251,23 @@ class Actor extends Rectangle {
 
     let d = Math.floor(20 * ((1.0 / bullet.getInitialLifeSpan()) * bullet.getLifespan()));
 
-    // function that applies damage to the player
-    // diagnostic.updateLine("-Bullet Dmg",d);
-    // this.life -= d;
-
     // diagnostic.updateLine("-Bullet Dmg",bullet);
     this.life -= bullet.getBulletDamage();
 
   }
 
+  updateShoulders(){
+    // updating should positions
+    this.leftShoulder.set2(
+      50*Math.cos(Utility.Radians(this.getDirection()-90))+this.getPos().x,
+      50*Math.sin(Utility.Radians(this.getDirection()-90))+this.getPos().y
+    );
+
+    this.rightShoulder.set2(
+      50*Math.cos(Utility.Radians(this.getDirection()+90))+this.getPos().x,
+      50*Math.sin(Utility.Radians(this.getDirection()+90))+this.getPos().y
+    );
+  }
 
   applyAcc(newAcc){
 
@@ -229,46 +287,22 @@ class Actor extends Rectangle {
 
   evaluateVelocity(deltaTime){
 
-    // zeroing acceleration && velocity when its too low
-    // this.vel.x = Math.max(this.vel.x,0.001);
-    // this.vel.y = Math.max(this.vel.y,0.001);
+    // setting back up position
+    this.oldPos.set(this.getPos());
 
+    // updating velocity with acceleration
     this.vel.add(this.acc);
+
+    // updating position velocity vector
     this.pos.add(this.vel);
 
+    // setting acceleration to 0
     this.acc.scale(0);
 
+    // setting velocity scale by friction value
     this.vel.scale(this.getFriction());
 
-    // updating should positions
-    this.leftShoulder.set2(
-      50*Math.cos(Utility.Radians(this.getDirection()-90))+this.getPos().x,
-      50*Math.sin(Utility.Radians(this.getDirection()-90))+this.getPos().y
-    );
-
-    this.rightShoulder.set2(
-      50*Math.cos(Utility.Radians(this.getDirection()+90))+this.getPos().x,
-      50*Math.sin(Utility.Radians(this.getDirection()+90))+this.getPos().y
-    );
-
-  }
-
-  applyFriction(deltaTime){
-    // this.acc.scale2(this.getFriction());
-
-    let frictionForce = new SAT.Vector();
-
-    frictionForce.set(this.acc);
-    // frictionForce.normalize();
-    frictionForce.reverse();
-    frictionForce.scale(this.getFriction());
-    // frictionForce.scale(deltaTime);
-
-    this.acc.add(frictionForce);
-    this.vel.add(frictionForce);
-
-    console.log(frictionForce);
-
+    this.updateShoulders();
 
   }
 
@@ -290,7 +324,17 @@ class Actor extends Rectangle {
   }
 
   update(deltaTime){
+
     super.update(deltaTime);
+
+    // calculating velocity from acceleration, friction etc
+    this.evaluateVelocity(deltaTime);
+
+    if(this.sprite != null){
+      this.sprite.setDirection(this.getDirection());
+      this.sprite.setPos(this.getPos())
+    }
+
   }
 
   draw(camera){

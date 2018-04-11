@@ -35,11 +35,13 @@ class Level {
     // creating player and setting position to center of canvas
     this.player = new Player(player.x,player.y);
 
+    this.player.setLevel(this);
+
     // manager
     this.agents = new AgentManager(this);
 
     // manager for handling pickup related events
-    this.pickups = new PickupManager();
+    this.pickups = new PickupManager(this.player);
 
     // hud map
     this.hudmap = new HUDMap(this.worldSize,this.levelSize);
@@ -55,15 +57,43 @@ class Level {
 
     this.colour = new PulseColour(new Colour().random());
 
+    this.floor = new Colour();
+
+    this.floor.setHex(gameTheme['FLOOR']);
+
+    this.floor.setA(0.5)
+
     // astar search tick cooldown
     this.pfCoolDown = 1;
     this.pfCoolDownCounter = 0;
+
+    input.setCallBack(InputKeys.GODMODE,(function(){
+      this.player.setInvincibility(!this.player.getInvincibility());
+    }).bind(this));
+
+    input.setCallBack(InputKeys.TOGGLETHEME,(function(){
+      gameTheme = gameTheme === LightTheme ? DarkTheme : LightTheme;
+      this.floor.setHex(gameTheme['FLOOR']);
+      
+    }).bind(this));
+
+
 
   }
 
   update(deltaTime){
 
     this.colour.step(- (1/2500 * this.player.getLife() ) + 1/20);
+
+    // if(input.isDown(InputKeys.SHIFT)){
+    //
+    //   input.mouseFocusable.pos.x -= this.player.x
+    //   input.mouseFocusable.pos.y -= this.player.y
+    //
+    //   this.camera.setFocus(input.mouseFocusable,new SAT.Vector(CW/2,CH/2));
+    // } else {
+    //   this.camera.setFocus(this.player,new SAT.Vector(CW/2,CH/2));
+    // }
 
     this.camera.update(deltaTime);
 
@@ -102,7 +132,7 @@ class Level {
     let camera = this.camera.getOffset();
 
     // drawing the virtual world bounds
-    Draw.fillCol(new Colour(240,240,240,1));
+    Draw.fillCol(this.floor);
     Draw.rect(this.gridSize-camera.x,this.gridSize-camera.y,this.levelSize.x-this.gridSize,this.levelSize.y-this.gridSize);
 
     this.background.draw(camera);
@@ -159,7 +189,7 @@ class Level {
     }
 
     if(this.agents.getLiveAgents() <= 0){
-      // this.levelState = LevelState.ENEMY_DEAD;
+      this.levelState = LevelState.ENEMY_DEAD;
     }
 
     if(this.timer.isEnded()){

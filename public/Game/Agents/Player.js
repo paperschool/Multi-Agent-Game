@@ -5,30 +5,54 @@ class Player extends Actor {
     // calling super with position, friction, speed and top speed values
     super(x,y,0.9,0.9,3.0,6.0);
 
-    this.setSpeed(1);
+    this.setSpeed(1.5);
 
     this.setTopSpeed(10.0);
 
     this.setCollider(new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction)));
 
+    this.setInvincibility(false);
+
     // this.collider = new CircularCollider(this.pos.x,this.pos.y,40);
 
   }
+
+  getInvincibility(){
+    return this.invincible;
+  }
+
+  setInvincibility(set){
+    this.invincible = set;
+  }
+
+  applyDamage(bullet){
+
+    if(!this.invincible){
+
+      let d = Math.floor(20 * ((1.0 / bullet.getInitialLifeSpan()) * bullet.getLifespan()));
+
+      // diagnostic.updateLine("-Bullet Dmg",bullet);
+      this.life -= bullet.getBulletDamage();
+
+    }
+
+  }
+
 
   // method given to player only for checking input states
   checkKeyboardInput(deltaTime){
 
     // if up is pressed apply a negative vertical acc
-    if(input.isDown("UP"))    this.applyImpulse(new SAT.Vector(0.0,-this.speed));
+    if(input.isDown(InputKeys.UP))    this.applyImpulse(new SAT.Vector(0.0,-this.speed));
 
     // if down is pressed apply a positive vertical acc
-    if(input.isDown("DOWN"))  this.applyImpulse(new SAT.Vector(0.0,this.speed));
+    if(input.isDown(InputKeys.DOWN))  this.applyImpulse(new SAT.Vector(0.0,this.speed));
 
     // if left is pressed apply a negative horizontal acc
-    if(input.isDown("LEFT"))  this.applyImpulse(new SAT.Vector(-this.speed,0.0));
+    if(input.isDown(InputKeys.LEFT))  this.applyImpulse(new SAT.Vector(-this.speed,0.0));
 
     // if right is pressed apply a positive horizontal acc
-    if(input.isDown("RIGHT")) this.applyImpulse(new SAT.Vector(this.speed,0.0));
+    if(input.isDown(InputKeys.RIGHT)) this.applyImpulse(new SAT.Vector(this.speed,0.0));
 
   }
 
@@ -37,12 +61,16 @@ class Player extends Actor {
 
     if(input.mouse.click && input.mouse.button === "LEFT"){
       if(this.weapon !== null){
-        this.setFiring(true);
-        this.weapon.fire(this);
-
+        this.weapon.setAttemptedFire(true);
+        if(this.weapon.fire(this)){
+          this.getLevel().ParticleSystem.addParticle(this.getPos().x,this.getPos().y,this.getDirection(),ParticleType.GUNSMOKE);
+          this.getLevel().camera.resetShake(this.getWeapon().getDamage()*2);
+        }
       }
     } else {
-      this.setFiring(false);
+      if(this.weapon !== null){
+        this.weapon.setAttemptedFire(false);
+      }
     }
 
   }
@@ -50,24 +78,26 @@ class Player extends Actor {
   // TODO: Fix poor association to parent class
   update(deltaTime){
 
+
+    // calculating angle of player relative to mouse (Kinda hacky as i know player is centered)
+    this.calculateDirection({x:CW/2,y:CH/2},input.mouse);
+
     // checking for user input
     this.checkKeyboardInput(deltaTime);
 
     this.checkMouseInput();
+
+    super.update(deltaTime);
+
+    if(this.getLevel().grid.isOutsideBounds(this.getPos())) this.rollBackPosition();
 
     // redrawing collision polygon from a normalised position
     // this.collider = new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction));
 
     this.collider.rebuild(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction));
 
-    // calculating angle of player relative to mouse (Kinda hacky as i know player is centered)
-    this.calculateDirection({x:CW/2,y:CH/2},input.mouse);
-
-    // calculating velocity from acceleration, friction etc
-    this.evaluateVelocity(deltaTime);
 
     if(this.getLife() <= 0) this.setAlive(false);
-
 
     if(this.weapon) {
       this.weapon.setPos(this.getPos());
@@ -78,20 +108,14 @@ class Player extends Actor {
           this.weapon.bullets[i].update(deltaTime);
     }
 
-    this.sprite.setDirection(this.getDirection());
-
-    this.sprite.setPos(this.getPos())
-
     diagnostic.updateLine("Acc: ",Math.round(Utility.pyth(this.acc.x,this.acc.y) * 1000) / 1000);
     diagnostic.updateLine("Vel: ",Math.round(Utility.pyth(this.vel.x,this.vel.y) * 1000) / 1000);
-
-
 
   }
 
   draw(camera){
 
-    Draw.fillCol(this.colour)
+    Draw.fillHex(gameTheme['PLAYER'])
 
     // Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,40);
 

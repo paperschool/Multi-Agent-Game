@@ -19,7 +19,9 @@ class LevelTimer {
 
   draw(camera){
 
-    Draw.fill(0,0,0,(this.isEnded() ? 0.0 : 0.9));
+    // Draw.fill(0,0,0,(this.isEnded() ? 0.0 : 0.9));
+    Draw.fillHex(gameTheme['TIMER']);
+
     Draw.text(150,"cherry","center",new SAT.Vector((this.size.x/2)-camera.x,(this.size.y/2)-camera.y),this.getFormatTime());
 
   }

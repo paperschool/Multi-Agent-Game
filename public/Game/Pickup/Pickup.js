@@ -6,7 +6,9 @@ class Pickup extends Actor {
 
     this.type = PickupType.GENERIC;
 
-    this.bounds = new Circle(x+w/2,y+h/2,radius);
+    // this.bounds = new Circle(x+w/2,y+h/2,radius);
+
+    this.setCollider(new CircularCollider(this.pos.x,this.pos.y,radius));
 
     this.pickupRadius = radius;
 
@@ -17,11 +19,16 @@ class Pickup extends Actor {
     // if pickup has been picked up;
     this.setAlive(true);
 
+    this.setSprite(new Sprite("Game/Assets/Sprites/pistol.png",40,30,this.pos.x,this.pos.y,1));
+
   }
 
   // method to check if player position is overlaping pickup
-  isNearPlayer(otherPlayerPos){
-    return this.bounds.checkPointInCircle(otherPlayerPos);
+  isNearPlayer(otherPlayer){
+
+    let r = this.getCollider().test(otherPlayer.getCollider());
+
+    return r != null;
   }
 
   update(deltaTime){
@@ -31,9 +38,18 @@ class Pickup extends Actor {
   draw(camera){
 
     if(this.getAlive()){
-      super.draw(camera)
+
+      // super.draw(camera);
+
       Draw.fillCol(this.colour);
-      Draw.rect(this.pos.x-camera.x,this.pos.y-camera.y,this.size.x,this.size.y);
+
+      Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,this.pickupRadius);
+
+      Draw.fillCol(new Colour(255,255,255));
+      Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,20);
+
+      this.sprite.draw(camera);
+
     }
 
   }
@@ -57,6 +73,9 @@ class Pickup_Gun extends Pickup {
 
     // setting colour of actor
     this.colour = new Colour(51,51,51);
+
+    this.setSprite(new Sprite("Game/Assets/Sprites/pistol.png",40,30,this.pos.x,this.pos.y,1));
+
   }
 
   update(deltaTime) {
@@ -64,10 +83,12 @@ class Pickup_Gun extends Pickup {
   }
 
   draw(camera){
+
     super.draw(camera);
 
-    Draw.fillCol(this.colour);
-    Draw.rect(this.pos.x-camera.x,this.pos.y-camera.y,this.size.x,this.size.y);
+    // Draw.fillCol(this.colour);
+
+    this.sprite.draw(camera);
 
   }
 
@@ -82,6 +103,9 @@ class Pickup_Pistol_Gun extends Pickup_Gun {
 
     // setting colour of actor
     this.colour = new Colour(51,255,51);
+
+    this.setSprite(new Sprite("Game/Assets/Sprites/pistol.png",40,30,this.pos.x,this.pos.y,1));
+
   }
 
 }
@@ -95,6 +119,9 @@ class Pickup_Shot_Gun extends Pickup_Gun {
 
     // setting colour of actor
     this.colour = new Colour(51,51,255);
+
+    this.setSprite(new Sprite("Game/Assets/Sprites/shotgun.png",40,30,this.pos.x,this.pos.y,1));
+
   }
 
 }
@@ -108,6 +135,9 @@ class Pickup_Machine_Gun extends Pickup_Gun {
 
     // setting colour of actor
     this.colour = new Colour(255,51,51);
+
+    this.setSprite(new Sprite("Game/Assets/Sprites/m16.png",40,30,this.pos.x,this.pos.y,1));
+
   }
 
 }
@@ -122,51 +152,9 @@ class Pickup_Flamethrower extends Pickup_Gun {
 
     // setting colour of actor
     this.colour = new Colour(51,51,51);
-  }
 
-}
-
-class Pickup_Health extends Pickup {
-
-  constructor(x,y,w,h,radius){
-    super(x,y,w,h,radius);
-
-    // hard coded type (escaping javascripts poor typing)
-    this.type = PickupType.HEALTH;
-
-    this.setAlive(true);
-
-    this.colour = new Colour(160,255,160);
-
-    this.broken = [];
-
-    for(var i = 0 ; i < 10 ; i++){
-      this.broken.push(new Rectangle(this.pos.x + Utility.Random(-50,50),this.pos.y + Utility.Random(-50,50),Utility.Random(5,10),Utility.Random(5,10)));
-      this.broken[this.broken.length-1].setColour(new Colour().random());
-    }
+    this.setSprite(new Sprite("Game/Assets/Sprites/flamethrower.png",40,30,this.pos.x,this.pos.y,1));
 
   }
 
-  update(player){
-    super.update(player);
-  }
-
-  draw(camera){
-
-    if(this.getAlive()){
-
-      super.draw(camera);
-
-      Draw.fillCol(this.colour);
-      Draw.rect(this.pos.x-camera.x,this.pos.y-camera.y,this.size.x,this.size.y);
-
-
-    } else {
-
-      for(var i = 0 ; i < this.broken.length ; i++){
-          this.broken[i].draw(camera);
-      }
-
-    }
-  }
 }

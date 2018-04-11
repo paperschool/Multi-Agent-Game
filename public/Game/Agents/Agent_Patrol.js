@@ -14,29 +14,7 @@ class Agent_Patrol extends Agent {
     this.setAgentPathfindingFocus(AgentPathFindingFocus.PATROL);
 
     // behaviour tree for agent which sets slicing mode to this abstraction
-    this.setBehaviour(new Patrol_Agent_Behaviour(this));
-
-  }
-
-  // this method will update the internal focus position state
-  setAgentPathfindingFocus(focus = AgentPathFindingFocus.PATROL){
-
-    // console.log("Calling Patrol Agent Focus Method")
-
-    // checking if focus state has changed
-    if(this.pathfindingFocus !== focus){
-      this.focusChanged = true;
-      this.pathfindingFocus = focus;
-    }
-
-    switch(this.pathfindingFocus){
-      case AgentPathFindingFocus.PLAYER:     this.setFocusPosition(this.getPlayerPosition());   break;
-      case AgentPathFindingFocus.NEARPLAYER: this.setFocusPosition(this.getPlayerPosition());   break;
-      case AgentPathFindingFocus.OLDPLAYER:  this.setFocusPosition(this.getLastKnownPlayerPosition()); break;
-      case AgentPathFindingFocus.PATROL:     /* this.setFocusPosition(this.nonPlayerFocusPosition); */  break;
-      case AgentPathFindingFocus.WANDER:     /* this.setFocusPosition(this.nonPlayerFocusPosition); */  break;
-      default: break;
-    }
+    this.behaviour = new Patrol_Agent_Behaviour(this);
 
   }
 
@@ -54,11 +32,18 @@ class Agent_Patrol extends Agent {
   }
 
   update(deltaTime){
-    super.update(deltaTime)
+    super.update(deltaTime,false)
+    this.behaviour.step();
   }
 
   draw(camera){
     super.draw(camera);
+
+    if(this.getAlive()){
+
+      Draw.fillHex(gameTheme['ENEMY-PATROL']);
+      Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
+    }
   }
 
 }

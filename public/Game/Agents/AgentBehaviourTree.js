@@ -507,6 +507,7 @@ class Agent_Behaviour {
 class Patrol_Agent_Behaviour extends Agent_Behaviour {
 
   constructor(agentObject){
+
     super(agentObject);
 
     // this selector will attempt to locate the player and perform logical operations
@@ -538,12 +539,20 @@ class Patrol_Agent_Behaviour extends Agent_Behaviour {
     }));
 
 
-    BehaviourTree.register('agentRelaxed',new BehaviourTree.Sequence({
+    // this sequence will attempt to run assuming the agent is not alerted
+    BehaviourTree.register('agentRelaxed', new BehaviourTree.Sequence({
       title:'agentRelaxed',
-      // nodes:['Full','Hungry','Critical']
-      nodes:['agentPatrol']
+      nodes:[
+        'agentPatrol'
+      ]
     }));
 
+    this.behaviour.setObject(agentObject);
+
+  }
+
+  step(){
+    this.behaviour.step();
   }
 
 }

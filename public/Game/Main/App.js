@@ -1,6 +1,9 @@
 // object that stores game
 var game = null;
 
+// var gameTheme = DarkTheme;
+var gameTheme = LightTheme;
+
 // global mouse position object
 var input = null
 
@@ -10,34 +13,42 @@ var CW = 0,CH = 0;
 // diagnostic output text
 var diagnostic = null
 
+// chart that plots a running total of the given data (used here to track fps)
 var chart = null;
 
-$body = $("body");
+// this class stores a key -> value pair relationship of sound effect labels to the
+// sound object created by howler.js
+var sound =  new EngineSounds();
 
-$canvas = $(".game_canvas");
+// loading in relevant sound file locations and sound labels into sound engine
+sound.add(SoundLabel.PISTOL,'Game/Assets/sound/snd9mm.wav',0.1);
+sound.add(SoundLabel.SHOTGUN,'Game/Assets/sound/sndShotgun.wav',0.05);
+sound.add(SoundLabel.MACHINEGUN,'Game/Assets/sound/sndM16.wav',0.04);
+sound.add(SoundLabel.FLAMETHROWER_S,'Game/Assets/sound/sndFlameThrowerStart.wav',0.1);
+sound.add(SoundLabel.FLAMETHROWER_M,'Game/Assets/sound/sndFlameThrower.wav',0.1,true,false);
+sound.add(SoundLabel.FLAMETHROWER_E,'Game/Assets/sound/sndFlameThrowerEnd.wav',0.1);
 
-$canvas.hide();
+sound.add(SoundLabel.PICKUP_GUN,'Game/Assets/sound/sndPickUpWeapon.wav',0.1);
+sound.add(SoundLabel.PICKUP_SHOTGUN,'Game/Assets/sound/sndInsertShell.wav',0.1);
+sound.add(SoundLabel.PICKUP_FLAMETHROWER,'Game/Assets/sound/sndLightning1.wav',0.1);
 
-$(document).on({
-   ajaxStart: function() {
-     $body.addClass("loading");
-   },
-   ajaxStop: function() {
-     $body.removeClass("loading");
-   }
-});
+sound.add(SoundLabel.STATE_PAUSED,'Game/Assets/sound/sndPause.wav',0.1);
+sound.add(SoundLabel.STATE_PLAY,'Game/Assets/sound/sndUnPause.wav',0.1);
+// sound.add(SoundLabel.STATE_START,'Game/Assets/sound/sndLightning1.wav',0.1);
+// sound.add(SoundLabel.STATE_VICTORY,'Game/Assets/sound/sndLightning1.wav',0.1);
 
+sound.add(SoundLabel.STATE_GAMEOVER_1,'Game/Assets/sound/sndSplashLogo.wav',0.1);
+sound.add(SoundLabel.STATE_GAMEOVER_2,'Game/Assets/sound/sndStopButton.wav',0.1);
+
+// resize window event to update global canvas size objects
 $(window).on('resize',function(){
   CW = window.innerWidth;
   CH = window.innerHeight;
+  game.updateContext(CW,CH)
 });
 
-
+// on window loaded event
 $(window).bind("load", function() {
-
-  $body.removeClass("loading");
-
-  $canvas.show();
 
   // settting canvas dimensions based on DOM inner width/height
   CW = window.innerWidth;
@@ -70,8 +81,10 @@ class Game {
   	this.ctx = this.canvas.getContext("2d");
 
     // setting canvas context height and width for rendering
-    this.ctx.canvas.width = CW;
-    this.ctx.canvas.height = CH;
+    this.updateContext(CW,CH);
+
+    // this.ctx.canvas.width = CW;
+    // this.ctx.canvas.height = CH;
 
     // defining world object
     this.world = new World(5000,5000);
@@ -79,6 +92,12 @@ class Game {
     // Begin game loop with loop object instantiation
     this.gameLoop = new GameLoop(120.0,60.0,this.update.bind(this),this.draw.bind(this));
 
+  }
+
+  updateContext(x,y){
+    // setting canvas context height and width for rendering
+    this.ctx.canvas.width = x;
+    this.ctx.canvas.height = y;
   }
 
   update(deltaTime){
@@ -93,7 +112,6 @@ class Game {
     this.world.draw();
 
     chart.draw();
-
     diagnostic.draw();
 
   }

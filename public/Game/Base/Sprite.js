@@ -24,6 +24,8 @@ class Sprite {
     this.frame = 0;
     this.frames = 0;
 
+    this.scale = 2.5;
+
     this.load();
 
   }
@@ -59,7 +61,7 @@ class Sprite {
       this.frames = this.frameCY*this.frameCX;
 
     }).bind(this);
-    
+
   }
 
   draw(camera){
@@ -87,22 +89,34 @@ class Sprite {
 
       Draw.rotate(this.direction);
 
+      // Draw.imageCrop(
+      //   this.img,
+      //   c*this.width,
+      //   r*this.height,
+      //   this.width,
+      //   this.height,
+      //   (-this.width*0.5/2),
+      //   (-this.height*0.5/2),
+      //   this.width*0.5,
+      //   this.height*0.5
+      // );
+
       Draw.imageCrop(
         this.img,
         c*this.width,
         r*this.height,
         this.width,
         this.height,
-        (-this.width*0.5/2),
-        (-this.height*0.5/2),
-        this.width*0.5,
-        this.height*0.5
+        this.pos.x-camera.x-CW/2-this.width*1.5,
+        this.pos.y-camera.y-CH/2-this.height*1.5,
+        this.width*this.scale,
+        this.height*this.scale
       );
 
       Draw.restore();
 
-       // since the context is rotated, the image will be rotated also
-      //  game.ctx.drawImage(this.i,-this.i.width/2,-this.i.height/2);
+     // since the context is rotated, the image will be rotated also
+     // game.ctx.drawImage(this.i,-this.i.width/2,-this.i.height/2);
 
 
     }

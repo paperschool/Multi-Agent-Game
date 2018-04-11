@@ -10,13 +10,21 @@ class AgentManager {
 
     this.agents = [];
 
-    this.seperation = 10;
+    this.seperation = 150;
 
     this.agentsWeapons = [];
 
     this.drawDebugPath        = false;
     this.drawDebugVision      = false;
     this.drawDebugLineOfSight = false;
+
+    input.setCallBack(InputKeys.DEBUG_AGENT_PATH,(function(){
+      this.toggleDrawDebugPath();
+    }).bind(this));
+
+    input.setCallBack(InputKeys.DEBUG_AGENT_VISION,(function(){
+      this.toggleDrawDebugVision();
+    }).bind(this));
 
   }
 
@@ -46,7 +54,6 @@ class AgentManager {
 
   addAgent(x,y,type,weapon,patrol){
 
-    // console.log(" > AGENT MANAGER : Agent: " + type + " added!");
 
     switch (type) {
       case AgentType.GENERIC  :
@@ -84,6 +91,8 @@ class AgentManager {
 
     let steer = new SAT.Vector();
 
+    let c = 0;
+
     for(let a = 0 ; a < this.agents.length ; a++){
 
       let other = this.agents[a];
@@ -92,23 +101,44 @@ class AgentManager {
 
       if(d > 0 && d < this.seperation){
         // calculate opposing vector for other agent
-        let opp = new SAT.Vector(agent.getPos().x-other.getPos().x,agent.getPos().y-other.getPos().y);
+        let opp = new SAT.Vector();
 
+        opp.set(agent.getPos().clone().sub(other.getPos()));
         opp.normalize();
-        opp.scale(1/d);
+        opp.scale(1.0 / d);
+
         steer.add(opp);
+
+        c++
+
       }
+
     }
 
-    steer.scale(1/this.agents.length-1);
+    if(c > 0){
+      steer.scale(1/c);
+      steer.scale(10);
+      steer.round(1000);
+    } else {
+      steer.scale(0);
+    }
+
 
     return steer;
 
+  }
 
-    if(steer.len() > 0){
-      steer.normalize();
-      steer.scale(agent.getSpeed()*2);
+  broadcast(message){
+
+    for(var agent = 0 ; agent < this.agents.length ; agent++) {
+
+
+
     }
+
+  }
+
+  comunicate(){
 
   }
 
@@ -116,9 +146,6 @@ class AgentManager {
 
     diagnostic.updateLine("---- Agents",this.agents.length);
 
-    if(input.isDown("H")) this.toggleDrawDebugPath()
-
-    if(input.isDown("J")) this.toggleDrawDebugVision();
 
     for(var agent = this.agents.length - 1 ; agent >= 0 ; agent--) {
 
@@ -131,11 +158,13 @@ class AgentManager {
 
         let sep = this.seperateAgent(a);
 
-        // applying seperation calculation
-        a.applyImpulse(sep);
+        if(sep.x !== 0 && sep.y !== 0){
+          // applying seperation calculation
+          a.applyImpulse(sep);
+        }
 
         // update agent internals
-        a.update(deltaTime);
+        a.update(deltaTime,true);
 
       }
     }

@@ -25,8 +25,8 @@ class Enemy {
   get(){
 
     let enemy = {
-      'x':this.pos.x,
-      'y':this.pos.y,
+      'x':this.pos.x / gridSize,
+      'y':this.pos.y / gridSize,
       'type':this.type,
       'weapon':this.weapon
     };
@@ -180,7 +180,7 @@ class Wall {
     fill(255,255,255,200);
 
     if(this.startPos != null){
-      rect(this.startPos.x,this.startPos.y,gridSize,gridSize);
+      rect(this.startPos.x,this.startPos.y,gridSize*wallThickness,gridSize*wallThickness);
     }
 
     if(this.startPos != null && this.endPos === null && this.alignment()){
@@ -189,25 +189,29 @@ class Wall {
       rect(
         this.startPos.x,
         this.startPos.y,
-        (cursor.get().x-this.startPos.x)+gridSize,
-        (cursor.get().y-this.startPos.y)+gridSize
+        (cursor.get().x-this.startPos.x)+(gridSize*wallThickness),
+        (cursor.get().y-this.startPos.y)+(gridSize*wallThickness)
       )
     }
 
-    if(this.endPos != null)
-      rect(this.endPos.x,this.endPos.y,gridSize,gridSize);
+    if(this.endPos != null){
+      rect(this.endPos.x,this.endPos.y,gridSize*wallThickness,gridSize*wallThickness);
+
+    }
 
     if(this.startPos != null && this.endPos != null){
+
       rect(
         this.startPos.x,
         this.startPos.y,
-        (this.endPos.x-this.startPos.x)+gridSize,
-        (this.endPos.y-this.startPos.y)+gridSize
+        (this.endPos.x-this.startPos.x)+(gridSize*wallThickness),
+        (this.endPos.y-this.startPos.y)+(gridSize*wallThickness)
       )
+
       textSize(30);
       textAlign(CENTER);
       fill(255,0,0);
-      text(this.id,this.midPos.x+gridSize/2,this.midPos.y+gridSize);
+      text(this.id,this.midPos.x+(gridSize*wallThickness)/2,this.midPos.y+(gridSize*wallThickness));
 
 
     }

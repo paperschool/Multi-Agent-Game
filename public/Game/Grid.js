@@ -11,7 +11,9 @@ class Grid {
 
     this.EMPTY = 1
     this.WALL  = 0
-    this.MARGIN = 100;
+    this.MARGIN = 10;
+
+    this.marginSize = 4;
 
     this.pathMesh = []
 
@@ -50,6 +52,12 @@ class Grid {
 
     // draw grid switch boolean
     this.drawDebugGrid = false;
+
+    // checking input for render options
+    input.setCallBack(InputKeys.DEBUG_GRID,(function(){
+      this.toggleDrawDebugGrid();
+    }).bind(this));
+
 
   }
 
@@ -111,14 +119,29 @@ class Grid {
     var margin = 4;
 
     // iterating across wall dimensions to add obstacles to path finding grid
-    for(var obly = -margin + y ; obly < y + h + margin ; obly++)
-      for(var oblx = -margin + x ; oblx < x + w + margin ; oblx++){
+    for(var obly = -this.marginSize + y ; obly < y + h + this.marginSize ; obly++)
+      for(var oblx = -this.marginSize + x ; oblx < x + w + this.marginSize ; oblx++){
         if(oblx >= x && oblx < x + w && obly >= y && obly < y + h){
           this.addObstacle(new SAT.Vector(oblx,obly),this.WALL);
         } else {
-          // this.addObstacle(new SAT.Vector(oblx,obly),this.EMPTY);
-          // was laggy af
+
+          // if(Math.abs(obly-y-(obly>y+h?h:0)) > 4 || Math.abs(oblx-x-(oblx>x+w?w:0)) > 4){
+          //   console.log("Nothing")
+          // }
+          //
+          // // normalising the wall position to 0 on the x axis, deriving a number between the margin and 0,
+          // // a ternary accounting for the positions at x + width, and after abs'ing the value we map between 0,
+          // // and the margin as a obstacle value of margin to margin * marginSize
+          // let xMargin = Utility.Map(Math.abs(oblx-x-(oblx>x+w?w:0)),0,this.marginSize,this.MARGIN,this.MARGIN*this.marginSize)
+          // let yMargin = Utility.Map(Math.abs(obly-y-(obly>y+h?h:0)),0,this.marginSize,this.MARGIN,this.MARGIN*this.marginSize)
+          //
+          // let finalMargin = Math.sqrt(Math.pow(xMargin,2) + Math.pow(yMargin,2))
+
+          // this.addObstacle(new SAT.Vector(oblx,obly),finalMargin);
+
+          // hard margin
           this.addObstacle(new SAT.Vector(oblx,obly),this.MARGIN);
+
         }
       }
   }
@@ -444,16 +467,18 @@ class Grid {
 
   }
 
+  // this method will check if a given position is in a non-routable (out of bounds) position
+  isOutsideBounds(pos){
+    // getting grid vector from position;
+    let p = this.getGridVector(pos);
+    return (p.x < 0 || p.x > this.levelSize.x || p.y < 0 || p.y > this.levelSize.y)
+  }
+
   // UPDATE AND DRAW METHODS
 
   update(){
 
     this.lineofsight = []
-
-    // this.rebuildMesh();
-
-    // checking input for render options
-    if(input.isDown("G")) this.toggleDrawDebugGrid();
 
   }
 
@@ -518,10 +543,16 @@ class Grid {
 
         if(this.pathMesh[y][x] === this.WALL){
           Draw.fillCol(new Colour(255,0,0,0.5));
-        } else if(this.pathMesh[y][x] === this.MARGIN) {
-          Draw.fillCol(new Colour(0,255,0,0.5));
-        } else {
+        } else if(this.pathMesh[y][x] === this.EMPTY) {
           Draw.fillCol(new Colour(0,0,255,0.5));
+        } else {
+
+          let max = Math.sqrt(Math.pow(this.MARGIN*this.marginSize,2) + Math.pow(this.MARGIN*this.marginSize,2))
+
+
+          Draw.fillCol(
+            new Colour(255,Utility.Map(this.pathMesh[y][x],max,0,255),0,0.7));
+
         }
 
 

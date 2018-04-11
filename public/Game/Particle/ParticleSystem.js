@@ -50,9 +50,10 @@ class ParticleSystem {
         this.particles.push(new Particle_Blood(x,y,d));
         break;
       case ParticleType.DEBRIS:
-
         break;
-
+      case ParticleType.GUNSMOKE:
+        this.particles.push(new Particle_GunSmoke(x,y,d));
+        break;
     }
   }
 
@@ -123,6 +124,48 @@ class Particle_Blood extends Particle {
 
     super.update(deltaTime);
     this.colour.setA(Utility.Map(this.life,100,0,1.0,0.0));
+  }
+
+  draw(camera){
+    super.draw(camera);
+    Draw.fillCol(this.colour);
+    Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,this.size.x);
+  }
+
+}
+
+class Particle_GunSmoke extends Particle {
+
+  constructor(x,y,d){
+    super(x,y);
+
+    this.colour.randomGrey(51,255);
+
+    this.life = 10;
+
+    this.size.x = Utility.RandomInt(5,15)
+
+    this.direction = new SAT.Vector(
+      Math.cos(Utility.Radians(Utility.Random(-5,5) + d))*Utility.Random(1,20),
+      Math.sin(Utility.Radians(Utility.Random(-5,2) + d))*Utility.Random(1,20)
+    );
+
+    this.pos.add(this.direction);
+
+  }
+
+  update(deltaTime){
+
+    super.update(deltaTime);
+
+    this.colour.setA(Utility.Map(this.life,10,0,1.0,0.0));
+
+    // this.getPos().add(this.direction);
+
+    this.size.x += 0.1;
+
+    this.pos.add(this.direction.scale(0.9))
+
   }
 
   draw(camera){

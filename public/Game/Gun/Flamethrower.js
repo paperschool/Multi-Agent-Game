@@ -2,9 +2,12 @@ class Flamethrower extends Gun {
 
   constructor(x,y){
     super(x,y,0,0);
-    this.setFireRate(5);
-    this.setRange(100);
-    this.setRicochetCount(5)
+    this.setFireRate(4);
+    this.setRange(200);
+    this.setRicochetCount(1)
+    this.setShotCount(6)
+    this.setSpeed(2.5);
+    this.setDamage(2);
   }
 
   update(deltaTime){
@@ -15,21 +18,50 @@ class Flamethrower extends Gun {
 
   fire(player){
     if(this.cycling <= 0) {
-      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,2 ,this.direction  ,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
-      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,2 ,this.direction+5,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
-      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,2 ,this.direction-5,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
-      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,2 ,this.direction+12,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
-      this.bullets.push(new Flamethrower_Bullet(this.pos.x,this.pos.y,2,this.direction-12,this.getRange()+Utility.Random(-20,20),this.getRicochetCount(),player.acc));
+
+
+      for(let b = 0 ; b < this.getShotCount() ; b++){
+        this.bullets.push(
+          new Flamethrower_Bullet(
+            this.pos.x,
+            this.pos.y,
+            this.getSpeed(),
+            this.getDirection()+Utility.RandomInt(-8,8),
+            this.getRange()+Utility.Random(-this.getShotCount()*2,this.getShotCount()*2),
+            this.getRicochetCount(),
+            this.getDamage()
+          )
+        );
+      }
       this.cycling = this.fireRate;
+      return true;
+    } else {
+      return false;
     }
   }
+
+  // mainly for sound effects
+  startedFiring(){
+    sound.play(SoundLabel.FLAMETHROWER_S);
+    sound.play(SoundLabel.FLAMETHROWER_M);
+  }
+
+  stillFiring(){
+
+  }
+
+  endedFiring(){
+    sound.stop(SoundLabel.FLAMETHROWER_M);
+    sound.play(SoundLabel.FLAMETHROWER_E);
+  }
+
 }
 
 class Flamethrower_Bullet extends Bullet {
 
-  constructor(x,y,s,d,l,rc,acc){
+  constructor(x,y,s,d,l,rc,dmg){
 
-    super(x,y,s,d,l,rc);
+    super(x,y,s,d,l,rc,dmg);
 
     this.setBulletAccuracy(4);
 
@@ -40,6 +72,8 @@ class Flamethrower_Bullet extends Bullet {
     this.setFriction(0.95);
 
     this.applyImpulse(this.getAcc().scale(this.getSpeed()));
+
+    this.setTrail(0);
 
     // console.log(this.getAcc());
 

@@ -2,7 +2,7 @@
 // tools, 0 === wall, 1 === player, 2 === enemy, 3 === pickup
 let activeTool = 0;
 
-let wallThickness = 1;
+let wallThickness = 2;
 
 let buildWindowOpen = false;
 
@@ -202,9 +202,16 @@ class Cursor {
       fill(255,255,0);
 
       if(ws != null){
+
+        let offsetx = 0;
+        let offsety = 0;
+
+        if(this.pos.x > width/2) offsetx = -100;
+        if(this.pos.y < height/2) offsety = 40;
+
         textSize(15);
-        text("Start: " + ws.x + ":" + ws.y, this.pos.x,this.pos.y-20);
-        text("End  : " + this.pos.x + ":"+this.pos.y, this.pos.x,this.pos.y);
+        text("Start: " + Math.round(ws.x/gridSize) + ":" + Math.round(ws.y/gridSize), this.pos.x + offsetx,this.pos.y-20 + offsety);
+        text("End  : " + Math.round(this.pos.x/gridSize) + ":"+ Math.round(this.pos.y/gridSize), this.pos.x + offsetx,this.pos.y + offsety);
 
       }
 

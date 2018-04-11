@@ -18,6 +18,14 @@ class Utility {
     return (((value - oldmin) * (newmax - newmin)) / (oldmax - oldmin)) + newmin;
   }
 
+  static Gradient(iteration,max,f1,f2,f3,p1,p2,p3,center,offset){
+    return new Colour(
+      Math.sin(f1*Utility.Map(iteration,0,max,0,32) + p1) * center + offset,
+      Math.sin(f2*Utility.Map(iteration,0,max,0,32) + p2) * center + offset,
+      Math.sin(f3*Utility.Map(iteration,0,max,0,32) + p3) * center + offset
+    );
+  }
+
   // returns a random float between @min and @max
   static Random(min,max){
     return Math.random() * (max - min) + min;
@@ -318,10 +326,10 @@ class Draw {
     }
   }
 
-  static text(size = 40,font = "Ariel",align = "center",position = {x:0,y:0},body = "textbody"){
+  static text(size = 40,font = "Ariel",align = "center",position = {x:0,y:0},body = "textbody",weight = 'normal'){
     if(Draw.checkGame()){
       game.ctx.textAlign = align;
-      game.ctx.font = size + "px " + font;
+      game.ctx.font = weight + ' ' + size + "px " + font;
       game.ctx.fillText(body,position.x,position.y);
     }
   }

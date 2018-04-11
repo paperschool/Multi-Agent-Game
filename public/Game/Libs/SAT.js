@@ -169,6 +169,11 @@
      return this;
    };
 
+   Vector.prototype['round'] = Vector.prototype.round = function(decimals) {
+     this['x'] = Math.round(this['x'] * decimals) / decimals;
+     this['y'] = Math.round(this['y'] * decimals) / decimals;
+     return this;
+   };
 
 
   // Project this vector on to another vector.

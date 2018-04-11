@@ -1,6 +1,6 @@
 class Bullet extends Actor {
 
-  constructor(x,y,s,d,l,rc){
+  constructor(x,y,s,d,l,rc,dmg){
     super(x,y,0,0,s,0);
 
     this.colour = new Colour().random();
@@ -25,7 +25,7 @@ class Bullet extends Actor {
 
     this.setFriction(1);
 
-    this.setBulletDamage(10);
+    this.setBulletDamage(dmg);
 
     this.applyImpulse(this.getAcc().scale(this.getSpeed()));
 
@@ -35,6 +35,9 @@ class Bullet extends Actor {
     this.setBulletAccuracy(0);
 
     this.collider = new CircularCollider(this.pos.x,this.pos.y,this.size.x);
+
+    this.setTrail(10);
+    this.setTrailWidth(5);
 
   }
 
@@ -80,6 +83,14 @@ class Bullet extends Actor {
     this.ricochetCount = count;
   }
 
+  setTrail(trail){
+    this.trail = trail;
+  }
+
+  setTrailWidth(trailWidth){
+    this.trailWidth = trailWidth;
+  }
+
   evaluateVelocity(deltaTime){
 
     super.evaluateVelocity(deltaTime)
@@ -119,6 +130,15 @@ class Bullet extends Actor {
   draw(camera){
 
     if(this.alive){
+
+      Draw.line(
+        this.getPos().x-camera.x,
+        this.getPos().y-camera.y,
+        this.getPos().x-camera.x + Math.cos(Utility.Radians(this.getDirection()+180))*this.trail,
+        this.getPos().y-camera.y + Math.sin(Utility.Radians(this.getDirection()+180))*this.trail,
+        this.trailWidth,
+        new Colour(255,200,200,0.5).getHex());
+
       Draw.fillCol(this.colour);
       Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,5);
     }

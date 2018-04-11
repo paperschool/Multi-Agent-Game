@@ -4,6 +4,10 @@ class Input {
 
     this.pressedKeys = {};
 
+    this.singlePressedKeys = {};
+
+    this.buildKeyPressObject();
+
     this.singleClickedKeys = {};
 
     this.clickListeners = [];
@@ -11,6 +15,8 @@ class Input {
     this.currentKey = null;
 
     this.mouse = {x:0,y:0,click:false,button:"null"}
+
+    this.mouseFocusable = {pos:{x:this.mouse.x,y:this.mouse.y}}
 
     this.mouseMoveCallback = mmoveC;
 
@@ -41,19 +47,33 @@ class Input {
 
   }
 
+  buildKeyPressObject(){
+    for(let key in InputKeys){
+      this.singlePressedKeys[key] = {
+        isPressed:false,
+        isDown:false,
+        callBacks:[]
+      }
+    }
+  }
+
+  setCallBack(key,callback){
+    this.singlePressedKeys[key].callBacks.push(callback);
+  }
+
   mouseMoveEvent(e){
 
     this.mouse.x = e.offsetX;
 
     this.mouse.y = e.offsetY;
 
+    this.mouseFocusable = {pos:{x:this.mouse.x,y:this.mouse.y}}
+
   }
 
   mouseDownEvent(e){
 
     //TODO : Add single click logic ( add a system for checking something has only been clicked once rather than checking if down )
-
-
 
     switch (e.button) {
         case 0:
@@ -88,51 +108,64 @@ class Input {
       var code = event.keyCode;
       var key;
 
+      // calling single press check function
+
       // add specific keycodes here if need be
       switch(code) {
+      case 16:
+          key = InputKeys.SHIFT; break;
       case 32:
-          key = 'SPACE'; break;
+          key = InputKeys.SPACE; break;
       case 38:
       case 87:
-          key = 'UP'; break;
+          key = InputKeys.UP; break;
       case 37:
       case 65:
-          key = 'LEFT'; break;
+          key = InputKeys.LEFT; break;
       case 39:
       case 68:
-          key = 'RIGHT'; break;
+          key = InputKeys.RIGHT; break;
       case 40:
       case 83:
-          key = 'DOWN'; break;
+          key = InputKeys.DOWN; break;
       case 80:
       case 27:
-          key = 'PAUSE'; break;
-
+          key = InputKeys.PAUSE; break;
+      case 71:
+          key = InputKeys.DEBUG_GRID; break; // G
+      case 72:
+          key = InputKeys.DEBUG_AGENT_VISION; break; // H
+      case 74:
+          key = InputKeys.DEBUG_AGENT_PATH; break; // J
+      case 82:
+          key = InputKeys.REPLAY; break;
+      case 84:
+          key = InputKeys.TOGGLETHEME; break;
+      case 88:
+          key = InputKeys.GODMODE; break;
       default:
           // Convert ASCII codes to letters
-          key = String.fromCharCode(code);
+          return;
       }
 
-      this.pressedKeys[key] = status;
+      this.singlePressedKeys[key].isDown = status;
 
-      // if(this.singleClickedKeys.hasOwnProperty(key)){
-      //   this.singleClickedKeys[key] = {status:(this.singleClickedKeys[key][status] ? )}
-      // } else {
-      //   this.singleClickedKeys[key] = {status:true}
-      // }
+      if(this.singlePressedKeys[key].isDown && !this.singlePressedKeys[key].isPressed){
+        this.singlePressedKeys[key].isPressed = true;
 
-      if(typeof this.keyboardCallback === 'function'){
-        this.keyboardCallback(key);
+        for(let c = 0 ; c < this.singlePressedKeys[key].callBacks.length; c++){
+          this.singlePressedKeys[key].callBacks[c]();
+        }
+      }
+
+      if(!this.singlePressedKeys[key].isDown && this.singlePressedKeys[key].isPressed){
+        this.singlePressedKeys[key].isPressed = false;
       }
 
   }
 
   isDown(key){
-    return this.pressedKeys[key.toUpperCase()];
-  }
-
-  isClicked(key){
-    return this.singleClickedKeys[key.toUpperCase()].down;
+    return this.singlePressedKeys[key].isDown;
   }
 
 

@@ -19,6 +19,10 @@ class Entity {
     return this.Size;
   }
 
+  getColour(){
+    return this.colour;
+  }
+
   setPos(pos){
     this.pos.set(pos);
   }
