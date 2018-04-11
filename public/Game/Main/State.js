@@ -25,122 +25,56 @@ class StartState extends State{
 
     this.colour = new PulseColour(new Colour().random());
 
+    this.ParticleSystem = new ParticleSystem();
+
     this.titleOffset = 0;
 
     this.secondaryOffset = 0;
 
   }
 
-  crazyText(
-    text,
-    sizeMax,
-    repMax,
-    offsetX = 0,
-    offsetY = 0,
-    shudder = 3,
-    offsetMagnitude = 10
-  ){
-
-    // let offsetMagnitude = 10;
-
-    for(var i = 0 ; i < repMax ; i++){
-
-      // Draw.fillCol(Utility.Gradient(i,repMax,0.3,0.3,0.3,0,2,4,127,127));
-      Draw.fillCol(Utility.Gradient(i,repMax,0.3,0.3,0.3,0,2,4,127,127));
-
-      Draw.text(
-        Utility.Map(i,0,repMax,0,sizeMax),
-        "crt",
-        "center",
-        new SAT.Vector(
-          Math.cos(Utility.Radians(i+this.titleOffset))*offsetMagnitude+Utility.Random(-shudder,shudder)-(offsetX*i)+(Utility.Map(i,0,repMax,input.mouse.x,CW/2)),
-          Math.sin(Utility.Radians(i+this.titleOffset))*offsetMagnitude+Utility.Random(-shudder,shudder)+(offsetY*i)+(Utility.Map(i,0,repMax,input.mouse.y,CH/2))
-        ),
-        text
-      );
-
-    }
-
+  setup(){
+    sound.play(SoundLabel.START_STATE_MUSIC);
   }
 
   update(deltaTime){
 
-    // change this to be for something else
-    // if(input.isDown(InputKeys.SPACE)) this.changeState(GameState.LEVEL_SWITCH_STATE);
-
     this.colour.step();
 
-    this.colour.getColour().a = 0.4;
+    this.colour.getColour().a = 0.8;
 
-    this.titleOffset = this.titleOffset < 360 ? this.titleOffset+5 : 0;
+    this.titleOffset = this.titleOffset < 360 ? this.titleOffset+4 : 0;
+
+    if(Utility.Random(0,100) < 5){
+      this.ParticleSystem.addParticle(
+        Utility.Random(100,CW-100),
+        Utility.Random(100,CH-100),
+        Utility.Random(10,100),
+        ParticleType.FIREWORK
+      )
+    }
+
+    this.ParticleSystem.update(deltaTime);
 
     this.secondaryOffset += 1;
   }
 
   draw(){
 
-    Draw.fill(51,51,51,0.1);
+    Draw.fillCol(this.colour.getColour());
 
     Draw.rect(0,0,CW,CH);
 
-    // for(var l = 0 ; l < 200 ; l++){
-    //   Draw.stroke(1,Utility.Gradient(l,200,0.3,0.3,0.3,0,1,1,127,127).getHex());
-    //   Draw.line(Utility.Random(-CW,CW*2),Utility.Random(-CH,CH*2),Utility.Random(-CW,CW*2),Utility.Random(-CH,CH*2));
-    // }
+    this.ParticleSystem.draw({x:0,y:0});
 
-    this.crazyText('Hotline Valley',100,100,0,-2,4,50);
-    this.crazyText('PRESS SPACE TO START',40,100,0,2.5,4,50);
+    Draw.gameText('Hotline Valley',100,100,0,-2,4,50,false,false,this.titleOffset);
+    Draw.gameText('PRESS SPACE TO START',40,100,0,2.5,4,50,true,false,this.titleOffset);
 
-    //
-    // let shudder = 3;
-    //
-    // let repMax = 200;
-    //
-    // let offsetX = 0;
-    // let offsetY = 2;
-    //
-    // let offsetMagnitude = 10;
-    //
-    // for(var i = 0 ; i < repMax ; i++){
-    //
-    //   // Draw.fillCol(Utility.Gradient(i,repMax,0.3,0.3,0.3,0,2,4,127,127));
-    //   Draw.fillCol(Utility.Gradient(i,repMax,0.3,0.3,0.3,0,2,4,127,127));
-    //
-    //   Draw.text(
-    //     Utility.Map(i,0,repMax,0,80),
-    //     "crt",
-    //     "center",
-    //     new SAT.Vector(
-    //       Math.cos(Utility.Radians(i+this.titleOffset))*offsetMagnitude+Utility.Random(-shudder,shudder)-(offsetX*i)+(CW/2),
-    //       Math.sin(Utility.Radians(i+this.titleOffset))*offsetMagnitude+Utility.Random(-shudder,shudder)+(offsetY*i)+(CH/2)
-    //     ),
-    //     "PRESS SPACE TO START"
-    //   );
-    //
-    // }
+    // Draw.text(100,"crt","center",new SAT.Vector((CW/3),200),"(Sillicon)");
 
-    // for(var i = 0 ; i < Utility.RandomInt(50,100) ; i++){
-    //   switch(Math.floor(Utility.Random(0,4))){
-    //     case 0: Draw.line(0,Utility.Random(0,CH),CW/2,(CH/2 - 20) ,Utility.Random(0.5,3),this.colour.getColour().getHex()); break;
-    //     case 1: Draw.line(Utility.Random(0,CW),0,CW/2,(CH/2 - 20) ,Utility.Random(0.5,3),this.colour.getColour().getHex()); break;
-    //     case 2: Draw.line(CW,Utility.Random(0,CH),CW/2,(CH/2 - 20),Utility.Random(0.5,3),this.colour.getColour().getHex()); break;
-    //     case 3: Draw.line(Utility.Random(0,CW),CH,CW/2,(CH/2 - 20),Utility.Random(0.5,3),this.colour.getColour().getHex()); break;
-    //   }
-    // }
-    //
-    // if(Utility.Random(0,1) < 0.5){
-    //   Draw.fill(255,255,255);
-    //   Draw.text(100,"techno-hideo","center",new SAT.Vector(CW/2,CH/2),"PRESS SPACE TO START");
-    //   Draw.rect((CW/2) - 670,(CH/2)-100,1330,20);
-    //   Draw.rect((CW/2) - 670,(CH/2)+30,1330,20);
-    // } else {
-
-    //   Draw.rect(Utility.Random(-10,10)+(CW/2) - 670,(CH/2)-100,1330,20);
-    //   Draw.rect(Utility.Random(-10,10)+(CW/2) - 670,(CH/2)+30,1330,20);
-    // }
-    //
 
   }
+
 
 }
 
@@ -156,6 +90,10 @@ class PlayState extends State{
 
     this.colour = new PulseColour(new Colour().random());
 
+  }
+
+  setup(){
+    this.level.levelStart();
   }
 
   update(deltaTime){
@@ -202,32 +140,35 @@ class GameOverState extends State {
 
     this.nextLevel = nextLevel;
 
+    this.titleOffset = 0;
+
     this.setup();
 
   }
 
   setup(){
 
-    // this.timer = new LevelTimer(1000,-1,{ x:CW, y:CH });
-
-    // input.setCallBack(InputKeys.REPLAY,(function(){
-    //   this.changeState(GameState.PLAY_STATE);
-    // }).bind(this));
-
   }
 
   update(deltaTime){
-
+    this.titleOffset = this.titleOffset < 360 ? this.titleOffset+4 : 0;
   }
 
   draw(){
 
     Draw.fill(51,51,51,0.5);
+    Draw.fill(51,51,51,0.5);
     Draw.rect(0,0,CW,CH);
 
-    Draw.fill(255,0,0);
-    Draw.text(150,"techno-hideo","center",new SAT.Vector(Utility.Random(-4,4)+(CW/2),Utility.Random(-4,4)+CH/2),"GAMEOVER");
-    Draw.text(50,"techno-hideo","center",new SAT.Vector(Utility.Random(-4,4)+(CW/2),100+Utility.Random(-4,4)+CH/2),"PRESS R TO CONTINUE");
+    Draw.gameText(
+      'GAMEOVER',100,80,0,-2,4,50,false,false,this.titleOffset,
+      0.3,0.3,0.3,0,1,2,200,55
+    );
+
+    Draw.gameText(
+      'PRESS R TO CONTINUE',40,80,0,2.5,4,50,true,false,this.titleOffset,
+      0.3,0.3,0.3,0,1,2,200,55
+    );
 
   }
 
@@ -237,19 +178,55 @@ class VictoryState extends State {
 
   constructor(level,changeState){
     super(level,changeState);
+
+    this.ParticleSystem = new ParticleSystem();
+
+    this.titleOffset = 0;
+
+  }
+
+  setup(){
+    sound.stopAll();
+    sound.play(SoundLabel.VICTORY_STATE_MUSIC);
   }
 
   update(deltaTime){
+    this.titleOffset = this.titleOffset < 360 ? this.titleOffset-4 : 0;
+
+    if(Utility.Random(0,100) < 5){
+      this.ParticleSystem.addParticle(
+        Utility.Random(100,CW-100),
+        Utility.Random(100,CH-100),
+        Utility.Random(10,100),
+        ParticleType.FIREWORK
+      )
+    }
+
+    this.ParticleSystem.update(deltaTime);
 
   }
 
   draw(){
 
-    Draw.fill(0,0,0);
+    Draw.fill(51,51,51,0.5);
     Draw.rect(0,0,CW,CH);
 
-    Draw.fill(255,240,240);
-    Draw.text(100,"techno-hideo","center",new SAT.Vector(Utility.Random(-10,10)+(CW/2),Utility.Random(-10,10)+CH/2),"Victory Screen !");
+    this.ParticleSystem.draw({x:0,y:0});
+
+    Draw.gameText(
+      'YOU DID IT!',100,80,0,-2,4,100,false,false,this.titleOffset,
+      0.3,0.3,0.3,4,2,0,100,155
+    );
+
+    Draw.gameText(
+      'THANKS FOR PLAYING!',50,80,0,0,4,100,false,false,this.titleOffset,
+      0.3,0.3,0.3,4,2,0,100,155
+    );
+
+    Draw.gameText(
+      'PRESS SPACE TO RESTART',40,80,0,2.5,4,100,true,false,this.titleOffset,
+      0.3,0.3,0.3,4,2,0,100,155
+    );
 
   }
 
@@ -266,10 +243,15 @@ class PauseState extends State {
 
   draw(){
 
-    Draw.fill(51,51,51);
-    Draw.text(100,"techno-hideo","center",new SAT.Vector(Utility.Random(-10,10)+(CW/2),Utility.Random(-10,10)+CH/2),"PAUSED");
-    Draw.rect(Utility.Random(-10,10)+(CW/2) - 670,(CH/2)-100,1330,20);
-    Draw.rect(Utility.Random(-10,10)+(CW/2) - 670,(CH/2)+30,1330,20);
+    Draw.gameText(
+      'PAUSED',100,80,0,-2,4,50,false,false,this.titleOffset,
+      0.3,0.3,0.3,1,2,4,127,127
+    );
+
+    Draw.gameText(
+      'PRESS P / ESC TO CONTINUE',40,80,0,2,4,50,true,false,this.titleOffset,
+      0.3,0.3,0.3,1,2,4,127,127
+    );
 
 
   }

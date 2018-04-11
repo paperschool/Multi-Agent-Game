@@ -16,7 +16,7 @@ class Entity {
   }
 
   getSize(){
-    return this.Size;
+    return this.size;
   }
 
   getColour(){

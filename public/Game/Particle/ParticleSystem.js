@@ -41,7 +41,6 @@ class ParticleSystem {
         this.particles.push(new Particle(x,y));
         break;
       case ParticleType.BURN:
-
         break;
       case ParticleType.SMOKE:
         this.particles.push(new Particle_Smoke(x,y,d));
@@ -54,6 +53,8 @@ class ParticleSystem {
       case ParticleType.GUNSMOKE:
         this.particles.push(new Particle_GunSmoke(x,y,d));
         break;
+      case ParticleType.FIREWORK:
+        this.particles.push(new Particle_Firework(x,y,d));
     }
   }
 
@@ -212,4 +213,92 @@ class Particle_Smoke extends Particle {
     Draw.fillCol(this.colour);
     Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,this.size.x);
   }
+}
+
+class Particle_Firework extends Particle {
+
+  constructor(x,y,d){
+    super(x,y);
+
+    sound.play(SoundLabel.FIREWORK);
+
+    this.sparks = [];
+    for(var i = 0 ; i < Utility.Random(10,50) ; i++) {
+      this.sparks.push(new Firework_Spark(x,y,Utility.Random(1,8),Utility.Random(0,360)));
+    }
+
+    this.life = 100;
+
+  }
+
+  update(deltaTime){
+
+    super.update(deltaTime);
+
+    for(let spark of this.sparks){
+      spark.update(deltaTime);
+    }
+
+  }
+
+  draw(camera){
+    for(let spark of this.sparks){
+      spark.draw(camera);
+    }
+  }
+
+}
+
+class Firework_Spark extends Circle {
+
+  constructor(x,y,s,d){
+    super(x,y,s);
+
+    this.direction = d;
+
+    this.velocity = new SAT.Vector(
+      Math.cos(Utility.Radians(Utility.Random(-5,5) + d))*Utility.Random(1,10),
+      Math.sin(Utility.Radians(Utility.Random(-5,2) + d))*Utility.Random(1,10)
+    );
+
+    this.channelFocus = Utility.RandomInt(1,4);
+
+    this.setColour(new Colour(
+        (this.channelFocus === 1 ? 255 : (this.channelFocus === 2 ? 255 : 0)),
+        (this.channelFocus === 2 ? 255 : (this.channelFocus === 3 ? 255 : 0)),
+        (this.channelFocus === 3 ? 255 : (this.channelFocus === 1 ? 255 : 0)),
+      )
+    );
+
+    this.life = 100;
+
+  }
+
+  update(deltaTime){
+
+    this.life--;
+
+    this.getPos().add(this.velocity);
+
+    this.getPos().add({x:Utility.Random(-1,1),y:Utility.Random(-1,1)})
+
+    if(this.channelFocus === 1) this.getColour().setR(Utility.Map(this.life,0,100,255,0));
+    if(this.channelFocus === 2) this.getColour().setG(Utility.Map(this.life,0,100,255,0));
+    if(this.channelFocus === 3) this.getColour().setB(Utility.Map(this.life,0,100,255,0));
+
+    this.getColour().setA(0.5)
+
+    this.getSize().x *= 1.01
+
+  }
+
+  draw(camera){
+
+    super.draw(camera);
+    //
+    // Draw.fill(255);
+    // Draw.circle(this.getPos().x,this.getPos().y,this.getSize().x);
+
+  }
+
 }

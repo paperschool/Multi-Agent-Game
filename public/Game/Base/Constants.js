@@ -38,7 +38,8 @@ var ParticleType = {
   SMOKE    :2,
   BLOOD    :3,
   DEBRIS   :4,
-  GUNSMOKE :5
+  GUNSMOKE :5,
+  FIREWORK :6
 }
 
 var AgentType = {
@@ -91,12 +92,22 @@ var SoundLabel = {
   PICKUP_SHOTGUN:"pickupGunShotgun",
   PICKUP_FLAMETHROWER:"pickupGunFlamethrower",
 
+  FIREWORK:"firework",
+
   STATE_PAUSED:"statePaused",
   STATE_PLAY:"statePlay",
   STATE_START:"stateStart",
   STATE_VICTORY:"stateVictory",
   STATE_GAMEOVER_1:"stateGameover1",
-  STATE_GAMEOVER_2:"stateGameover2"
+  STATE_GAMEOVER_2:"stateGameover2",
+
+  START_STATE_MUSIC:"startStartMusic",
+  PLAY_STATE_MUSIC_1:"playStartMusic1",
+  PLAY_STATE_MUSIC_2:"playStartMusic2",
+  PLAY_STATE_MUSIC_3:"playStartMusic3",
+  PLAY_STATE_MUSIC_4:"playStartMusic4",
+
+  VICTORY_STATE_MUSIC:"victoryStateMusic"
 
 }
 

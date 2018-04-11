@@ -26,6 +26,24 @@ class Utility {
     );
   }
 
+  static GradientCos(iteration,max,f1,f2,f3,p1,p2,p3,center,offset){
+    return new Colour(
+      Math.cos(f1*Utility.Map(iteration,0,max,0,32) + p1) * center + offset,
+      Math.cos(f2*Utility.Map(iteration,0,max,0,32) + p2) * center + offset,
+      Math.cos(f3*Utility.Map(iteration,0,max,0,32) + p3) * center + offset
+    );
+  }
+
+  static GradientTan(iteration,max,f1,f2,f3,p1,p2,p3,center,offset){
+    return new Colour(
+      Math.tan(f1*Utility.Map(iteration,0,max,0,32) + p1) * center + offset,
+      Math.tan(f2*Utility.Map(iteration,0,max,0,32) + p2) * center + offset,
+      Math.tan(f3*Utility.Map(iteration,0,max,0,32) + p3) * center + offset
+    );
+  }
+
+
+
   // returns a random float between @min and @max
   static Random(min,max){
     return Math.random() * (max - min) + min;
@@ -142,6 +160,35 @@ class Draw {
     if(Draw.checkGame()){
       game.ctx.clearRect(x,y,w,h);
     }
+  }
+
+  static gameText(
+    text,sizeMax,repMax,offsetX = 0,offsetY = 0,shudder = 3,offsetMagnitude = 10,highlightFront = false,followMouse = false,rollingOffset = 0,
+    f1=0.3,f2=0.3,f3=0.3,p1=0,p2=2,p3=4,center=127,width=127){
+
+    // let offsetMagnitude = 10;
+
+    for(var i = 0 ; i < repMax ; i++){
+
+      if(i === repMax-1 && highlightFront){
+        Draw.fill(255,255,255);
+      } else {
+        Draw.fillCol(Utility.Gradient(i,repMax,f1,f2,f3,p1,p2,p3,center,width));
+      }
+
+      Draw.text(
+        Utility.Map(i,0,repMax,0,sizeMax),
+        "crt",
+        "center",
+        new SAT.Vector(
+          Math.cos(Utility.Radians(i+rollingOffset))*offsetMagnitude+Utility.Random(-shudder,shudder)-(offsetX*i)+(Utility.Map(i,0,repMax,(followMouse ? input.mouse.x : CW/2),CW/2)),
+          Math.sin(Utility.Radians(i+rollingOffset))*offsetMagnitude+Utility.Random(-shudder,shudder)+(offsetY*i)+(Utility.Map(i,0,repMax,(followMouse ? input.mouse.y : CH/2),CH/2))
+        ),
+        text
+      );
+
+    }
+
   }
 
   static polygonQuadNorm(w, h,angle){

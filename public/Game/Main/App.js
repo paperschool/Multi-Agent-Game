@@ -32,6 +32,8 @@ sound.add(SoundLabel.PICKUP_GUN,'Game/Assets/sound/sndPickUpWeapon.wav',0.1);
 sound.add(SoundLabel.PICKUP_SHOTGUN,'Game/Assets/sound/sndInsertShell.wav',0.1);
 sound.add(SoundLabel.PICKUP_FLAMETHROWER,'Game/Assets/sound/sndLightning1.wav',0.1);
 
+sound.add(SoundLabel.FIREWORK,'Game/Assets/sound/sndFirework.wav',0.1);
+
 sound.add(SoundLabel.STATE_PAUSED,'Game/Assets/sound/sndPause.wav',0.1);
 sound.add(SoundLabel.STATE_PLAY,'Game/Assets/sound/sndUnPause.wav',0.1);
 // sound.add(SoundLabel.STATE_START,'Game/Assets/sound/sndLightning1.wav',0.1);
@@ -40,15 +42,22 @@ sound.add(SoundLabel.STATE_PLAY,'Game/Assets/sound/sndUnPause.wav',0.1);
 sound.add(SoundLabel.STATE_GAMEOVER_1,'Game/Assets/sound/sndSplashLogo.wav',0.1);
 sound.add(SoundLabel.STATE_GAMEOVER_2,'Game/Assets/sound/sndStopButton.wav',0.1);
 
-// resize window event to update global canvas size objects
-$(window).on('resize',function(){
-  CW = window.innerWidth;
-  CH = window.innerHeight;
-  game.updateContext(CW,CH)
-});
+
+// music libraries
+sound.add(SoundLabel.START_STATE_MUSIC,'Game/Assets/sound/musicStart.mp3',0.2,true,false);
+
+sound.add(SoundLabel.PLAY_STATE_MUSIC_1,'Game/Assets/sound/musicPlay1.mp3',0.2,true,false);
+sound.add(SoundLabel.PLAY_STATE_MUSIC_2,'Game/Assets/sound/musicPlay2.mp3',0.2,true,false);
+sound.add(SoundLabel.PLAY_STATE_MUSIC_3,'Game/Assets/sound/musicPlay3.mp3',0.2,true,false);
+sound.add(SoundLabel.PLAY_STATE_MUSIC_4,'Game/Assets/sound/musicPlay1.mp3',0.2,true,false);
+
+sound.add(SoundLabel.VICTORY_STATE_MUSIC,'Game/Assets/sound/musicVictory.mp3',0.2,true,false);
+
+
+
 
 // on window loaded event
-$(window).bind("load", function() {
+$(window).on("load", function() {
 
   // settting canvas dimensions based on DOM inner width/height
   CW = window.innerWidth;
@@ -68,6 +77,13 @@ $(window).bind("load", function() {
   // instantiating game object
   game = new Game();
 
+  // resize window event to update global canvas size objects
+  $(window).on('resize',function(){
+    CW = window.innerWidth;
+    CH = window.innerHeight;
+    game.updateContext(CW,CH)
+  });
+
 });
 
 class Game {
@@ -82,9 +98,6 @@ class Game {
 
     // setting canvas context height and width for rendering
     this.updateContext(CW,CH);
-
-    // this.ctx.canvas.width = CW;
-    // this.ctx.canvas.height = CH;
 
     // defining world object
     this.world = new World(5000,5000);

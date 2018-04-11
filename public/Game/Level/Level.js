@@ -57,11 +57,13 @@ class Level {
 
     this.colour = new PulseColour(new Colour().random());
 
+    this.music = new LevelMusic();
+
     this.floor = new Colour();
 
     this.floor.setHex(gameTheme['FLOOR']);
 
-    this.floor.setA(0.5)
+    this.floor.setA(0.5);
 
     // astar search tick cooldown
     this.pfCoolDown = 1;
@@ -74,16 +76,22 @@ class Level {
     input.setCallBack(InputKeys.TOGGLETHEME,(function(){
       gameTheme = gameTheme === LightTheme ? DarkTheme : LightTheme;
       this.floor.setHex(gameTheme['FLOOR']);
-      
+
     }).bind(this));
 
+  }
 
+  // method to set up initial level settings
+  levelStart(){
+
+    this.music.play();
 
   }
 
   update(deltaTime){
 
-    this.colour.step(- (1/2500 * this.player.getLife() ) + 1/20);
+    this.colour.step();
+    // this.colour.step(- (1/2500 * this.player.getLife() ) + 1/20);
 
     // if(input.isDown(InputKeys.SHIFT)){
     //
