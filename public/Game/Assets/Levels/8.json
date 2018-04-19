@@ -1,0 +1,154 @@
+{
+  "level": {
+    "size": {
+      "x": 162,
+      "y": 90
+    },
+    "player": {
+      "x": 9,
+      "y": 17
+    },
+    "enemy": [
+      {
+        "x": 66,
+        "y": 38,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 41,
+        "y": 40,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 11,
+        "y": 40,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 11,
+        "y": 87,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 71,
+        "y": 73,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 58,
+        "y": 64,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 116,
+        "y": 76,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 154,
+        "y": 68,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 46,
+        "y": 76,
+        "type": "generic",
+        "weapon": "shotgun"
+      }
+    ],
+    "pickups": [
+      {
+        "x": 13,
+        "y": 17,
+        "type": "shotgun"
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "id": "null wall"
+      },
+      {
+        "id": 1,
+        "x": 2,
+        "y": 3,
+        "w": 77,
+        "h": 2
+      },
+      {
+        "id": 2,
+        "x": 78,
+        "y": 3,
+        "w": 2,
+        "h": 58
+      },
+      {
+        "id": 3,
+        "x": 78,
+        "y": 60,
+        "w": 84,
+        "h": 2
+      },
+      {
+        "id": 4,
+        "x": 161,
+        "y": 60,
+        "w": 2,
+        "h": 30
+      },
+      {
+        "id": 5,
+        "x": 0,
+        "y": 89,
+        "w": 162,
+        "h": 2
+      },
+      {
+        "id": 6,
+        "x": 0,
+        "y": 3,
+        "w": 2,
+        "h": 87
+      },
+      {
+        "id": 7,
+        "x": 2,
+        "y": 29,
+        "w": 63,
+        "h": 2
+      },
+      {
+        "id": 8,
+        "x": 33,
+        "y": 30,
+        "w": 2,
+        "h": 44
+      },
+      {
+        "id": 9,
+        "x": 45,
+        "y": 50,
+        "w": 34,
+        "h": 2
+      },
+      {
+        "id": 10,
+        "x": 104,
+        "y": 61,
+        "w": 2,
+        "h": 21
+      }
+    ]
+  }
+}

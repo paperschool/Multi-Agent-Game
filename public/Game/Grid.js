@@ -5,6 +5,8 @@ class Grid {
 
     this.levelSize = new SAT.Vector(x/gs,y/gs);
 
+    this.levelSizeAbsolute = new SAT.Vector(x,y);
+
     this.gridSize = gs;
 
     ////////////////////////
@@ -13,15 +15,16 @@ class Grid {
     this.WALL  = 0
     this.MARGIN = 10;
 
-    this.marginSize = 4;
+    // size of margin surrounding wall
+    this.marginSize = 2;
 
     this.pathMesh = []
-
     this.pathMeshInverted = [];
 
     // path mesh of non obstacle positions
     this.pathMeshFree = {};
 
+    // building obstacle grid for internal operations
     for(var y = 0 ; y < this.levelSize.y ; y++){
       let row = [];
       for(var x = 0 ; x < this.levelSize.x ; x++){
@@ -31,6 +34,8 @@ class Grid {
       this.pathMesh.push(row);
     }
 
+
+    // building obstacle grid for a star search library
     for(var x = 0 ; x < this.levelSize.x ; x++){
       let row = [];
       for(var y = 0 ; y < this.levelSize.y ; y++){
@@ -47,6 +52,9 @@ class Grid {
     // this array will return the path
     this.result = [];
 
+    // line of sight boolean to cancel once obstacle found (optimisation)
+    this.lineOfSightComplete = false;
+
     // Debug
     this.lineofsight = [];
 
@@ -54,7 +62,7 @@ class Grid {
     this.drawDebugGrid = false;
 
     // checking input for render options
-    input.setCallBack(InputKeys.DEBUG_GRID,(function(){
+    input.setCallBack(InputKeys.DEBUG_GRID,'griddebugon',(function(){
       this.toggleDrawDebugGrid();
     }).bind(this));
 
@@ -86,12 +94,24 @@ class Grid {
     return false;
   }
 
+  // for checking if normalised position is wall
+  isWall(position){
+    if(this.isOutsideBoundsGrid(position)) return true;
+    return this.pathMesh[position.y][position.x] === this.WALL
+  }
+
+  isEmpty(position){
+    return this.pathMesh[position.y][position.x] === this.EMPTY
+  }
 
     // this method will query the obstacle grid to determine if that position is
   // an obstacle or not
   isObstacle(position){
+
+    if(this.isOutsideBoundsGrid(position)) return true;
+
     // return this.graph.grid[position.y][position.x].closed === true;
-    return this.pathMesh[position.y][position.x] === this.WALL
+    return this.pathMesh[position.y][position.x] !== this.EMPTY
   }
 
   // converts the grid array at position.x/.y to an obstacle.
@@ -189,7 +209,7 @@ class Grid {
 
     // looping until a position is found that isnt an obstacle
     while(this.isObstacle(pos)){
-      console.log("Random Non-Obs Attempt: ",c);
+      // console.log("Random Non-Obs Attempt: ",c);
       c++;
       // updating position variable to new position
       pos = this.getRandomGridPosition();
@@ -211,7 +231,7 @@ class Grid {
       let c = 1;
 
       while(s.length === 0 || s === null || typeof s === 'undefined'){
-        console.log("Route Attempt: ",c);
+        // console.log("Route Attempt: ",c);
         c++;
         p = this.getRandomNonObstacleGridPosition();
         s = this.searchGrid(_start,p);
@@ -442,8 +462,9 @@ class Grid {
         // after new position has been calculated check if position lays on
         // obstacle position, if true, the method will return false denoting
         // no line of sight
-        if(this.isObstacle(p)){
+        if(this.isWall(p)){
           returnPath[returnPath.length-1].ok = false;
+          if(!this.lineOfSightComplete) return returnPath;
           success = false;
         }
 
@@ -473,6 +494,13 @@ class Grid {
     let p = this.getGridVector(pos);
     return (p.x < 0 || p.x > this.levelSize.x || p.y < 0 || p.y > this.levelSize.y)
   }
+
+  // as above but assumes a normalsied vector
+  isOutsideBoundsGrid(p){
+    return (p.x < 0 || p.x > this.levelSize.x-1 || p.y < 0 || p.y > this.levelSize.y-1)
+  }
+
+
 
   // UPDATE AND DRAW METHODS
 
@@ -542,16 +570,19 @@ class Grid {
         }
 
         if(this.pathMesh[y][x] === this.WALL){
+
           Draw.fillCol(new Colour(255,0,0,0.5));
+
         } else if(this.pathMesh[y][x] === this.EMPTY) {
-          Draw.fillCol(new Colour(0,0,255,0.5));
-        } else {
 
-          let max = Math.sqrt(Math.pow(this.MARGIN*this.marginSize,2) + Math.pow(this.MARGIN*this.marginSize,2))
+          Draw.fillCol(new Colour(0,0,Utility.RandomInt(200,255),0.5));
 
+        } else if(this.pathMesh[y][x] === this.MARGIN){
 
-          Draw.fillCol(
-            new Colour(255,Utility.Map(this.pathMesh[y][x],max,0,255),0,0.7));
+          // let max = Math.sqrt(Math.pow(this.MARGIN*this.marginSize,2) + Math.pow(this.MARGIN*this.marginSize,2))
+          // Draw.fillCol(new Colour(255,Utility.Map(this.pathMesh[y][x],max,0,255),0,0.7));
+
+          Draw.fillCol(new Colour(255,Utility.RandomInt(200,255),0,0.7));
 
         }
 

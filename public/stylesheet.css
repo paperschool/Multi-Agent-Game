@@ -42,6 +42,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'wdata';
+    src: url('font/Withheld-Data.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+}
+
 *{
   left:0;
   top:0;

@@ -3,6 +3,8 @@ class Agent_Patrol extends Agent {
   constructor(x,y,environment,patrol){
     super(x,y,environment)
 
+    this.type = AgentType.PATROL;
+
     this.patrol = null;
 
     this.patrolSet = false;
@@ -19,6 +21,7 @@ class Agent_Patrol extends Agent {
   }
 
   choosePatrolPoint(){
+    this.setVel(new SAT.Vector(0,0))
     this.setFocusPosition(
       this.grid.centerCellMap(this.patrol.getNextPoint())
     );
@@ -32,18 +35,16 @@ class Agent_Patrol extends Agent {
   }
 
   update(deltaTime){
-    super.update(deltaTime,false)
-    this.behaviour.step();
+    super.update(deltaTime,true)
+    // this.behaviour.step();
   }
 
   draw(camera){
+
+    this.setColour(new Colour().setHex(gameTheme['ENEMY-PATROL']));
+
     super.draw(camera);
 
-    if(this.getAlive()){
-
-      Draw.fillHex(gameTheme['ENEMY-PATROL']);
-      Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
-    }
   }
 
 }

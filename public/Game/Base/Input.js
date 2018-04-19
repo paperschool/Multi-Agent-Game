@@ -52,13 +52,24 @@ class Input {
       this.singlePressedKeys[key] = {
         isPressed:false,
         isDown:false,
-        callBacks:[]
+        callBacks:{}
       }
     }
   }
 
-  setCallBack(key,callback){
-    this.singlePressedKeys[key].callBacks.push(callback);
+  setCallBack(key,id,callback){
+    this.singlePressedKeys[key].callBacks[id] = callback;
+  }
+
+  removeCallBack(key,id){
+    let callbacks = this.singlePressedKeys[key].callbacks;
+
+    delete callbacks[id];
+
+    // for(let c = 0 ; c < callbacks.length ; c++){
+    //   if(callbacks[c].id === id) callbacks.splice(c,1);
+    // }
+
   }
 
   mouseMoveEvent(e){
@@ -137,6 +148,8 @@ class Input {
           key = InputKeys.DEBUG_AGENT_VISION; break; // H
       case 74:
           key = InputKeys.DEBUG_AGENT_PATH; break; // J
+      case 75:
+          key = InputKeys.DEBUG_AGENT_PROXIMITY; break; // K
       case 82:
           key = InputKeys.REPLAY; break;
       case 84:
@@ -148,19 +161,46 @@ class Input {
           return;
       }
 
+      // setting key down state
       this.singlePressedKeys[key].isDown = status;
 
-      if(this.singlePressedKeys[key].isDown && !this.singlePressedKeys[key].isPressed){
-        this.singlePressedKeys[key].isPressed = true;
 
-        for(let c = 0 ; c < this.singlePressedKeys[key].callBacks.length; c++){
-          this.singlePressedKeys[key].callBacks[c]();
-        }
+      if(status){
+        this.setTrap(key)
+      } else {
+        this.resetTrap(key)
       }
 
-      if(!this.singlePressedKeys[key].isDown && this.singlePressedKeys[key].isPressed){
-        this.singlePressedKeys[key].isPressed = false;
-      }
+  }
+
+  setTrap(key){
+
+    // checking single input trap conditions are met
+    if(this.singlePressedKeys[key].isDown && !this.singlePressedKeys[key].isPressed){
+
+      // console.log("trapset")
+
+      // setting trap for further input events
+      this.singlePressedKeys[key].isPressed = true;
+
+      // iterating over callback methods
+      for(let callback in this.singlePressedKeys[key].callBacks)
+        this.singlePressedKeys[key].callBacks[callback]();
+
+    }
+
+  }
+
+  resetTrap(key){
+
+    // resetting trap if key is no longer down and key is pressed however
+    if(!this.singlePressedKeys[key].isDown && this.singlePressedKeys[key].isPressed){
+
+      // console.log("trap reset")
+
+      // this sets the trap boolean back to its default
+      this.singlePressedKeys[key].isPressed = false;
+    }
 
   }
 

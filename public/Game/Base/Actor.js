@@ -237,6 +237,7 @@ class Actor extends Rectangle {
   rollBackPosition(){
     this.getPos().set(this.getOldPos());
     this.updateShoulders();
+    if(this.weapon) this.weapon.setPos(this.getPos());
   }
 
   setTurnSpeed(turnspeed){

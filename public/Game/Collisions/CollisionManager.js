@@ -11,43 +11,102 @@ class CollisionManager {
 
     let agents = this.level.agents.getAgents();
 
-    for(var wall = 0 ; wall < this.level.walls.length ; wall++){
+    let walls = this.level.walls;
 
-      if(this.level.player.weapon){
+    // structure so walls are checked against players and enemies
+    for(let wall of walls){
 
-        for(var bullet = 0 ; bullet < this.level.player.weapon.bullets.length ; bullet++){
+      // checking wall against every agent
+      for(let agent of agents){
 
-          // this.checkBulletPlayer(this.level.player.weapon.bullets[bullet],this.level.player);
-
-          for(var i = 0 ; i < agents.length ; i++){
-            if(agents[i].getAlive()){
-              this.checkBulletEnemy(this.level.player.weapon.bullets[bullet],agents[i]);
-            }
-          }
-
-          this.checkWallBullet(this.level.walls[wall],this.level.player.weapon.bullets[bullet]);
-
-        }
-
-        // iterate through agents
-        for(var agent = 0 ; agent < agents.length ; agent++)
-          if(agents[agent].getWeapon() !== null)
-            for(var bullet = 0 ; bullet < agents[agent].weapon.bullets.length ; bullet++){
-              this.checkBulletPlayer(agents[agent].weapon.bullets[bullet],this.level.player);
-              this.checkWallBullet(this.level.walls[wall],agents[agent].weapon.bullets[bullet]);
-            }
+        // checking agent for wall collision
+        if(agent.getAlive()) this.checkWallEnemy(wall,agent);
 
       }
 
-      for(var i = 0 ; i < agents.length ; i++){
-        if(agents[i].getAlive()){
-          this.checkWallEnemy(this.level.walls[wall],agents[i]);
-        }
-      }
+      // checking player for wall collision
+      this.checkWallPlayer(wall,this.level.player);
+    }
 
-      this.checkWallPlayer(this.level.walls[wall],this.level.player);
+    // checking player has a weapon
+    if(this.level.player.weapon){
+      // structure so player bullets are checked against walls and enemies
+      for(let bullet of this.level.player.weapon.bullets){
+
+        // checking bullets against enemies
+        for(let agent of agents){
+          if(agent.getAlive()) this.checkBulletEnemy(bullet,agent);
+        }
+
+        // structure so walls are checked against players and enemies
+        for(let wall of walls){
+          this.checkWallBullet(wall,bullet);
+        }
+
+      }
 
     }
+
+    // structure so enemy bullets are checked against walls and player
+    for(let agent of agents){
+
+      if(!agent.getAlive()) continue;
+
+      // iterating over bullets
+      for(let bullet of agent.weapon.bullets){
+
+        // checking bullet with every wall
+        for(let wall of walls){
+          // checking wall for bullet collision
+          this.checkWallBullet(wall,bullet);
+        }
+
+        // checking player for bullet collision
+        this.checkBulletPlayer(bullet,this.level.player);
+
+      }
+
+    }
+
+
+    // for(var wall = 0 ; wall < this.level.walls.length ; wall++){
+    //
+    //   if(this.level.player.weapon)
+    //     for(var bullet = 0 ; bullet < this.level.player.weapon.bullets.length ; bullet++){
+    //
+    //       // this.checkBulletPlayer(this.level.player.weapon.bullets[bullet],this.level.player);
+    //
+    //       for(var i = 0 ; i < agents.length ; i++){
+    //         if(agents[i].getAlive()){
+    //           this.checkBulletEnemy(this.level.player.weapon.bullets[bullet],agents[i]);
+    //         }
+    //       }
+    //
+    //       this.checkWallBullet(this.level.walls[wall],this.level.player.weapon.bullets[bullet]);
+    //
+    //     }
+    //
+    //   for(var i = 0 ; i < agents.length ; i++){
+    //
+    //     if(agents[i].getAlive()){
+    //
+    //       this.checkWallEnemy(this.level.walls[wall],agents[i]);
+    //
+    //       for(var bullet = 0 ; bullet < agents[i].weapon.bullets.length ; bullet++){
+    //
+    //         this.checkBulletPlayer(agents[i].weapon.bullets[bullet],this.level.player);
+    //
+    //         this.checkWallBullet(this.level.walls[wall],agents[i].weapon.bullets[bullet]);
+    //
+    //       }
+    //
+    //     }
+    //
+    //   }
+    //
+    //   this.checkWallPlayer(this.level.walls[wall],this.level.player);
+    //
+    // }
 
 
   }
@@ -108,8 +167,13 @@ class CollisionManager {
 
     let r = wall.collider.test(enemy.collider);
     if(r){
-      enemy.collider.getPos().add(r.overlapV);
+
+      // TODO EXPERIMENTAL CHANGE
+      // enemy.collider.getPos().add(r.overlapV);
+      enemy.applyImpulse(r.overlapV.scale(1.4));
+
       enemy.pos.set(enemy.collider.getPos());
+
       enemy.updateWeaponPos()
 
       enemy.isColliding = true;

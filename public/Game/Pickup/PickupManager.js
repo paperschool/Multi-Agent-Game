@@ -6,12 +6,22 @@ class PickupManager  {
 
     this.player = player;
 
-    input.setCallBack(InputKeys.SPACE,(function(){
-      this.playerRequestedPickUp(this.player);
+    this.levelReady = false;
+
+    input.setCallBack(InputKeys.SPACE,'pickupspace',(function(){
+      if(this.getLevelReady())
+        this.playerRequestedPickUp(this.player);
     }).bind(this));
 
   }
 
+  getLevelReady(){
+    return this.levelReady;
+  }
+
+  setLevelReady(levelReady){
+    this.levelReady = levelReady;
+  }
 
   update(deltaTime,player){
 
@@ -38,7 +48,7 @@ class PickupManager  {
   // method to create new pickup type (x,y) as a position and @type with takes from pickup type.
   newPickup(x,y,type){
 
-    let radius = 23;
+    let radius = 25;
 
     switch(type){
       case PickupType.GENERIC:
@@ -80,14 +90,6 @@ class PickupManager  {
 
       // check if player is near object and object is active
       if(p.getAlive() && p.isNearPlayer(player)){
-
-        if(player.getWeaponType() !== null){
-          this.newPickup(
-            player.getPos().x+Utility.RandomInt(-20,20),
-            player.getPos().y+Utility.RandomInt(-20,20),
-            player.getWeaponType()
-          );
-        }
 
         // if player is near object set object to false;
         console.log("Player Found '" + p.type + "' Pickup: " + pickup);
@@ -137,9 +139,19 @@ class PickupManager  {
             sound.play(SoundLabel.PICKUP_FLAMETHROWER);
             return;
         }
+
+        // removing pickup from array
+        this.pickups.splice(pickup,1);
+
+        if(player.getWeaponType() !== null){
+          this.newPickup(
+            player.getPos().x+Utility.RandomInt(-20,20),
+            player.getPos().y+Utility.RandomInt(-20,20),
+            player.getWeaponType()
+          );
+        }
+
       }
     }
-
   }
-
 }

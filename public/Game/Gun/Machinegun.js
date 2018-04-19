@@ -6,7 +6,7 @@ class Machinegun extends Gun {
     this.setRange(300);
     this.setSpeed(5)
     this.setRicochetCount(1);
-    this.setDamage(2);
+    this.setDamage(10);
     this.setShotCount(1);
 
   }

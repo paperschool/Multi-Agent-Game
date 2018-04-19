@@ -6,7 +6,7 @@ class Shotgun extends Gun {
     this.setRange(100);
     this.setRicochetCount(1)
     this.setSpeed(7);
-    this.setShotCount(10);
+    this.setShotCount(4);
     this.spread = 6;
     this.setDamage(10);
   }
@@ -31,7 +31,7 @@ class Shotgun extends Gun {
           new Shotgun_Bullet(
             this.pos.x,
             this.pos.y,
-            this.getSpeed()+Utility.RandomInt(-5,5),
+            this.getSpeed(), //+Utility.RandomInt(-5,5),
             this.getDirection()+Utility.RandomInt(-this.spread,this.spread),
             this.getRange(),
             this.getRicochetCount(),

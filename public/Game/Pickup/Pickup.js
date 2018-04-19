@@ -4,6 +4,9 @@ class Pickup extends Actor {
   constructor(x,y,w,h,radius) {
     super(x,y,0,0,0,0);
 
+    // if pickup has been picked up;
+    this.setAlive(true);
+
     this.type = PickupType.GENERIC;
 
     // this.bounds = new Circle(x+w/2,y+h/2,radius);
@@ -16,23 +19,17 @@ class Pickup extends Actor {
 
     this.setSize(new SAT.Vector(w,h));
 
-    // if pickup has been picked up;
-    this.setAlive(true);
-
     this.setSprite(new Sprite("Game/Assets/Sprites/pistol.png",40,30,this.pos.x,this.pos.y,1));
 
   }
 
   // method to check if player position is overlaping pickup
-  isNearPlayer(otherPlayer){
-
-    let r = this.getCollider().test(otherPlayer.getCollider());
-
-    return r != null;
+  isNearPlayer(other){
+    return this.getCollider().test(other.getCollider()) != null;
   }
 
   update(deltaTime){
-    super.update(deltaTime)
+    // super.update(deltaTime)
   }
 
   draw(camera){
@@ -68,8 +65,6 @@ class Pickup_Gun extends Pickup {
     this.fireRate = 25;
 
     this.range = 100;
-
-    this.setAlive(true);
 
     // setting colour of actor
     this.colour = new Colour(51,51,51);

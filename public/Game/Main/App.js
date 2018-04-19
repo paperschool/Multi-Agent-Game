@@ -1,8 +1,8 @@
 // object that stores game
 var game = null;
 
-// var gameTheme = DarkTheme;
-var gameTheme = LightTheme;
+var gameTheme = DarkTheme;
+// var gameTheme = LightTheme;
 
 // global mouse position object
 var input = null
@@ -49,7 +49,7 @@ sound.add(SoundLabel.START_STATE_MUSIC,'Game/Assets/sound/musicStart.mp3',0.2,tr
 sound.add(SoundLabel.PLAY_STATE_MUSIC_1,'Game/Assets/sound/musicPlay1.mp3',0.2,true,false);
 sound.add(SoundLabel.PLAY_STATE_MUSIC_2,'Game/Assets/sound/musicPlay2.mp3',0.2,true,false);
 sound.add(SoundLabel.PLAY_STATE_MUSIC_3,'Game/Assets/sound/musicPlay3.mp3',0.2,true,false);
-sound.add(SoundLabel.PLAY_STATE_MUSIC_4,'Game/Assets/sound/musicPlay1.mp3',0.2,true,false);
+sound.add(SoundLabel.PLAY_STATE_MUSIC_4,'Game/Assets/sound/musicPlay4.mp3',0.2,true,false);
 
 sound.add(SoundLabel.VICTORY_STATE_MUSIC,'Game/Assets/sound/musicVictory.mp3',0.2,true,false);
 
@@ -124,7 +124,7 @@ class Game {
 
     this.world.draw();
 
-    chart.draw();
+    // chart.draw();
     diagnostic.draw();
 
   }

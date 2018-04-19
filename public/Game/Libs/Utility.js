@@ -164,7 +164,7 @@ class Draw {
 
   static gameText(
     text,sizeMax,repMax,offsetX = 0,offsetY = 0,shudder = 3,offsetMagnitude = 10,highlightFront = false,followMouse = false,rollingOffset = 0,
-    f1=0.3,f2=0.3,f3=0.3,p1=0,p2=2,p3=4,center=127,width=127){
+    f1=0.3,f2=0.3,f3=0.3,p1=0,p2=2,p3=4,center=127,width=127,font='crt'){
 
     // let offsetMagnitude = 10;
 
@@ -178,7 +178,7 @@ class Draw {
 
       Draw.text(
         Utility.Map(i,0,repMax,0,sizeMax),
-        "crt",
+        font,
         "center",
         new SAT.Vector(
           Math.cos(Utility.Radians(i+rollingOffset))*offsetMagnitude+Utility.Random(-shudder,shudder)-(offsetX*i)+(Utility.Map(i,0,repMax,(followMouse ? input.mouse.x : CW/2),CW/2)),

@@ -61,17 +61,25 @@ app.get('/editor',function(req,res){
 
 });
 
-app.get('/testbed',function(req,res){
+// app.get('/testbed',function(req,res){
+//
+//   console.log("USER : Local User Accessed Level Editor: " + req.connection.remoteAddress);
+//   app.use(express.static(TESTBED_DIRECTORY));
+//   res.sendFile(TESTBED_DIRECTORY + '/index.html');
+//
+// });
 
-
-  console.log("USER : Local User Accessed Level Editor: " + req.connection.remoteAddress);
-
-  app.use(express.static(TESTBED_DIRECTORY));
-
-  res.sendFile(TESTBED_DIRECTORY + '/index.html');
-
+app.get('/testbed/behaviour',function(req,res){
+  var DIRECTORY = TESTBED_DIRECTORY + '/behaviour';
+  app.use(express.static(DIRECTORY));
+  res.sendFile(DIRECTORY+'/index.html');
 });
 
+app.get('/testbed/supercover',function(req,res){
+  var DIRECTORY = TESTBED_DIRECTORY + '/supercover';
+  app.use(express.static(DIRECTORY));
+  res.sendFile(DIRECTORY+'/index.html');
+});
 
 app.get('/',function(req,res){
 

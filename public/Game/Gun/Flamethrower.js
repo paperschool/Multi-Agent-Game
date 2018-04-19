@@ -7,7 +7,7 @@ class Flamethrower extends Gun {
     this.setRicochetCount(1)
     this.setShotCount(6)
     this.setSpeed(2.5);
-    this.setDamage(2);
+    this.setDamage(5);
   }
 
   update(deltaTime){

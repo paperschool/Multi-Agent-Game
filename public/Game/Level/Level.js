@@ -69,23 +69,38 @@ class Level {
     this.pfCoolDown = 1;
     this.pfCoolDownCounter = 0;
 
-    input.setCallBack(InputKeys.GODMODE,(function(){
+    input.setCallBack(InputKeys.GODMODE,'levelgodmode',(function(){
+
+      console.log("Gode Mode Set To: " + !this.player.getInvincibility())
       this.player.setInvincibility(!this.player.getInvincibility());
+
     }).bind(this));
 
-    input.setCallBack(InputKeys.TOGGLETHEME,(function(){
+    input.setCallBack(InputKeys.TOGGLETHEME,'levelthemetoggle',(function(){
       gameTheme = gameTheme === LightTheme ? DarkTheme : LightTheme;
       this.floor.setHex(gameTheme['FLOOR']);
 
+    }).bind(this));
+
+    // pause incrmeneting time through the use of a trap
+    input.setCallBack(InputKeys.PAUSE,'timerpause',(function(){
+      if(!this.timer.paused){
+        this.timer.pauseTimer();
+      } else if(this.timer.paused){
+        this.timer.unpauseTimer();
+      }
     }).bind(this));
 
   }
 
   // method to set up initial level settings
   levelStart(){
+    this.pickups.setLevelReady(true);
+  }
 
+  // this method runs only once per level switch ( does not fire on restart )
+  levelInit(){
     this.music.play();
-
   }
 
   update(deltaTime){
@@ -124,6 +139,14 @@ class Level {
     this.CollisionManager.checkAll();
 
     this.grid.update();
+
+    // rolling back positions of out of bound playerIsShooting
+    this.agents.checkOutOfBounds();
+
+    // checking player movement exceeded level boundaries or entered obstacle
+    if(this.grid.isOutsideBounds(this.player.getPos()) || this.grid.isWall(this.grid.getGridVector(this.player.getPos()))) {
+      this.player.rollBackPosition();
+    }
 
     this.updateLevelState();
 
@@ -178,9 +201,9 @@ class Level {
 
   }
 
-  addAgent(x,y,type,weapon,patrol){
+  addAgent(x,y,type,weapon,patrol,team){
 
-    this.agents.addAgent(x,y,type,weapon,patrol);
+    this.agents.addAgent(x,y,type,weapon,patrol,team);
 
   }
 

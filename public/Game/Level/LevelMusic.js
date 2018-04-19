@@ -4,7 +4,7 @@ class LevelMusic {
 
     this.song = null;
 
-    if(id === null) id = Utility.RandomInt(1,4);
+    if(id === null) id = Utility.RandomInt(1,5);
 
     // music
     switch(id){

@@ -28,12 +28,10 @@ class Player extends Actor {
   applyDamage(bullet){
 
     if(!this.invincible){
-
+      //
       let d = Math.floor(20 * ((1.0 / bullet.getInitialLifeSpan()) * bullet.getLifespan()));
-
       // diagnostic.updateLine("-Bullet Dmg",bullet);
       this.life -= bullet.getBulletDamage();
-
     }
 
   }

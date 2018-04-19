@@ -16,7 +16,7 @@ class Agent extends Actor {
     this.setSize(new SAT.Vector(50,50));
 
     // agent colour
-    this.setColour(new Colour(255,100,100))
+    this.setColour(new Colour().setHex(gameTheme['ENEMY-GENERIC']));
 
     // agent collision body
     this.setCollider(new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction)));
@@ -36,11 +36,9 @@ class Agent extends Actor {
     // array storing all path positions to reach player
     this.path = null;
 
-    // deltatime variable for access reasons
-    this.deltaTime = null;
+    this.type = AgentType.GENERIC;
 
     // BEHAVIOUR VARIABLES / STATES //
-
     this.stepBehaviour = false;
 
     // reference to environment for full access when evaluating
@@ -49,7 +47,7 @@ class Agent extends Actor {
     this.player = environment.player;
 
     // environment
-    this.grid  = environment.grid;
+    this.grid = environment.grid;
 
     // a vector representing the agents pathfinding focus
     this.focusPosition = this.chooseRandomFocusPosition();
@@ -366,7 +364,6 @@ class Agent extends Actor {
 
   // this setter updates the agents last known position variable
   setLastKnownPlayerPosition(){
-
     this.lastKnownPlayerPosition.set(this.getPlayerPosition());
 
     // checking last known position is an obstacle or not, if so
@@ -394,11 +391,11 @@ class Agent extends Actor {
     this.setAlerted(false);
   }
 
-  updateAlert(){
+  updateAlert(deltaTime){
 
     if(this.getAlerted() && this.getAlertRemaining() > 0){
 
-      this.setAlertRemaining(this.getAlertRemaining() - this.deltaTime);
+      this.setAlertRemaining(this.getAlertRemaining() - deltaTime);
       this.colour.setRGBA(255,100,100);
 
       this.setSpeed(this.getAlertedSpeed());
@@ -470,10 +467,24 @@ class Agent extends Actor {
     if(this.getPath().peekNext() === -1)
       return true;
 
+    if(!this.checkNextPossible(this.getPath().peekNext())){
+      this.setPath(null);
+      this.newPath();
+      // console.log("Path Obstructed - Building New Path")
+    }
+
     if(this.grid.isAtMapPosition(this.getPos(),this.getPath().peekNext())){
       this.getPath().getNextPoint();
     } else {}
   }
+
+
+  checkNextPossible(position){
+    return this.grid.lineOfSight(
+      this.grid.getGridVector(this.getPos()),
+      this.grid.getGridVector(position),[])[0].success;
+  }
+
 
   // method that will determine if agent has reached focus position
   agentArrivedFocusPosition(){
@@ -677,13 +688,9 @@ class Agent extends Actor {
     // checking if agent is alive
     if(this.getLife() <= 0) {  this.setAlive(false); return; }
 
-    // updating delta time for other methods that use it
-    this.deltaTime = deltaTime;
-
-    super.update(deltaTime)
+    super.update(deltaTime);
 
     // evaluate new velocity from current acceleration,direction,speed etc
-    // this.evaluateVelocity(this.deltaTime);
 
     if(this.getLevel().grid.isOutsideBounds(this.getPos())) {
       console.log("Agent Out of Bounds");
@@ -693,7 +700,7 @@ class Agent extends Actor {
     // console.log(Math.round(this.pos.x),Math.round(this.player.pos.x),Math.round(this.pos.y),Math.round(this.player.pos.y));
 
     // decrimenting alert value
-    this.updateAlert();
+    this.updateAlert(deltaTime);
 
     // updating player distance from agent for radius violation checks
     this.getPlayerDistance();
@@ -762,9 +769,11 @@ class Agent extends Actor {
   draw(camera){
     // super.draw(camera);
 
+    // Draw.fill(255,255,255);
+    // Draw.circle(this.collider.collider.pos.x-camera.x,this.collider.collider.pos.y-camera.y,50);
+
     if(this.getAlive()){
 
-      Draw.fillHex(gameTheme['ENEMY-GENERIC']);
       Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
 
       // if(this.getWithinFireRange() && this.getShooting()){
@@ -781,15 +790,7 @@ class Agent extends Actor {
 
       this.renderPuncuation(camera)
 
-      if(this.getDebugOn()){
-
-        Draw.line(
-          this.getPos().x - camera.x,
-          this.getPos().y - camera.y,
-          this.getFocusPosition().x - camera.x,
-          this.getFocusPosition().y - camera.y,
-          3,'#FF00FF'
-        );
+      if(this.getLevel().agents.drawDebugProximity){
 
         // BASIC RADIUS DEBUG`
         Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.firingDistance);
@@ -797,9 +798,6 @@ class Agent extends Actor {
 
         Draw.circleOutline(this.pos.x-camera.x,this.pos.y-camera.y,this.alertDistance);
         Draw.stroke(1,'#00FFFF');
-
-        // Draw.fill('#FFFFFF');
-        // Draw.circle(this.playerLastKnownLocation.x-camera.x,this.playerLastKnownLocation.y-camera.y,5);
 
         // VIEW CONE
         Draw.line(
@@ -820,6 +818,22 @@ class Agent extends Actor {
           (this.isWithinFieldOfView ? 3 : 1),
           (this.isWithinFieldOfView ? '#00FF00' : '#FF0000')
         );
+
+      }
+
+      if(this.getDebugOn()){
+
+
+        Draw.line(
+          this.getPos().x - camera.x,
+          this.getPos().y - camera.y,
+          this.getFocusPosition().x - camera.x,
+          this.getFocusPosition().y - camera.y,
+          3,'#FF00FF'
+        );
+
+        // Draw.fill('#FFFFFF');
+        // Draw.circle(this.playerLastKnownLocation.x-camera.x,this.playerLastKnownLocation.y-camera.y,5);
 
         let path = this.getPath();
 

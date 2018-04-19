@@ -2,6 +2,7 @@
 class State {
 
   constructor(level,changeState){
+
     this.level = level;
 
     this.changeState = changeState;
@@ -23,6 +24,8 @@ class StartState extends State{
 
     super(level,changeState);
 
+    this.ready = false;
+
     this.colour = new PulseColour(new Colour().random());
 
     this.ParticleSystem = new ParticleSystem();
@@ -35,6 +38,10 @@ class StartState extends State{
 
   setup(){
     sound.play(SoundLabel.START_STATE_MUSIC);
+  }
+
+  setReady(){
+    this.ready = true;
   }
 
   update(deltaTime){
@@ -67,10 +74,17 @@ class StartState extends State{
 
     this.ParticleSystem.draw({x:0,y:0});
 
-    Draw.gameText('Hotline Valley',100,100,0,-2,4,50,false,false,this.titleOffset);
-    Draw.gameText('PRESS SPACE TO START',40,100,0,2.5,4,50,true,false,this.titleOffset);
+    Draw.gameText(
+      'Sillicon',80,50,0,-4,4,50,false,false,this.titleOffset,
+      0.3,0.3,0.3,0,0,0,127,127,'wdata'
+    );
 
-    // Draw.text(100,"crt","center",new SAT.Vector((CW/3),200),"(Sillicon)");
+    Draw.gameText('Hotline Valley',100,100,0,-1,4,50,false,false,this.titleOffset);
+
+    if(this.ready)
+      Draw.gameText('PRESS SPACE TO START',40,100,0,2.5,4,50,true,false,this.titleOffset);
+
+
 
 
   }
@@ -142,13 +156,9 @@ class GameOverState extends State {
 
     this.titleOffset = 0;
 
-    this.setup();
-
   }
 
-  setup(){
-
-  }
+  setup(){}
 
   update(deltaTime){
     this.titleOffset = this.titleOffset < 360 ? this.titleOffset+4 : 0;
@@ -275,6 +285,8 @@ class LevelSwitchState extends State {
   }
 
   update(deltaTime){
+
+    this.timer.update(deltaTime);
 
     if(this.timer.isEnded()) this.changeState(GameState.PLAY_STATE);
 

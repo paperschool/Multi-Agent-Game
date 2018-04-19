@@ -25,9 +25,12 @@ var InputKeys = {
   SHIFT:'SHIFT',
   PAUSE:'PAUSE',
   REPLAY:'REPLAY',
+
   DEBUG_GRID:'DEBUG_GRID',
   DEBUG_AGENT_VISION:'DEBUG_AGENT_VISION',
   DEBUG_AGENT_PATH:'DEBUG_AGENT_PATH',
+  DEBUG_AGENT_PROXIMITY:'DEBUG_AGENT_PROXIMITY',
+
   GODMODE:'GODMODE',
   TOGGLETHEME:'TOGGLETHEME'
 }
@@ -46,7 +49,16 @@ var AgentType = {
   GENERIC:"generic",
   FOLLOW:"follow",
   WANDERING:"wander",
-  TRACE:"trace"
+  PATROL:"patrol",
+  MULTIAGENT:"multiagent",
+  MULTIAGENT_PATROL:"multiagentPatrol",
+  DELIBERATIVE:"deliberative"
+}
+
+var AgentMessageType = {
+  PLAYER_SEEN:"playerPosition",
+  PLAYER_FIRED:"playerFired",
+  FRIEND_DEAD:"friendDead"
 }
 
 var AgentPathFindingFocus = {

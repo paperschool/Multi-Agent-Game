@@ -8,7 +8,11 @@ class AgentManager {
 
     this.gridSize = this.grid.gridSize;
 
+    this.teams = {};
+
     this.agents = [];
+
+    this.agentCount = 0;
 
     this.seperation = 150;
 
@@ -17,19 +21,28 @@ class AgentManager {
     this.drawDebugPath        = false;
     this.drawDebugVision      = false;
     this.drawDebugLineOfSight = false;
+    this.drawDebugProximity   = false;
 
-    input.setCallBack(InputKeys.DEBUG_AGENT_PATH,(function(){
+    input.setCallBack(InputKeys.DEBUG_AGENT_PATH,'agentmanagerdebug1',(function(){
       this.toggleDrawDebugPath();
     }).bind(this));
 
-    input.setCallBack(InputKeys.DEBUG_AGENT_VISION,(function(){
+    input.setCallBack(InputKeys.DEBUG_AGENT_VISION,'agentmanagerdebug2',(function(){
       this.toggleDrawDebugVision();
+    }).bind(this));
+
+    input.setCallBack(InputKeys.DEBUG_AGENT_PROXIMITY,'agentmanagerdebug3',(function(){
+      this.toggleDrawDebugProximity();
     }).bind(this));
 
   }
 
   toggleDrawDebugPath(){
-    this.drawDebugPath ^= true;;
+    this.drawDebugPath ^= true;
+  }
+
+  toggleDrawDebugProximity(){
+    this.drawDebugProximity ^= true;
   }
 
   toggleDrawDebugVision(){
@@ -52,21 +65,37 @@ class AgentManager {
     return this.agents.reduce( (t,c,i) => t + (c.getAlive()) , 0 );
   }
 
-  addAgent(x,y,type,weapon,patrol){
+  addTeam(team){
+    if(!this.teams.hasOwnProperty(team)){
 
+      this.teams[team] = {};
+
+      for(let message in AgentMessageType){
+        this.teams[team][AgentMessageType[message]] = false;
+      }
+    }
+  }
+
+  addAgent(x,y,type,weapon,patrol,team){
+
+    this.agentCount++;
+
+    if(team)
+      this.addTeam(team);
 
     switch (type) {
-      case AgentType.GENERIC  :
-        // passing reference to level implies agent has access to all level information
-        this.agents.push(new Agent(x,y,this.level));
-        break;
-      case AgentType.FOLLOW   : break;
-      case AgentType.WANDERING: break;
-      case AgentType.TRACE    :
+      case AgentType.GENERIC   :
+        this.agents.push(new Agent(x,y,this.level)); break;
+      case AgentType.FOLLOW    : break;
+      case AgentType.WANDERING : break;
+      case AgentType.PATROL    :
+        this.agents.push(new Agent_Patrol(x,y,this.level,patrol)); break;
+      case AgentType.MULTIAGENT:
+        this.agents.push(new Agent_Communicative(x,y,this.level,team)); break;
+      // case AgentType.MULTIAGENT_PATROL:
+        // this.agents.push(new Agent_Communicative(x,y,this.level,patrol,team)); break;
 
-        this.agents.push(new Agent_Patrol(x,y,this.level,patrol));
-        break;
-      default:
+      default: break;
     }
 
     let a = this.agents[this.agents.length-1];
@@ -78,10 +107,11 @@ class AgentManager {
       case PickupType.FLAMETHROWER : a.setWeapon(new Flamethrower(a.getPos().x,a.getPos().y)); break;
     }
 
+    a.update(1);
+
   }
 
   seperateAgents(){
-
     for(let a = 0 ; a < this.agents.length ; a++){
       this.agents[a].applyImpluse(this.seperateAgent(a));
     }
@@ -117,7 +147,7 @@ class AgentManager {
 
     if(c > 0){
       steer.scale(1/c);
-      steer.scale(10);
+      steer.scale(5);
       steer.round(1000);
     } else {
       steer.scale(0);
@@ -129,18 +159,21 @@ class AgentManager {
   }
 
   broadcast(message){
+    // if the message type associated with agents team is not set to true, set it to true for the update loop
+    if(!this.teams[message.team][message.type]) this.teams[message.team][message.type] = true;
+  }
 
-    for(var agent = 0 ; agent < this.agents.length ; agent++) {
+  checkOutOfBounds(){
 
-
-
+    for(let agent of this.agents){
+      // checking player movement exceeded level boundaries or entered obstacle
+      if(this.grid.isOutsideBounds(agent.getPos()) || this.grid.isWall(this.grid.getGridVector(agent.getPos()))) {
+        agent.rollBackPosition();
+      }
     }
 
   }
 
-  comunicate(){
-
-  }
 
   update(deltaTime){
 
@@ -152,12 +185,17 @@ class AgentManager {
       let a = this.agents[agent];
 
       if(!a.getAlive()){
+
         this.agents.splice(agent,1);
         continue;
+
       } else {
 
-        let sep = this.seperateAgent(a);
+        // space for top level behaviour
 
+        // seperating agent
+        let sep = this.seperateAgent(a);
+        // ensuring seperation is not null;
         if(sep.x !== 0 && sep.y !== 0){
           // applying seperation calculation
           a.applyImpulse(sep);
@@ -169,6 +207,24 @@ class AgentManager {
       }
     }
 
+    for(let a of this.agents){
+      // checking agent is a communicative one
+      if(a.type === AgentType.MULTIAGENT)
+        // iterating over message types
+        for(let message in AgentMessageType)
+          // passing in each message if true
+          if(this.teams[a.team][AgentMessageType[message]])
+            // sending agent the message
+            a.receive(AgentMessageType[message]);
+
+    }
+
+    // resseting all messages
+    for(let team in this.teams)
+      for(let message in this.teams[team])
+        this.teams[team][message] = false;
+
+
   }
 
   draw(camera){
@@ -177,6 +233,12 @@ class AgentManager {
       // actual agent draw call
       this.agents[agent].draw(camera);
     }
+
+    Draw.fill(60,60,60);
+    Draw.text(120,"wdata","left",new SAT.Vector(80,160),this.agentCount - this.agents.length + '|' + this.agentCount);
+    Draw.fill(255,255,255);
+    Draw.text(120,"wdata","left",new SAT.Vector(70,150),this.agentCount - this.agents.length + '|' + this.agentCount);
+
 
   }
 

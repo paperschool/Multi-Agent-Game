@@ -29,41 +29,61 @@ class World {
     // current level object
     this.levels = null;
 
+    this.requestedLevelCount = 0;
+
     this.levelManager = new LevelManager();
 
-    // this.levelManager.loadLevel("Game/Assets/Levels/1.json",0,this.addLevelData.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/9.json",0,this.addLevelData.bind(this));
     // this.levelManager.loadLevel("Game/Assets/Levels/2.json",1,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/7.json",4,this.addLevelData.bind(this));
     // this.levelManager.loadLevel("Game/Assets/Levels/5.json",2,this.addLevelData.bind(this));
     // this.levelManager.loadLevel("Game/Assets/Levels/6.json",3,this.addLevelData.bind(this));
-    // this.levelManager.loadLevel("Game/Assets/Levels/7.json",4,this.addLevelData.bind(this));
-
-    // this.levelManager.loadLevel("Game/Assets/Levels/2.json",0,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/5.json",5,this.addLevelData.bind(this));
 
     this.currentLevel = -1;
 
-    input.setCallBack(InputKeys.PAUSE,(function(){
+    input.setCallBack(InputKeys.PAUSE,'worldpause',(function(){
+
       if(this.CURRENT_STATE === GameState.PAUSE_STATE){
+
         this.CURRENT_STATE = GameState.PLAY_STATE;
+
         sound.play(SoundLabel.STATE_PLAY);
+
       } else if(this.CURRENT_STATE === GameState.PLAY_STATE){
+
         this.CURRENT_STATE = GameState.PAUSE_STATE;
+
         sound.play(SoundLabel.STATE_PAUSED);
+
       }
+
     }).bind(this));
 
-    input.setCallBack(InputKeys.REPLAY,(function(){
+    input.setCallBack(InputKeys.REPLAY,'worldrestart',(function(){
+
       if(this.CURRENT_STATE === GameState.GAMEOVER_STATE){
         this.setState(GameState.PLAY_STATE);
       }
+
     }).bind(this));
 
-    input.setCallBack(InputKeys.SPACE,(function(){
-      if(this.CURRENT_STATE === GameState.START_STATE){
-        sound.stopAll();
-        this.setState(GameState.LEVEL_SWITCH_STATE);
-      } else if(this.CURRENT_STATE === GameState.VICTORY_STATE){
-        sound.stopAll();
-        this.setState(GameState.START_STATE);
+    input.setCallBack(InputKeys.SPACE,'worldstart',(function(){
+
+      if(this.levelManager.levelsLoaded()) {
+
+        if(this.CURRENT_STATE === GameState.START_STATE){
+
+          sound.stopAll();
+          this.setState(GameState.LEVEL_SWITCH_STATE);
+
+        } else if (this.CURRENT_STATE === GameState.VICTORY_STATE){
+
+          sound.stopAll();
+          this.setState(GameState.START_STATE);
+
+        }
+
       }
 
     }).bind(this));
@@ -107,15 +127,29 @@ class World {
 
       let patrol = null;
 
-      if('patrol' in data.level.enemy[agent]){
-        let pdata = data.level.enemy[agent].patrol;
+      let team = null;
 
-        patrol = new Patrol(pdata.loop,pdata.direction);
+      switch (data.level.enemy[agent].type) {
+        case AgentType.GENERIC: break;
+        case AgentType.FOLLOW: break;
+        case AgentType.WANDERING: break;
+        case AgentType.PATROL:
 
-        for(var point = 0 ; point < pdata.points.length ; point++){
-          patrol.addPoint(pdata.points[point]);
-        }
+          let pdata = data.level.enemy[agent].patrol;
 
+          patrol = new Patrol(pdata.loop,pdata.direction);
+
+          for(var point = 0 ; point < pdata.points.length ; point++){
+            patrol.addPoint(pdata.points[point]);
+          }
+
+          break;
+
+        case AgentType.MULTIAGENT:
+          team = data.level.enemy[agent].team;
+          break;
+        case AgentType.DELIBERATIVE: break;
+        default: break;
       }
 
       newLevel.addAgent(
@@ -123,8 +157,10 @@ class World {
         data.level.enemy[agent].y*this.gridSize,
         data.level.enemy[agent].type,
         data.level.enemy[agent].weapon,
-        patrol
-      )
+        patrol,
+        team
+      );
+
     }
 
     // add world pickups
@@ -136,13 +172,13 @@ class World {
       )
     }
 
-    // this.camera.setFocus(this.levels[this.levelCount-1].agents.agents[0],new SAT.Vector(CW/2,CH/2));
-
     return newLevel;
 
   }
 
   reloadLevel(){
+
+    this.level = null;
 
     this.level = this.addLevel(this.levelData[this.currentLevel])
 
@@ -150,6 +186,7 @@ class World {
 
     this.CURRENT_STATE = GameState.PLAY_STATE;
 
+    // this.states[this.CURRENT_STATE].setup();
 
   }
 
@@ -159,6 +196,7 @@ class World {
     if(this.currentLevel+1 === this.levelData.length){
 
       this.setState(GameState.VICTORY_STATE);
+      this.currentLevel = -1;
 
     } else {
 
@@ -168,11 +206,11 @@ class World {
 
       this.level.update(0);
 
+      this.level.levelInit();
+
       this.states[GameState.PLAY_STATE].setLevel(this.level);
 
       this.CURRENT_STATE = GameState.LEVEL_SWITCH_STATE;
-
-      this.states[this.CURRENT_STATE].setup();
 
     }
 
@@ -180,6 +218,10 @@ class World {
 
 
   update(deltaTime){
+
+    if(this.levelManager.levelsLoaded() && this.CURRENT_STATE === GameState.START_STATE){
+      this.states[this.CURRENT_STATE].setReady();
+    }
 
     this.states[this.CURRENT_STATE].update(deltaTime);
 
@@ -213,6 +255,8 @@ class World {
     } else if (state === GameState.PLAY_STATE && this.CURRENT_STATE === GameState.GAMEOVER_STATE) {
 
       this.reloadLevel();
+
+      this.states[this.CURRENT_STATE].setup();
 
     } else {
 
