@@ -166,6 +166,14 @@ class Grid {
       }
   }
 
+  addDeadSpace(x,y,w,h){
+
+    for(let yc = y ; yc < y+h ; yc++)
+      for(let xc = x ; xc < x+w ; xc++)
+        this.addObstacle(new SAT.Vector(xc,yc),this.WALL);
+
+  }
+
   // this method will take a non grid vector and determine if it
   // sit in a grid normalised obstacle position
   isObstacleNonGrid(position){

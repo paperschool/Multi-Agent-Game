@@ -19,7 +19,7 @@ class Agent extends Actor {
     this.setColour(new Colour().setHex(gameTheme['ENEMY-GENERIC']));
 
     // agent collision body
-    this.setCollider(new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.direction)));
+    this.setCollider(new PolygonCollider(this.pos.x,this.pos.y,Draw.polygonQuadNorm(40.0,20.0,this.getDirection())));
 
     // agent position
     this.setDirection(90)
@@ -111,6 +111,12 @@ class Agent extends Actor {
 
     this.alertedFiringDistance = 600
 
+    // look around behaviour variables
+
+    this.directionChangeCounter = -1;
+
+    this.directionChangeTimeout = 100;
+
     // relaxed buffs
     this.relaxedSpeed = 0.2;
 
@@ -132,6 +138,14 @@ class Agent extends Actor {
 
   getNext(){
     return (this.path[1] !== 'undefined' ? this.path[1] : this.getPos())
+  }
+
+  getDirectionChangeCounter(){
+    return this.directionChangeCounter;
+  }
+
+  getDirectionChangeTimeout(){
+    return this.directionChangeTimeout;
   }
 
   getPathFindingFocus(){
@@ -276,6 +290,14 @@ class Agent extends Actor {
 
   setFocusPosition(position){
     this.focusPosition = position;
+  }
+
+  setDirectionChangeCounter(counter){
+    this.directionChangeCounter = counter;
+  }
+
+  setDirectionChangeTimeout(timeout){
+    this.directionChangeTimeout = timeout;
   }
 
   setBehaviour(behaviour){
@@ -555,6 +577,20 @@ class Agent extends Actor {
 
   // AGENT DIRECTION AND MOVEMENT MECHANICS
 
+  lookAround(){
+
+    if(this.getDirectionChangeCounter() >= 0){
+
+      // reset timer
+      this.setDirectionChangeCounter(this.getDirectionChangeTimeout());
+
+      // changing direction
+      this.setDirection(Utility.RandomInt(0,360)+90);
+
+    }
+
+  }
+
   // this will turn the agent in the direction of the focus position
   lookAtFocus(){
 
@@ -594,6 +630,8 @@ class Agent extends Actor {
     return true;
   }
 
+  // this method will check the agents distance to the player, if too close the
+  // method will not permit any more movement towards the player
   focusProximityLimitation(){
     if(this.pathfindingFocus === AgentPathFindingFocus.PLAYER && Utility.dist(this.getPos(),this.getPlayerPosition()) < 100){
       this.applyImpulse(
@@ -611,8 +649,8 @@ class Agent extends Actor {
 
   // this method will turn the player to look at player position
   lookAtPlayer(){
-    // this.turnTo(this.getPos(),this.level.player.getPos())
-    this.setDirection(Utility.Degrees(Utility.angle(this.getPos(),this.getPlayerPosition())));
+    this.turnTo(this.getPos(),this.getFocusPosition());
+    // this.setDirection(Utility.Degrees(Utility.angle(this.getPos(),this.getPlayerPosition())));
 
     return true;
   }
@@ -625,8 +663,8 @@ class Agent extends Actor {
     // setting current acceleration to speed directed by agent direction
     this.applyImpulse(
         new SAT.Vector(
-          (this.speed) * Math.cos(Utility.Radians(this.direction)),
-          (this.speed) * Math.sin(Utility.Radians(this.direction))
+          (this.speed) * Math.cos(Utility.Radians(this.getDirection())),
+          (this.speed) * Math.sin(Utility.Radians(this.getDirection()))
         )
     );
 
@@ -692,11 +730,6 @@ class Agent extends Actor {
 
     // evaluate new velocity from current acceleration,direction,speed etc
 
-    if(this.getLevel().grid.isOutsideBounds(this.getPos())) {
-      console.log("Agent Out of Bounds");
-      this.rollBackPosition();
-    }
-
     // console.log(Math.round(this.pos.x),Math.round(this.player.pos.x),Math.round(this.pos.y),Math.round(this.player.pos.y));
 
     // decrimenting alert value
@@ -704,6 +737,10 @@ class Agent extends Actor {
 
     // updating player distance from agent for radius violation checks
     this.getPlayerDistance();
+
+    // updating look around timer
+    this.setDirectionChangeCounter(this.getDirectionChangeCounter() - deltaTime);
+
 
     // fetching new path
     // this.newPath();
@@ -774,7 +811,8 @@ class Agent extends Actor {
 
     if(this.getAlive()){
 
-      Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
+      Draw.fillHex(gameTheme['ENEMY-GENERIC'])
+      Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.getDirection()));
 
       // if(this.getWithinFireRange() && this.getShooting()){
       //   Draw.line(this.pos.x-camera.x,this.pos.y-camera.y,this.getPlayerPosition().x-camera.x,this.getPlayerPosition().y-camera.y);

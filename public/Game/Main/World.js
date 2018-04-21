@@ -33,7 +33,7 @@ class World {
 
     this.levelManager = new LevelManager();
 
-    this.levelManager.loadLevel("Game/Assets/Levels/9.json",0,this.addLevelData.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/11.json",0,this.addLevelData.bind(this));
     // this.levelManager.loadLevel("Game/Assets/Levels/2.json",1,this.addLevelData.bind(this));
     // this.levelManager.loadLevel("Game/Assets/Levels/7.json",4,this.addLevelData.bind(this));
     // this.levelManager.loadLevel("Game/Assets/Levels/5.json",2,this.addLevelData.bind(this));
@@ -107,6 +107,35 @@ class World {
         this.gridSize
       );
 
+
+    if(data.level.deadspaces){
+      // create all deadspace within level
+      for(var deadspace = 0 ; deadspace < data.level.deadspaces.length ; deadspace++){
+        newLevel.addDeadSpace(
+          data.level.deadspaces[deadspace].x,
+          data.level.deadspaces[deadspace].y,
+          data.level.deadspaces[deadspace].w,
+          data.level.deadspaces[deadspace].h,
+          deadspace,
+          data.level.deadspaces[deadspace].visible
+        )
+      }
+    }
+
+    if(data.level.floors){
+      // create all floors within level
+      for(var floor = 0 ; floor < data.level.floors.length ; floor++){
+        newLevel.addFloor(
+          data.level.floors[floor].x,
+          data.level.floors[floor].y,
+          data.level.floors[floor].w,
+          data.level.floors[floor].h,
+          floor,
+          data.level.floors[floor].visible
+        )
+      }
+    }
+
     // create all walls within level
     for(var wall = 0 ; wall < data.level.walls.length ; wall++){
       newLevel.addWall(
@@ -114,7 +143,8 @@ class World {
         data.level.walls[wall].y,
         data.level.walls[wall].w,
         data.level.walls[wall].h,
-        wall
+        wall,
+        data.level.walls[wall].visible
       )
     }
 
@@ -252,6 +282,9 @@ class World {
 
       this.nextLevel();
 
+      this.states[this.CURRENT_STATE].setup();
+
+
     } else if (state === GameState.PLAY_STATE && this.CURRENT_STATE === GameState.GAMEOVER_STATE) {
 
       this.reloadLevel();
@@ -265,7 +298,6 @@ class World {
       this.states[this.CURRENT_STATE].setup();
 
     }
-
 
   }
 

@@ -59,11 +59,7 @@ class Level {
 
     this.music = new LevelMusic();
 
-    this.floor = new Colour();
-
-    this.floor.setHex(gameTheme['FLOOR']);
-
-    this.floor.setA(0.5);
+    this.floors = [];
 
     // astar search tick cooldown
     this.pfCoolDown = 1;
@@ -162,13 +158,15 @@ class Level {
 
     let camera = this.camera.getOffset();
 
+    for(let floor of this.floors){
+      floor.draw(camera);
+    }
+
     // drawing the virtual world bounds
-    Draw.fillCol(this.floor);
-    Draw.rect(this.gridSize-camera.x,this.gridSize-camera.y,this.levelSize.x-this.gridSize,this.levelSize.y-this.gridSize);
+    // Draw.fillCol(this.floor);
+    // Draw.rect(this.gridSize-camera.x,this.gridSize-camera.y,this.levelSize.x-this.gridSize,this.levelSize.y-this.gridSize);
 
     this.background.draw(camera);
-
-    this.timer.draw(camera);
 
     for(var wall = 0 ; wall < this.walls.length ; wall++){
       this.walls[wall].draw(camera);
@@ -188,29 +186,35 @@ class Level {
 
     this.agents.draw(camera);
 
+    this.timer.draw(camera);
+
   }
 
   // method that creates new wall obstacle
-  addWall(x,y,w,h,id){
-
+  addWall(x,y,w,h,id,visible){
     // creating new wall and pushing to new array
-    this.walls.push(new Wall(x,y,w,h,this.gridSize,id));
+    this.walls.push(new Wall(x,y,w,h,this.gridSize,id,visible));
 
     // adding obstacles to a* star map
     this.grid.addObstacles(x,y,w,h);
+  }
 
+
+  addDeadSpace(x,y,w,h){
+    this.grid.addDeadSpace(x,y,w,h);
+  }
+
+  addFloor(x,y,w,h,id,visible){
+    // creating new wall and pushing to new array
+    this.floors.push(new Floor(x,y,w,h,this.gridSize,id,visible));
   }
 
   addAgent(x,y,type,weapon,patrol,team){
-
     this.agents.addAgent(x,y,type,weapon,patrol,team);
-
   }
 
   addPickup(x,y,type){
-
     this.pickups.newPickup(x,y,type);
-
   }
 
   updateLevelState(){
@@ -220,7 +224,7 @@ class Level {
     }
 
     if(this.agents.getLiveAgents() <= 0){
-      this.levelState = LevelState.ENEMY_DEAD;
+      // this.levelState = LevelState.ENEMY_DEAD;
     }
 
     if(this.timer.isEnded()){

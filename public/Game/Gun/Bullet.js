@@ -131,16 +131,10 @@ class Bullet extends Actor {
 
     if(this.alive){
 
-      Draw.line(
-        this.getPos().x-camera.x,
-        this.getPos().y-camera.y,
-        this.getPos().x-camera.x + Math.cos(Utility.Radians(this.getDirection()+180))*this.trail,
-        this.getPos().y-camera.y + Math.sin(Utility.Radians(this.getDirection()+180))*this.trail,
-        this.trailWidth,
-        new Colour(255,200,200,0.5).getHex());
-
       Draw.fillCol(this.colour);
+
       Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,5);
+
     }
 
   }

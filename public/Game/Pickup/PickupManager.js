@@ -94,62 +94,70 @@ class PickupManager  {
         // if player is near object set object to false;
         console.log("Player Found '" + p.type + "' Pickup: " + pickup);
 
+        let type = null;
+
+        if(player.getWeaponType() !== null){
+          type = player.getWeaponType();
+        }
+
         switch(p.type){
           case PickupType.GENERIC:
             player.setColour(p.colour);
             p.setAlive(false);
-            return;
+            break;
           case PickupType.HEALTH:
             player.setColour(p.colour);
             p.setAlive(false);
-            return;
+            break;
           case PickupType.GUN:
             player.setColour(p.colour);
             player.setWeapon(new Gun(p.pos.x,p.pos.y));
             player.setWeaponType(p.type);
             p.setAlive(false);
             sound.play(SoundLabel.PICKUP_GUN);
-            return;
+            break;
           case PickupType.PISTOL:
             player.setColour(p.colour);
             player.setWeapon(new Pistol(p.pos.x,p.pos.y));
             player.setWeaponType(p.type);
             p.setAlive(false);
             sound.play(SoundLabel.PICKUP_GUN);
-            return;
+            break;
           case PickupType.MACHINEGUN:
             player.setColour(p.colour);
             player.setWeapon(new Machinegun(p.pos.x,p.pos.y));
             player.setWeaponType(p.type);
             p.setAlive(false);
             sound.play(SoundLabel.PICKUP_GUN);
-            return;
+            break;
           case PickupType.SHOTGUN:
             player.setColour(p.colour);
             player.setWeapon(new Shotgun(p.pos.x,p.pos.y));
             player.setWeaponType(p.type);
             p.setAlive(false);
             sound.play(SoundLabel.PICKUP_SHOTGUN);
-            return;
+            break;
           case PickupType.FLAMETHROWER:
             player.setColour(p.colour);
             player.setWeapon(new Flamethrower(p.pos.x,p.pos.y));
             player.setWeaponType(p.type);
             p.setAlive(false);
             sound.play(SoundLabel.PICKUP_FLAMETHROWER);
-            return;
+            break;
         }
 
-        // removing pickup from array
+        // removing collected pickup from array
         this.pickups.splice(pickup,1);
 
-        if(player.getWeaponType() !== null){
+        if(type !== null){
           this.newPickup(
             player.getPos().x+Utility.RandomInt(-20,20),
             player.getPos().y+Utility.RandomInt(-20,20),
-            player.getWeaponType()
+            type
           );
         }
+
+        return;
 
       }
     }

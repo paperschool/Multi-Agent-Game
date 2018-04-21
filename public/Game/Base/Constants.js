@@ -56,7 +56,8 @@ var AgentType = {
 }
 
 var AgentMessageType = {
-  PLAYER_SEEN:"playerPosition",
+  PLAYER_SEEN:"playerSeen",
+  PLAYER_HEARD:"playerHeard",
   PLAYER_FIRED:"playerFired",
   FRIEND_DEAD:"friendDead"
 }
@@ -157,6 +158,7 @@ var DefaultColours = {
 
 var LightTheme = {
   'WALL':DefaultColours.CONCRETE,
+  'WALL-INNER':DefaultColours.SLIVER,
   'FLOOR':DefaultColours.CLOUD,
   'PLAYER':DefaultColours.SUNFLOWER,
   'ENEMY-GENERIC':DefaultColours.PURPLE,
@@ -167,10 +169,12 @@ var LightTheme = {
 
 var DarkTheme = {
   'WALL':DefaultColours.CARROT,
+  'WALL-INNER':DefaultColours.PUMPKIN,
   'FLOOR':DefaultColours.MIDNIGHT,
   'PLAYER':DefaultColours.SUNFLOWER,
   'ENEMY-GENERIC':DefaultColours.PURPLE,
   'ENEMY-PATROL':DefaultColours.DARKPURPLE,
+  'ENEMY-MULTI':DefaultColours.DARKPURPLE,
   'TIMER':DefaultColours.RUBY,
   'CIRCLES':DefaultColours.CARROT
 }

@@ -65,6 +65,22 @@ class Machinegun_Bullet extends Bullet {
   draw(camera){
 
     super.draw(camera);
+    //
+    // Draw.fill(51,51,51);
+
+    Draw.fillCol(this.colour);
+
+    Draw.circle(
+      this.pos.x-camera.x+Math.cos(Utility.Radians(this.getDirection()+180))*30,
+      this.pos.y-camera.y+Math.sin(Utility.Radians(this.getDirection()+180))*30,
+      2
+    );
+
+    Draw.circle(
+      this.pos.x-camera.x+Math.cos(Utility.Radians(this.getDirection()+180))*20,
+      this.pos.y-camera.y+Math.sin(Utility.Radians(this.getDirection()+180))*20,
+      3
+    );
 
     // Draw.line(
     //   this.getPos().x-camera.x,

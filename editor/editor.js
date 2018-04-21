@@ -2,7 +2,7 @@
 // tools, 0 === wall, 1 === player, 2 === enemy, 3 === pickup
 let activeTool = 0;
 
-let wallThickness = 2;
+let wallThickness = 1;
 
 let buildWindowOpen = false;
 
@@ -14,26 +14,33 @@ var grid = null;
 
 var cursor = null;
 
+var refImg = null;
+
+var imgGuide = null;
+
+var camera = null;
+
 function windowResized(){
   resizeCanvas(innerWidth,innerHeight);
 }
 
+let toolPosition = null
+
 $(document).ready(function(){
 
   // storing references to dom toolbar buttons
-  let wall   = $('#wall-button');
-  let player = $('#player-button');
-  let enemy  = $('#enemy-button');
-  let pickup = $('#pickup-button');
-  let build  = $('#build-button');
-  let reset  = $('#reset-button');
+  let wall       = $('#wall-button');
+  let player     = $('#player-button');
+  let enemy      = $('#enemy-button');
+  let pickup     = $('#pickup-button');
+  let build      = $('#build-button');
+  let floor      = $('#floor-button');
+  let erase      = $('#erase-button');
+  let deadspace  = $('#deadspace-button');
+  let reset      = $('#reset-button');
 
   //
-  let toolPosition  = $('#tool-position');
-
-  $(window).mousemove(function(event){
-    toolPosition.html(Math.round(event.pageX / gridSize) + ":" + Math.round(event.pageY / gridSize));
-  });
+  toolPosition = $('#tool-position');
 
   wall.on('click',function(){
     activeTool = 0;
@@ -55,11 +62,30 @@ $(document).ready(function(){
     clicked();
   });
 
+  floor.on('click',function(){
+    activeTool = 4;
+    clicked();
+  });
+
+  deadspace.on('click',function(){
+    activeTool = 5;
+    clicked();
+  });
+
+
+
+  erase.on('click',function(){
+    activeTool = -1;
+    clicked();
+  });
+
   function clicked(){
+    erase.css({'background-color':(activeTool === -1 ? '#e74c3c' : '#f39c12')});
     wall.css({'background-color':(activeTool === 0 ? '#e74c3c' : '#f39c12')});
     player.css({'background-color':(activeTool === 1 ? '#e74c3c' : '#f39c12')});
     enemy.css({'background-color':(activeTool === 2 ? '#e74c3c' : '#f39c12')});
     pickup.css({'background-color':(activeTool === 3 ? '#e74c3c' : '#f39c12')});
+    floor.css({'background-color':(activeTool === 4 ? '#e74c3c' : '#f39c12')});
   }
 
   clicked();
@@ -110,11 +136,19 @@ $(document).ready(function(){
 
 });
 
+function preload(){
+    refImg = loadImage('/leveldesigns/patrol-1.jpg');
+}
+
 function setup(){
 
   can = createCanvas(innerWidth,innerHeight);
 
   can.parent("editor_canvas")
+
+  camera = new Camera();
+
+  imgGuide = new ImageGuide(0,0,refImg);
 
   grid = new Grid();
 
@@ -124,9 +158,15 @@ function setup(){
 
 function draw(){
 
-  noStroke();
+  toolPosition.html(
+    cursor.getUnit().x + ":" + cursor.getUnit().y
+  );
 
+  noStroke();
   background(51);
+
+  imgGuide.update();
+  imgGuide.draw();
 
   grid.update();
   grid.draw();
@@ -134,89 +174,109 @@ function draw(){
   cursor.update();
   cursor.draw();
 
-
 }
 
 
+let keys = {
+  90 : { label:'z',pressed:false,fired:false,callback:function(){
+      console.log("Undo pressed");
+      grid.history.undo();
+    }
+  },
+  89 : { label:'y',pressed:false,fired:false,callback:function(){
+      console.log("Redo pressed");
+      // grid.history.redo()
+    }
+  },
+  87 : { label:'w',pressed:false,fired:false,callback:function(){
+      console.log("UP pressed");
+      camera.up();
+      imgGuide.up();
+    }
+  },
+  83 : { label:'s',pressed:false,fired:false,callback:function(){
+      console.log("DOWN pressed");
+      camera.down();
+      imgGuide.down();
+    }
+  },
+  65 : { label:'a',pressed:false,fired:false,callback:function(){
+      console.log("LEFT pressed");
+      camera.left();
+      imgGuide.left();
+    }
+  },
+  68 : { label:'d',pressed:false,fired:false,callback:function(){
+      console.log("RIGHT pressed");
+      camera.right();
+      imgGuide.right();
+    }
+  },
+  72 : { label:'h',pressed:false,fired:false,callback:function(){
+      imgGuide.hide = !imgGuide.hide;
+    }
+  },
+  81 : { label:'q',pressed:false,fired:false,callback:function(){
+      imgGuide.scale(-1)
+    }
+  },
+  69 : { label:'e',pressed:false,fired:false,callback:function(){
+      imgGuide.scale(1)
+    }
+  }
 
-class Cursor {
+
+}
+
+// input system (works supprisingly well)
+function keyPressed(){
+
+  for(let k in keys){
+
+    k = parseInt(k);
+
+    if(keyCode === k){
+
+      keys[k].pressed = true;
+
+      if(keys[k].pressed && !keys[k].fired){
+        keys[k].callback();
+      }
+
+      // holding
+      if(keys[k].pressed && keys[k].fired){}
+
+    } else {
+      keys[k].fired = false;
+    }
+
+  }
+
+}
+
+class Camera {
 
   constructor(){
-    this.pos = createVector(
-      floor( mouseX / gridSize ) * gridSize,
-      floor( mouseY / gridSize ) * gridSize
-    )
+    this.x = 0;
+    this.y = 0;
 
-    this.color = color(0, 255, 0);
-
+    this.unit = gridSize;
   }
 
-  get(){
-    return this.pos;
+  up(){
+    this.y = this.y - this.unit < 0 ? this.y : this.y - this.unit;
   }
 
-  offscreen() {
-    return (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height);
+  down(){
+    this.y += this.unit;
   }
 
-  update(){
-
-    this.pos.x = floor( mouseX / gridSize ) * gridSize;
-    this.pos.y = floor( mouseY / gridSize ) * gridSize;
-
-    if(activeTool === 0){
-      if(grid.newWall != null){
-
-        let ws = grid.newWall.startPos;
-        let we = grid.newWall.endPos;
-
-        if(grid.newWall.alignment() && !grid.newWall.single()){
-          this.color = color(0,255,0);
-        } else {
-          this.color = color(255,0,0);
-        }
-
-      }
-    }
-
-
-
+  left(){
+    this.x = this.x - this.unit < 0 ? this.x : this.x - this.unit;
   }
 
-  draw(){
-
-    fill(this.color)
-    rect(
-      this.pos.x,
-      this.pos.y,
-      gridSize,
-      gridSize
-    );
-
-
-    if(grid.newWall != null){
-
-      let ws = grid.newWall.startPos;
-      let we = grid.newWall.endPos;
-
-      fill(255,255,0);
-
-      if(ws != null){
-
-        let offsetx = 0;
-        let offsety = 0;
-
-        if(this.pos.x > width/2) offsetx = -100;
-        if(this.pos.y < height/2) offsety = 40;
-
-        textSize(15);
-        text("Start: " + Math.round(ws.x/gridSize) + ":" + Math.round(ws.y/gridSize), this.pos.x + offsetx,this.pos.y-20 + offsety);
-        text("End  : " + Math.round(this.pos.x/gridSize) + ":"+ Math.round(this.pos.y/gridSize), this.pos.x + offsetx,this.pos.y + offsety);
-
-      }
-
-    }
-
+  right(){
+    this.x += this.unit;
   }
 
 }

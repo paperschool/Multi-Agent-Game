@@ -13,6 +13,8 @@ class Player extends Actor {
 
     this.setInvincibility(false);
 
+    this.setWeaponType(null);
+
     // this.collider = new CircularCollider(this.pos.x,this.pos.y,40);
 
   }
@@ -61,12 +63,14 @@ class Player extends Actor {
       if(this.weapon !== null){
         this.weapon.setAttemptedFire(true);
         if(this.weapon.fire(this)){
+          this.setFiring(true);
           this.getLevel().ParticleSystem.addParticle(this.getPos().x,this.getPos().y,this.getDirection(),ParticleType.GUNSMOKE);
           this.getLevel().camera.resetShake(this.getWeapon().getDamage()*2);
         }
       }
     } else {
       if(this.weapon !== null){
+        this.setFiring(false);
         this.weapon.setAttemptedFire(false);
       }
     }

@@ -3,6 +3,119 @@ class Agent_Behaviour {
 
   constructor(agentObject) {
 
+    this.setupUtilityTasks();
+
+    // // this selector will attempt to locate the player and perform logical operations
+    // // once located
+    // BehaviourTree.register('playerLocatable', new BehaviourTree.Priority({
+    //   title: 'playerLocatable',
+    //   nodes: [
+    //     'pursueVisiblePlayer',
+    //     'pursueAudiblePlayer'
+    //   ]
+    // }));
+    //
+    // BehaviourTree.register('navigateAgent', new BehaviourTree.Priority({
+    //   title:'navigateAgent',
+    //   nodes:[
+    //     'playerLocatable',
+    //     'playerNotLocatable'
+    //   ]
+    // }));
+    //
+    // BehaviourTree.register('mainSequence', new BehaviourTree.Sequence({
+    //   title:'mainSequence',
+    //   // nodes:['Full','Hungry','Critical']
+    //   nodes:[
+    //     'navigateAgent',
+    //     'attackPlayer'
+    //   ]
+    // }));
+    //
+    // // tree
+    // this.behaviour = new BehaviourTree({
+    //   title: 'agent-behaviour',
+    //   tree: 'mainSequence'
+    // });
+
+    // tree
+    this.behaviour = new BehaviourTree({
+      title: 'agent-behaviour',
+
+      tree: new BehaviourTree.Sequence({
+
+        title:'mainSequence',
+        // nodes:['Full','Hungry','Critical']
+        nodes:[
+
+          // navigation sub tree
+          new BehaviourTree.Priority({
+            title:'navigateAgent',
+            nodes:[
+
+              // player location visible and audible
+              new BehaviourTree.Priority({
+                title: 'playerLocatable',
+                nodes: [
+                  'pursueVisiblePlayer',
+                  'pursueAudiblePlayer'
+                ]
+              }),
+
+              // this node runs when the player is not visible or audible
+              new BehaviourTree.Priority({
+                title: 'playerNotLocatable',
+                nodes: [
+
+                  'agentAlerted',
+
+                  // this sequence will attempt to run assuming the agent is not alerted
+                  new BehaviourTree.Sequence({
+                    title:'agentRelaxed',
+                    nodes:[
+                      'agentWander'
+                    ]
+                  })
+
+                ]
+              })
+
+            ]
+          }),
+
+          // attacking sub tree
+          new BehaviourTree.Sequence({
+            title:'attackPlayer',
+            nodes:[
+              'isAgentAlert',
+              'playerWithinLineOfSight',
+              'withinShootingRange',
+              'ShootPlayer'
+            ]
+          }),
+
+        ]
+
+      })
+    });
+
+    this.behaviour.setObject(agentObject);
+
+  }
+
+  getBehaviour(){
+    return this.behaviour;
+  }
+
+  setObject(object){
+    this.behaviour.getObject(object)
+  }
+
+  step(){
+    this.behaviour.step();
+  }
+
+  setupUtilityTasks(){
 
     /* prelim agent design
     primary ai will simplyt follow path to player when within a certain radius
@@ -272,9 +385,21 @@ class Agent_Behaviour {
         'agentNotArrivedFocusPosition',
         'canFocusLastKnownPosition',
         'setAgentPathfindingFocus-OLDPLAYER',
-        'pursueFocusPosition',
+        'pursueFocusPosition'
       ]
     }));
+
+    // this task runs when the agent is at the last known position and still
+    // cannot find the player. The Agent will remain still and look around
+    BehaviourTree.register('agentLookAround', new BehaviourTree.Task({
+      title:'agentLookAround',
+      run:function(agent){
+        agent.lookAround();
+        this.success();
+      }
+    }));
+
+
 
     // this selector implies that the player is not audible or visible but the Agent
     // is alerted so the agent will begin its alerted searching which may be:
@@ -286,7 +411,9 @@ class Agent_Behaviour {
       nodes: [
         'moveToLastKnownPosition',
         // 'moveNearLastKnownPosition',
-        // perform some kind of randomly looking
+        // perform some kind of random looking
+        // 'agentWander',
+        // 'agentLookAround',
         'relaxAgent'
       ]
     }));
@@ -365,6 +492,7 @@ class Agent_Behaviour {
       nodes:[
         'playerAudible',
         'playerInLOS',
+        'setLastKnownPlayerPosition',
         'setAgentPathfindingFocus-PLAYER',
         'pursueFocusPosition'
       ]
@@ -452,114 +580,6 @@ class Agent_Behaviour {
       ]
     }));
 
-    // // this selector will attempt to locate the player and perform logical operations
-    // // once located
-    // BehaviourTree.register('playerLocatable', new BehaviourTree.Priority({
-    //   title: 'playerLocatable',
-    //   nodes: [
-    //     'pursueVisiblePlayer',
-    //     'pursueAudiblePlayer'
-    //   ]
-    // }));
-    //
-    // BehaviourTree.register('navigateAgent', new BehaviourTree.Priority({
-    //   title:'navigateAgent',
-    //   nodes:[
-    //     'playerLocatable',
-    //     'playerNotLocatable'
-    //   ]
-    // }));
-    //
-    // BehaviourTree.register('mainSequence', new BehaviourTree.Sequence({
-    //   title:'mainSequence',
-    //   // nodes:['Full','Hungry','Critical']
-    //   nodes:[
-    //     'navigateAgent',
-    //     'attackPlayer'
-    //   ]
-    // }));
-    //
-    // // tree
-    // this.behaviour = new BehaviourTree({
-    //   title: 'agent-behaviour',
-    //   tree: 'mainSequence'
-    // });
-
-    // tree
-    this.behaviour = new BehaviourTree({
-      title: 'agent-behaviour',
-
-      tree: new BehaviourTree.Sequence({
-
-        title:'mainSequence',
-        // nodes:['Full','Hungry','Critical']
-        nodes:[
-
-          // navigation sub tree
-          new BehaviourTree.Priority({
-            title:'navigateAgent',
-            nodes:[
-
-              // player location visible and audible
-              new BehaviourTree.Priority({
-                title: 'playerLocatable',
-                nodes: [
-                  'pursueVisiblePlayer',
-                  'pursueAudiblePlayer'
-                ]
-              }),
-
-              // this node runs when the player is not visible or audible
-              new BehaviourTree.Priority({
-                title: 'playerNotLocatable',
-                nodes: [
-
-                  'agentAlerted',
-
-                  // this sequence will attempt to run assuming the agent is not alerted
-                  new BehaviourTree.Sequence({
-                    title:'agentRelaxed',
-                    nodes:[
-                      'agentWander'
-                    ]
-                  })
-
-                ]
-              })
-
-            ]
-          }),
-
-          // attacking sub tree
-          new BehaviourTree.Sequence({
-            title:'attackPlayer',
-            nodes:[
-              'isAgentAlert',
-              'playerWithinLineOfSight',
-              'withinShootingRange',
-              'ShootPlayer'
-            ]
-          }),
-
-        ]
-
-      })
-    });
-
-    this.behaviour.setObject(agentObject);
-
-  }
-
-  getBehaviour(){
-    return this.behaviour;
-  }
-
-  setObject(object){
-    this.behaviour.getObject(object)
-  }
-
-  step(){
-    this.behaviour.step();
   }
 
 }

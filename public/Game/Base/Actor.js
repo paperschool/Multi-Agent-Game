@@ -308,11 +308,12 @@ class Actor extends Rectangle {
   }
 
   calculateDirection(pointFrom,pointTo){
-    this.direction = Utility.Degrees(Utility.angle(pointFrom,pointTo));
+    // short circuit NaN catch clause
+    this.setDirection((Utility.Degrees(Utility.angle(pointFrom,pointTo)) || this.getDirection()));
   }
 
   // turning with considerations on turning speed
-  turnTo(pointFrom,pointTo){
+  turnTo(pointFrom,pointTo,speed = this.turnSpeed){
 
     let dir =  Utility.Degrees(Utility.angle(pointFrom,pointTo));
 
@@ -321,6 +322,11 @@ class Actor extends Rectangle {
     let s = Math.sign(dir - this.direction);
 
     this.direction += s*this.turnSpeed;
+
+    if(isNaN(s) || isNaN(this.getDirection())){
+      throw new Error("Direction Calculated Wrong");
+    }
+
 
   }
 

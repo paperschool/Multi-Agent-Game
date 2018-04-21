@@ -53,9 +53,6 @@ sound.add(SoundLabel.PLAY_STATE_MUSIC_4,'Game/Assets/sound/musicPlay4.mp3',0.2,t
 
 sound.add(SoundLabel.VICTORY_STATE_MUSIC,'Game/Assets/sound/musicVictory.mp3',0.2,true,false);
 
-
-
-
 // on window loaded event
 $(window).on("load", function() {
 

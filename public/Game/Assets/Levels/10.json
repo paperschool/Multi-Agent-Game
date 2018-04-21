@@ -1,0 +1,161 @@
+{
+  "level": {
+    "size": {
+      "x": 89,
+      "y": 45
+    },
+    "player": {
+      "x": 62,
+      "y": 22
+    },
+    "enemy": [
+      {
+        "x": 3,
+        "y": 3,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 3,
+        "y": 41,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 39,
+        "y": 41,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 39,
+        "y": 3,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 21,
+        "y": 21,
+        "type": "generic",
+        "weapon": "shotgun"
+      }
+    ],
+    "pickups": [
+      {
+        "x": 61,
+        "y": 22,
+        "type": "shotgun"
+      }
+    ],
+    "deadspaces": [
+      {
+        "id": 0,
+        "visible": false,
+        "x": 43,
+        "y": 31,
+        "w": 28,
+        "h": 14
+      },
+      {
+        "id": 1,
+        "visible": false,
+        "x": 43,
+        "y": 0,
+        "w": 28,
+        "h": 13
+      }
+    ],
+    "floors": [
+      {
+        "id": 0,
+        "visible": true,
+        "x": 1,
+        "y": 1,
+        "w": 41,
+        "h": 43
+      },
+      {
+        "id": 1,
+        "visible": true,
+        "x": 42,
+        "y": 14,
+        "w": 28,
+        "h": 16
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "id": "null wall",
+        "visible": false
+      },
+      {
+        "id": 0,
+        "visible": true,
+        "x": 0,
+        "y": 0,
+        "w": 43,
+        "h": 1
+      },
+      {
+        "id": 1,
+        "visible": true,
+        "x": 42,
+        "y": 0,
+        "w": 1,
+        "h": 14
+      },
+      {
+        "id": 2,
+        "visible": true,
+        "x": 42,
+        "y": 13,
+        "w": 29,
+        "h": 1
+      },
+      {
+        "id": 3,
+        "visible": true,
+        "x": 70,
+        "y": 13,
+        "w": 1,
+        "h": 18
+      },
+      {
+        "id": 4,
+        "visible": true,
+        "x": 42,
+        "y": 30,
+        "w": 29,
+        "h": 1
+      },
+      {
+        "id": 5,
+        "visible": true,
+        "x": 42,
+        "y": 30,
+        "w": 1,
+        "h": 15
+      },
+      {
+        "id": 6,
+        "visible": true,
+        "x": 0,
+        "y": 44,
+        "w": 43,
+        "h": 1
+      },
+      {
+        "id": 7,
+        "visible": true,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 45
+      }
+    ]
+  }
+}

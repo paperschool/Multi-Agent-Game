@@ -170,7 +170,7 @@ class CollisionManager {
 
       // TODO EXPERIMENTAL CHANGE
       // enemy.collider.getPos().add(r.overlapV);
-      enemy.applyImpulse(r.overlapV.scale(1.4));
+      enemy.applyImpulse(r.overlapV.scale(2));
 
       enemy.pos.set(enemy.collider.getPos());
 

@@ -5,24 +5,55 @@ class Multi_Agent_Behaviour extends Agent_Behaviour {
 
     super(agentObject);
 
+    // this task will alert the agent and broadcast a player seen message to team
+    BehaviourTree.register('messagePlayerVisible', new BehaviourTree.Task({
+      title:'alertAgentMulti',
+      run:function(agent){
+        agent.broadcast(AgentMessageType.PLAYER_SEEN);
+        this.success();
+      }
+    }));
+
+    // this task will alert the agent and broadcast a player seen message to team
+    BehaviourTree.register('messagePlayerAudible', new BehaviourTree.Task({
+      title:'alertAgentMulti',
+      run:function(agent){
+        agent.broadcast(AgentMessageType.PLAYER_HEARD);
+        this.success();
+      }
+    }));
+
+
+
+    // this will be modifed to handle triangulation
+    BehaviourTree.register('playerAudibleMulti', new BehaviourTree.Sequence({
+      title:'playerAudibleMulti',
+      nodes:[
+        'playerWithinAlertRange',
+        'playerIsShooting',
+        'alertAgent',
+        'messagePlayerAudible'
+      ]
+    }));
+
     // tree
     this.behaviour = new BehaviourTree({
       title: 'agent-behaviour',
 
       tree: new BehaviourTree.Sequence({
 
-        title:'mainSequence',
+        title:'mainSequenceMulti',
         // nodes:['Full','Hungry','Critical']
         nodes:[
 
           // navigation sub tree
           new BehaviourTree.Priority({
-            title:'navigateAgent',
+            title:'navigateAgentMulti',
             nodes:[
 
               // player location visible and audible
               new BehaviourTree.Priority({
-                title: 'playerLocatable',
+                title: 'playerLocatableMulti',
                 nodes: [
 
                   // task that is fired to check player visibility
@@ -38,16 +69,8 @@ class Multi_Agent_Behaviour extends Agent_Behaviour {
                           'playerWithinLineOfSight',
                           'setLastKnownPlayerPosition',
                           'setAgentPathfindingFocus-PLAYER',
-
-                          // modified alert that will trigger message system
-                          new BehaviourTree.Task({
-                            title:'alertAgentMulti',
-                            run:function(agent){
-                              agent.alertAgent();
-                              agent.broadcast(AgentMessageType.PLAYER_SEEN);
-                              this.success();
-                            }
-                          })
+                          'alertAgent',
+                          'messagePlayerVisible'
                         ]
                       }),
 
@@ -55,20 +78,35 @@ class Multi_Agent_Behaviour extends Agent_Behaviour {
                     ]
                   }),
 
-                  'pursueAudiblePlayer'
+                  // 'pursueAudiblePlayer',
+
+                  new BehaviourTree.Sequence({
+                    title:'pursueAudiblePlayerMulti',
+                    nodes:[
+                      // this modifed sequence does nothing new but will when
+                      // complete
+                      'playerAudibleMulti',
+                      'messagePlayerAudible',
+                      'playerInLOS',
+                      'setLastKnownPlayerPosition',
+                      'setAgentPathfindingFocus-PLAYER',
+                      'pursueFocusPosition'
+                    ]
+                  })
+
                 ]
               }),
 
               // this node runs when the player is not visible or audible
               new BehaviourTree.Priority({
-                title: 'playerNotLocatable',
+                title: 'playerNotLocatableMulti',
                 nodes: [
 
                   'agentAlerted',
 
                   // this sequence will attempt to run assuming the agent is not alerted
                   new BehaviourTree.Sequence({
-                    title:'agentRelaxed',
+                    title:'agentRelaxedMulti',
                     nodes:[
                       'agentWander'
                     ]

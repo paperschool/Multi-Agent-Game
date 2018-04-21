@@ -14,7 +14,7 @@ class AgentManager {
 
     this.agentCount = 0;
 
-    this.seperation = 150;
+    this.seperation = 100;
 
     this.agentsWeapons = [];
 
@@ -147,7 +147,7 @@ class AgentManager {
 
     if(c > 0){
       steer.scale(1/c);
-      steer.scale(5);
+      steer.scale(10);
       steer.round(1000);
     } else {
       steer.scale(0);
@@ -179,10 +179,15 @@ class AgentManager {
 
     diagnostic.updateLine("---- Agents",this.agents.length);
 
+    // let directiontable = {};
+    // let printtable = false;
 
     for(var agent = this.agents.length - 1 ; agent >= 0 ; agent--) {
 
       let a = this.agents[agent];
+
+      // directiontable[agent] = a.getDirection();
+      // printtable = isNaN(a.getDirection()) || printtable
 
       if(!a.getAlive()){
 
@@ -207,6 +212,9 @@ class AgentManager {
       }
     }
 
+    // if(printtable)
+      // console.table(directiontable);
+
     for(let a of this.agents){
       // checking agent is a communicative one
       if(a.type === AgentType.MULTIAGENT)
@@ -223,6 +231,7 @@ class AgentManager {
     for(let team in this.teams)
       for(let message in this.teams[team])
         this.teams[team][message] = false;
+
 
 
   }
