@@ -1,0 +1,58 @@
+{
+  "level":{
+    "size":{
+      "x":100,
+      "y":50
+    },
+    "player":{
+      "x":10,
+      "y":25
+    },
+    "enemy":[
+      { "x":10,"y":25,"type":"patrol","weapon":"shotgun",
+        "patrol":{
+          "loop":true,
+          "direction":1,
+          "points":[
+            {"x":10,"y":10},
+            {"x":20,"y":10},
+            {"x":30,"y":10}
+          ]
+        }
+      },
+      { "x":5, "y":5,  "type":"generic", "weapon":"shotgun"},
+      { "x":5, "y":45, "type":"generic", "weapon":"shotgun"},
+      { "x":95,"y":5,  "type":"generic", "weapon":"shotgun"},
+      { "x":95,"y":45, "type":"generic", "weapon":"shotgun"}
+
+    ],
+    "pickups":
+      [
+        { "x":10,"y":25,"type":"shotgun" }
+      ],
+    "walls":[
+      {
+        "x":0,"y":0,"w":1,"h":1,"info":"Empty Wall For collision fix"
+      },
+      {
+        "x":0,"y":0,"w":100,"h":2
+      },
+      {
+        "x":0,"y":0,"w":2,"h":50
+      },
+      {
+        "x":98,"y":0,"w":2,"h":50
+      },
+      {
+        "x":0,"y":48,"w":100,"h":2
+      },
+      {
+        "x":0,"y":20,"w":50,"h":2
+      },
+      {
+        "x":0,"y":28,"w":50,"h":2
+      }
+
+    ]
+  }
+}

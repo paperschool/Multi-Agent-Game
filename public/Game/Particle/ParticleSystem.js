@@ -35,7 +35,6 @@ class ParticleSystem {
 
     if(this.particleLimit < this.particles.length) this.particles.splice(this.particleLimit-1,1);
 
-
     switch(type){
       case ParticleType.GENERIC:
         this.particles.push(new Particle(x,y));
@@ -55,7 +54,12 @@ class ParticleSystem {
         break;
       case ParticleType.FIREWORK:
         this.particles.push(new Particle_Firework(x,y,d));
+        break;
+      case ParticleType.GLITTER:
+        this.particles.push(new Particle_Glitter(x,y,d));
+        break;
     }
+
   }
 
 }
@@ -102,17 +106,44 @@ class Particle extends Entity {
 
 }
 
-class Particle_Blood extends Particle {
+class Particle_Blood {
+
+  constructor(x,y,d){
+
+    this.drops = [];
+
+    for(let drop = 0 ; drop < Utility.RandomInt(5,10) ; drop++){
+      this.drops.push(new Blood_Splatter(x,y,d));
+    }
+
+  }
+
+  update(deltaTime){
+    for(let drop of this.drops){
+      drop.update(deltaTime);
+    }
+  }
+
+  draw(camera){
+    for(let drop of this.drops){
+      drop.draw(camera);
+    }
+  }
+
+}
+
+class Blood_Splatter extends Particle {
 
   constructor(x,y,d){
 
     super(x,y);
 
-    this.colour.randomR(150,255);
+    this.colour.randomR(50,255);
+    this.colour.randomA(0,255);
 
-    this.life = 20;
+    this.life = 200;
 
-    this.setSize(new SAT.Vector(20,20));
+    this.setSize(new SAT.Vector(Utility.RandomInt(5,20),Utility.RandomInt(5,20)));
 
     this.setPos(new SAT.Vector(x,y));
 
@@ -223,6 +254,7 @@ class Particle_Firework extends Particle {
     sound.play(SoundLabel.FIREWORK);
 
     this.sparks = [];
+
     for(var i = 0 ; i < Utility.Random(10,50) ; i++) {
       this.sparks.push(new Firework_Spark(x,y,Utility.Random(1,8),Utility.Random(0,360)));
     }
@@ -299,6 +331,75 @@ class Firework_Spark extends Circle {
     // Draw.fill(255);
     // Draw.circle(this.getPos().x,this.getPos().y,this.getSize().x);
 
+  }
+
+}
+
+
+class Particle_Glitter extends Particle {
+
+  constructor(x,y,d){
+    super(x,y);
+
+    sound.play(SoundLabel.FIREWORK);
+
+    this.glitter = [];
+
+    for(var i = 0 ; i < Utility.Random(10,50) ; i++) {
+      this.glitter.push(new Glitter(x+Utility.Random(-40,40),y,Utility.Random(10,30),Utility.Random(0,360)));
+    }
+
+    this.life = 20;
+
+  }
+
+  update(deltaTime){
+
+    super.update(deltaTime);
+
+    for(let glitter of this.glitter){
+      glitter.update(deltaTime);
+    }
+
+  }
+
+  draw(camera){
+    for(let glitter of this.glitter){
+      glitter.draw({x:0,y:0});
+    }
+  }
+
+}
+
+
+class Glitter extends Circle {
+
+  constructor(x,y,s,d){
+    super(x,y,s);
+
+    this.direction = d;
+
+    this.velocity = new SAT.Vector(
+      Math.cos(Utility.Radians(Utility.Random(-5,5) + d))*Utility.Random(1,10),
+      Math.sin(Utility.Radians(Utility.Random(-5,2) + d))*Utility.Random(1,10)
+    );
+
+    this.setColour(new Colour().randomR());
+    this.getColour().setA(0.3);
+    this.life = 100;
+
+  }
+
+  update(deltaTime){
+
+    this.life--;
+    this.getPos().add(this.velocity);
+    this.getPos().add({x:Utility.Random(-1,1),y:Utility.Random(-1,1)})
+    this.getSize().x *= 0.99
+  }
+
+  draw(camera){
+    super.draw(camera);
   }
 
 }

@@ -15,6 +15,10 @@ class Player extends Actor {
 
     this.setWeaponType(null);
 
+    this.setWeapon(new Machinegun(this.getPos().x,this.getPos().y));
+    sound.play(SoundLabel.PICKUP_GUN);
+    this.setWeaponType(PickupType.MACHINEGUN);
+
     // this.collider = new CircularCollider(this.pos.x,this.pos.y,40);
 
   }
@@ -119,9 +123,14 @@ class Player extends Actor {
 
     Draw.fillHex(gameTheme['PLAYER'])
 
-    // Draw.circle(this.pos.x-camera.x,this.pos.y-camera.y,40);
 
     Draw.polygon(Draw.polygonQuad(this.pos.x-camera.x,this.pos.y-camera.y,40.0,20.0,this.direction));
+
+    if(this.invincible){
+      Draw.circleOutline(this.getPos().x-camera.x,this.getPos().y-camera.y,50+Utility.Random(-10,10));
+      Draw.stroke(5,'#FFFFFF');
+
+    }
 
     // Draw.line(this.pos.x-camera.x,this.pos.y-camera.y,input.mouse.x,input.mouse.y);
 

@@ -1,0 +1,361 @@
+{
+  "level": {
+    "size": {
+      "x": 97,
+      "y": 97
+    },
+    "player": {
+      "x": 24,
+      "y": 77
+    },
+    "enemy": [
+      {
+        "x": 50,
+        "y": 12,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 46,
+        "y": 45,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 60,
+        "y": 78,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 83,
+        "y": 88,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 87,
+        "y": 25,
+        "type": "generic",
+        "weapon": "shotgun"
+      }
+    ],
+    "pickups": [
+      {
+        "x": 24,
+        "y": 72,
+        "type": "shotgun"
+      }
+    ],
+    "deadspaces": [
+      {
+        "id": 0,
+        "visible": false,
+        "x": 13,
+        "y": 13,
+        "w": 22,
+        "h": 41
+      },
+      {
+        "id": 1,
+        "visible": false,
+        "x": 67,
+        "y": 13,
+        "w": 17,
+        "h": 17
+      },
+      {
+        "id": 2,
+        "visible": false,
+        "x": 67,
+        "y": 44,
+        "w": 17,
+        "h": 40
+      },
+      {
+        "id": 3,
+        "visible": false,
+        "x": 0,
+        "y": 66,
+        "w": 19,
+        "h": 31
+      },
+      {
+        "id": 4,
+        "visible": false,
+        "x": 19,
+        "y": 83,
+        "w": 34,
+        "h": 14
+      },
+      {
+        "id": 5,
+        "visible": false,
+        "x": 30,
+        "y": 65,
+        "w": 23,
+        "h": 19
+      }
+    ],
+    "floors": [
+      {
+        "id": 0,
+        "visible": true,
+        "x": 0,
+        "y": 0,
+        "w": 97,
+        "h": 14
+      },
+      {
+        "id": 1,
+        "visible": true,
+        "x": 0,
+        "y": 14,
+        "w": 14,
+        "h": 52
+      },
+      {
+        "id": 2,
+        "visible": true,
+        "x": 34,
+        "y": 14,
+        "w": 34,
+        "h": 52
+      },
+      {
+        "id": 4,
+        "visible": true,
+        "x": 52,
+        "y": 66,
+        "w": 16,
+        "h": 31
+      },
+      {
+        "id": 5,
+        "visible": true,
+        "x": 68,
+        "y": 83,
+        "w": 29,
+        "h": 14
+      },
+      {
+        "id": 6,
+        "visible": true,
+        "x": 83,
+        "y": 14,
+        "w": 14,
+        "h": 69
+      },
+      {
+        "id": 7,
+        "visible": true,
+        "x": 68,
+        "y": 29,
+        "w": 15,
+        "h": 16
+      },
+      {
+        "id": 7,
+        "visible": true,
+        "x": 14,
+        "y": 54,
+        "w": 20,
+        "h": 11
+      },
+      {
+        "id": 8,
+        "visible": true,
+        "x": 19,
+        "y": 65,
+        "w": 11,
+        "h": 18
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "id": "null wall",
+        "visible": false
+      },
+      {
+        "id": 0,
+        "visible": true,
+        "x": 0,
+        "y": 0,
+        "w": 97,
+        "h": 1
+      },
+      {
+        "id": 1,
+        "visible": true,
+        "x": 96,
+        "y": 0,
+        "w": 1,
+        "h": 97
+      },
+      {
+        "id": 5,
+        "visible": true,
+        "x": 52,
+        "y": 65,
+        "w": 1,
+        "h": 32
+      },
+      {
+        "id": 4,
+        "visible": true,
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 66
+      },
+      {
+        "id": 5,
+        "visible": true,
+        "x": 52,
+        "y": 96,
+        "w": 45,
+        "h": 1
+      },
+      {
+        "id": 6,
+        "visible": true,
+        "x": 34,
+        "y": 13,
+        "w": 1,
+        "h": 41
+      },
+      {
+        "id": 7,
+        "visible": true,
+        "x": 13,
+        "y": 53,
+        "w": 22,
+        "h": 1
+      },
+      {
+        "id": 8,
+        "visible": true,
+        "x": 13,
+        "y": 13,
+        "w": 1,
+        "h": 41
+      },
+      {
+        "id": 9,
+        "visible": true,
+        "x": 13,
+        "y": 13,
+        "w": 22,
+        "h": 1
+      },
+      {
+        "id": 10,
+        "visible": true,
+        "x": 67,
+        "y": 13,
+        "w": 17,
+        "h": 1
+      },
+      {
+        "id": 11,
+        "visible": true,
+        "x": 83,
+        "y": 13,
+        "w": 1,
+        "h": 17
+      },
+      {
+        "id": 12,
+        "visible": true,
+        "x": 67,
+        "y": 29,
+        "w": 17,
+        "h": 1
+      },
+      {
+        "id": 13,
+        "visible": true,
+        "x": 67,
+        "y": 13,
+        "w": 1,
+        "h": 17
+      },
+      {
+        "id": 14,
+        "visible": true,
+        "x": 67,
+        "y": 44,
+        "w": 17,
+        "h": 1
+      },
+      {
+        "id": 15,
+        "visible": true,
+        "x": 83,
+        "y": 44,
+        "w": 1,
+        "h": 40
+      },
+      {
+        "id": 16,
+        "visible": true,
+        "x": 67,
+        "y": 83,
+        "w": 17,
+        "h": 1
+      },
+      {
+        "id": 17,
+        "visible": true,
+        "x": 67,
+        "y": 44,
+        "w": 1,
+        "h": 40
+      },
+      {
+        "id": 18,
+        "visible": true,
+        "x": 30,
+        "y": 65,
+        "w": 23,
+        "h": 1
+      },
+      {
+        "id": 18,
+        "visible": true,
+        "x": 0,
+        "y": 65,
+        "w": 19,
+        "h": 1
+      },
+      {
+        "id": 19,
+        "visible": true,
+        "x": 18,
+        "y": 65,
+        "w": 1,
+        "h": 19
+      },
+      {
+        "id": 20,
+        "visible": true,
+        "x": 18,
+        "y": 83,
+        "w": 13,
+        "h": 1
+      },
+      {
+        "id": 21,
+        "visible": true,
+        "x": 30,
+        "y": 65,
+        "w": 1,
+        "h": 19
+      }
+    ]
+  }
+}

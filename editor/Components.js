@@ -269,8 +269,8 @@ class Wall extends Component {
       rect(
         this.start.x-camera.x,
         this.start.y-camera.y,
-        (cursor.get().x-this.start.x-camera.x)+(gridSize*wallThickness),
-        (cursor.get().y-this.start.y-camera.y)+(gridSize*wallThickness)
+        (cursor.get().x-this.start.x)+(gridSize*wallThickness),
+        (cursor.get().y-this.start.y)+(gridSize*wallThickness)
       )
     }
 
@@ -290,14 +290,14 @@ class Wall extends Component {
       rect(
         this.start.x-camera.x,
         this.start.y-camera.y,
-        (this.end.x-this.start.x-camera.x*2)+(gridSize*wallThickness),
-        (this.end.y-this.start.y-camera.y*2)+(gridSize*wallThickness)
+        (this.end.x-this.start.x)+(gridSize*wallThickness),
+        (this.end.y-this.start.y)+(gridSize*wallThickness)
       )
 
       textSize(30);
       textAlign(CENTER);
       fill(255,0,0);
-      text(this.id,this.mid.x+(gridSize*wallThickness)/2,this.mid.y+(gridSize*wallThickness));
+      text(this.id,this.mid.x-camera.x+(gridSize*wallThickness)/2,this.mid.y-camera.y+(gridSize*wallThickness));
 
     }
 
@@ -347,11 +347,17 @@ class Floor extends Component{
     fill(255,255,255,150);
 
     if(this.start != null){
-      rect(this.start.x-camera.x,this.start.y-camera.y,gridSize,gridSize);
+      rect(
+        this.start.x-camera.x,
+        this.start.y-camera.y,
+        gridSize,gridSize);
     }
 
     if(this.end != null){
-      rect(this.end.x-camera.x,this.end.y-camera.y,gridSize,gridSize);
+      rect(
+        this.end.x-camera.x,
+        this.end.y-camera.y,
+        gridSize,gridSize);
     }
 
     if(this.start != null && this.end === null){
@@ -360,8 +366,8 @@ class Floor extends Component{
       rect(
         this.start.x-camera.x,
         this.start.y-camera.y,
-        (cursor.get().x-this.start.x-camera.x)+(gridSize*wallThickness),
-        (cursor.get().y-this.start.y-camera.y)+(gridSize*wallThickness)
+        (cursor.get().x-this.start.x)+(gridSize*wallThickness),
+        (cursor.get().y-this.start.y)+(gridSize*wallThickness)
       )
     }
 
@@ -435,19 +441,25 @@ class Deadspace extends Component {
     fill(255,255,255,150);
 
     if(this.start != null){
-      rect(this.start.x,this.start.y,gridSize,gridSize);
+      rect(
+        this.start.x-camera.x,
+        this.start.y-camera.y,
+        gridSize,gridSize);
     }
 
     if(this.end != null){
-      rect(this.end.x,this.end.y,gridSize,gridSize);
+      rect(
+        this.end.x-camera.x,
+        this.end.y-camera.y,
+        gridSize,gridSize);
     }
 
     if(this.start != null && this.end === null){
       fill(255,255,255,100);
 
       rect(
-        this.start.x,
-        this.start.y,
+        this.start.x-camera.x,
+        this.start.y-camera.y,
         (cursor.get().x-this.start.x)+(gridSize*wallThickness),
         (cursor.get().y-this.start.y)+(gridSize*wallThickness)
       )
@@ -462,8 +474,8 @@ class Deadspace extends Component {
       }
 
       rect(
-        this.start.x,
-        this.start.y,
+        this.start.x-camera.x,
+        this.start.y-camera.y,
         (this.end.x-this.start.x)+(gridSize*wallThickness),
         (this.end.y-this.start.y)+(gridSize*wallThickness)
       )
@@ -471,7 +483,7 @@ class Deadspace extends Component {
       textSize(30);
       textAlign(CENTER);
       fill(255,0,0);
-      text('Deadspace:' + this.id,this.mid.x+(gridSize*wallThickness)/2,this.mid.y+(gridSize*wallThickness));
+      text('Deadspace:' + this.id,this.mid.x-camera.x+(gridSize*wallThickness)/2,this.mid.y-camera.y+(gridSize*wallThickness));
 
     }
 

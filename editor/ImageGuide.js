@@ -4,7 +4,7 @@ class ImageGuide {
 
     this.img = img;
 
-    this.hide = false;
+    this.hide = true;
 
     this.pos = createVector(x,y);
 
@@ -42,7 +42,7 @@ class ImageGuide {
   draw(){
 
     if(!this.hide)
-      image(this.img, this.pos.x, this.pos.y);
+      image(this.img, this.pos.x-camera.x, this.pos.y-camera.y);
 
   }
 

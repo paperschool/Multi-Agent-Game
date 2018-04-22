@@ -12,7 +12,7 @@ class AgentManager {
 
     this.agents = [];
 
-    this.agentCount = 0;
+    this.agentStartCount = 0;
 
     this.seperation = 100;
 
@@ -35,6 +35,14 @@ class AgentManager {
       this.toggleDrawDebugProximity();
     }).bind(this));
 
+  }
+
+  count(){
+    return this.agents.length;
+  }
+
+  getStartCount(){
+    return this.agentStartCount;
   }
 
   toggleDrawDebugPath(){
@@ -78,7 +86,7 @@ class AgentManager {
 
   addAgent(x,y,type,weapon,patrol,team){
 
-    this.agentCount++;
+    this.agentStartCount++;
 
     if(team)
       this.addTeam(team);
@@ -242,12 +250,6 @@ class AgentManager {
       // actual agent draw call
       this.agents[agent].draw(camera);
     }
-
-    Draw.fill(60,60,60);
-    Draw.text(120,"wdata","left",new SAT.Vector(80,160),this.agentCount - this.agents.length + '|' + this.agentCount);
-    Draw.fill(255,255,255);
-    Draw.text(120,"wdata","left",new SAT.Vector(70,150),this.agentCount - this.agents.length + '|' + this.agentCount);
-
 
   }
 

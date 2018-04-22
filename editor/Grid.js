@@ -7,25 +7,20 @@ class Grid {
 
     this.offset = createVector(0,0);
 
-    this.newWall = null;
-
     this.mouseDown = false;
 
     this.drawing = false;
 
+    this.player = null;
+    this.enemies = [];
+    this.pickups = [];
+
     this.walls = [];
-
-    this.newSpace = null;
-
     this.floors = [];
-
     this.deadspaces = [];
 
-    this.player = null;
-
-    this.enemies = [];
-
-    this.pickups = [];
+    this.newWall = null;
+    this.newSpace = null;
 
     this.history = new History(this);
 
@@ -99,6 +94,47 @@ class Grid {
         this.levelSize.y = this.levelSize.y < entity.end.y ? entity.end.y : this.levelSize.y;
       }
     }
+
+  }
+
+  load(levelJson){
+
+    let level = levelJson.level;
+
+    console.log(level);
+
+    // if(level.player){
+    //   this.player = new Player(0,{x:level.player.x*gridSize,y:level.player.y*gridSize});
+    // }
+    //
+    // if(level.enemy.length > 0){
+    //   for(let entity of level.enemy){
+    //     // adding event to undo stack
+    //     this.history.add(this.enemies.length,EventTypes.PICKUP);
+    //     this.enemies.push(
+    //       new Enemy(
+    //         this.enemies.length,
+    //         {x:entity.x*gridSize,y:entity.y*gridSize},
+    //         pickup.type
+    //       )
+    //     );
+    //   }
+    // }
+    //
+    // if(level.pickups.length > 0){
+    //   for(let pickup of level.pickups){
+    //     // adding event to undo stack
+    //     this.history.add(this.pickups.length,EventTypes.PICKUP);
+    //     this.pickups.push(
+    //       new Pickup(
+    //         this.pickups.length,
+    //         {x:pickup.x*gridSize,y:pickup.y*gridSize},
+    //         pickup.type
+    //       )
+    //     );
+    //
+    //   }
+    // }
 
   }
 
@@ -197,7 +233,7 @@ class Grid {
     this.updateMax();
 
     // MOUSE PRESS BEHAVIOUR
-    if(mouseIsPressed && !this.mouseDown && !cursor.offscreen() && !buildWindowOpen){
+    if(mouseIsPressed && !this.mouseDown && !cursor.offscreen() && !overlayOpen){
 
       this.mouseDown = true;
 
@@ -302,7 +338,7 @@ class Grid {
 
     }
 
-    if(!mouseIsPressed && this.mouseDown && !buildWindowOpen){
+    if(!mouseIsPressed && this.mouseDown && !overlayOpen){
 
       this.mouseDown = false;
 
@@ -370,8 +406,8 @@ class Grid {
       strokeWeight(5);
       noFill();
       rect(
-        this.levelMin.x,
-        this.levelMin.y,
+        this.levelMin.x-camera.x,
+        this.levelMin.y-camera.y,
         this.levelSize.x-this.levelMin.x+gridSize,
         this.levelSize.y-this.levelMin.y+gridSize
       );
@@ -380,8 +416,8 @@ class Grid {
     noStroke();
 
     fill(100,100,100,150);
-    rect(cursor.get().x,0,gridSize,height);
-    rect(0,cursor.get().y,width,gridSize);
+    rect(cursor.get().x-camera.x,0,gridSize,height);
+    rect(0,cursor.get().y-camera.y,width,gridSize);
 
     if(this.newSpace != null) this.newSpace.draw();
 

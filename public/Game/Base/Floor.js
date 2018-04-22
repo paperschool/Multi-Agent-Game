@@ -13,17 +13,19 @@ class Floor extends Rectangle {
 
     this.visibility = visibility;
 
-    this.setColour(new Colour(255,255,255));
+    this.setColour(new Colour().setHex(gameTheme['FLOOR']));
 
   }
 
-  update(){}
+  update(){
+    this.setColour(new Colour().setHex(gameTheme['FLOOR']));
+
+  }
 
   draw(camera){
     if(this.visibility) {
       super.draw(new SAT.Vector(camera.x+1,camera.y+1));
     }
-
   }
 
 }

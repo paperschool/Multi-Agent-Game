@@ -18,7 +18,7 @@ class Level {
     this.levelSize = new SAT.Vector(levelsize.x*grid,levelsize.y*grid);
 
     // level count down timer
-    this.timer = new LevelTimer(60000,-1,this.levelSize);
+    this.timer = new LevelTimer(30000,-1,false,this.levelSize,null);
 
     // background render stuff
     this.background = new Level_Background(this.levelSize);
@@ -45,6 +45,8 @@ class Level {
 
     // hud map
     this.hudmap = new HUDMap(this.worldSize,this.levelSize);
+
+    this.hud = new HUD(this,this.timer);
 
     // array for storing walls
     this.walls = [];
@@ -118,6 +120,10 @@ class Level {
 
     this.background.update(deltaTime);
 
+    for(let floor of this.floors){
+      floor.update(deltaTime);
+    }
+
     this.timer.update(deltaTime);
 
     for(var i = 0 ; i < this.walls.length ; i++)
@@ -146,6 +152,8 @@ class Level {
 
     this.updateLevelState();
 
+    this.hud.update(deltaTime);
+
   }
 
   draw(){
@@ -169,14 +177,14 @@ class Level {
     this.background.draw(camera);
 
     for(var wall = 0 ; wall < this.walls.length ; wall++){
-      this.walls[wall].draw(camera);
+      this.walls[wall].draw(camera,false);
+    }
+
+    for(var wall = 0 ; wall < this.walls.length ; wall++){
+      this.walls[wall].draw(camera,true);
     }
 
     this.grid.draw(camera);
-
-    // this.hudmap.player.set(this.player.pos);
-
-    // this.hudmap.draw(camera);
 
     this.ParticleSystem.draw(camera);
 
@@ -187,6 +195,9 @@ class Level {
     this.agents.draw(camera);
 
     this.timer.draw(camera);
+
+    this.hud.draw(camera);
+
 
   }
 
@@ -224,7 +235,7 @@ class Level {
     }
 
     if(this.agents.getLiveAgents() <= 0){
-      // this.levelState = LevelState.ENEMY_DEAD;
+      this.levelState = LevelState.ENEMY_DEAD;
     }
 
     if(this.timer.isEnded()){

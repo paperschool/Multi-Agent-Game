@@ -1,0 +1,227 @@
+{
+  "level": {
+    "size": {
+      "x": 82,
+      "y": 62
+    },
+    "player": {
+      "x": 6,
+      "y": 30
+    },
+    "enemy": [
+      {
+        "x": 31,
+        "y": 7,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 31,
+        "y": 54,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 74,
+        "y": 54,
+        "type": "generic",
+        "weapon": "shotgun"
+      },
+      {
+        "x": 74,
+        "y": 7,
+        "type": "generic",
+        "weapon": "shotgun"
+      }
+    ],
+    "pickups": [
+      {
+        "x": 9,
+        "y": 30,
+        "type": "shotgun"
+      }
+    ],
+    "deadspaces": [
+      {
+        "id": 0,
+        "visible": false,
+        "x": 41,
+        "y": 15,
+        "w": 26,
+        "h": 32
+      },
+      {
+        "id": 1,
+        "visible": false,
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 19
+      },
+      {
+        "id": 2,
+        "visible": false,
+        "x": 0,
+        "y": 43,
+        "w": 24,
+        "h": 19
+      }
+    ],
+    "floors": [
+      {
+        "id": 0,
+        "visible": true,
+        "x": 0,
+        "y": 19,
+        "w": 42,
+        "h": 24
+      },
+      {
+        "id": 1,
+        "visible": true,
+        "x": 24,
+        "y": 0,
+        "w": 18,
+        "h": 19
+      },
+      {
+        "id": 2,
+        "visible": true,
+        "x": 42,
+        "y": 0,
+        "w": 40,
+        "h": 16
+      },
+      {
+        "id": 3,
+        "visible": true,
+        "x": 66,
+        "y": 16,
+        "w": 16,
+        "h": 46
+      },
+      {
+        "id": 4,
+        "visible": true,
+        "x": 24,
+        "y": 43,
+        "w": 18,
+        "h": 19
+      },
+      {
+        "id": 5,
+        "visible": true,
+        "x": 42,
+        "y": 46,
+        "w": 24,
+        "h": 16
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "id": "null wall",
+        "visible": false
+      },
+      {
+        "id": 0,
+        "visible": true,
+        "x": 0,
+        "y": 19,
+        "w": 25,
+        "h": 1
+      },
+      {
+        "id": 1,
+        "visible": true,
+        "x": 24,
+        "y": 0,
+        "w": 1,
+        "h": 20
+      },
+      {
+        "id": 2,
+        "visible": true,
+        "x": 24,
+        "y": 0,
+        "w": 58,
+        "h": 1
+      },
+      {
+        "id": 3,
+        "visible": true,
+        "x": 81,
+        "y": 0,
+        "w": 1,
+        "h": 62
+      },
+      {
+        "id": 4,
+        "visible": true,
+        "x": 24,
+        "y": 61,
+        "w": 58,
+        "h": 1
+      },
+      {
+        "id": 5,
+        "visible": true,
+        "x": 24,
+        "y": 42,
+        "w": 1,
+        "h": 20
+      },
+      {
+        "id": 6,
+        "visible": true,
+        "x": 0,
+        "y": 42,
+        "w": 25,
+        "h": 1
+      },
+      {
+        "id": 7,
+        "visible": true,
+        "x": 0,
+        "y": 19,
+        "w": 1,
+        "h": 24
+      },
+      {
+        "id": 8,
+        "visible": true,
+        "x": 41,
+        "y": 15,
+        "w": 1,
+        "h": 32
+      },
+      {
+        "id": 9,
+        "visible": true,
+        "x": 41,
+        "y": 46,
+        "w": 26,
+        "h": 1
+      },
+      {
+        "id": 10,
+        "visible": true,
+        "x": 66,
+        "y": 15,
+        "w": 1,
+        "h": 32
+      },
+      {
+        "id": 11,
+        "visible": true,
+        "x": 41,
+        "y": 15,
+        "w": 26,
+        "h": 1
+      }
+    ]
+  }
+}

@@ -18,9 +18,11 @@ var chart = null;
 
 // this class stores a key -> value pair relationship of sound effect labels to the
 // sound object created by howler.js
-var sound =  new EngineSounds();
 
-// loading in relevant sound file locations and sound labels into sound engine
+var sound =  new EngineSounds(pageFilesReady);
+// TODO commented out for specified
+
+// // loading in relevant sound file locations and sound labels into sound engine
 sound.add(SoundLabel.PISTOL,'Game/Assets/sound/snd9mm.wav',0.1);
 sound.add(SoundLabel.SHOTGUN,'Game/Assets/sound/sndShotgun.wav',0.05);
 sound.add(SoundLabel.MACHINEGUN,'Game/Assets/sound/sndM16.wav',0.04);
@@ -53,8 +55,11 @@ sound.add(SoundLabel.PLAY_STATE_MUSIC_4,'Game/Assets/sound/musicPlay4.mp3',0.2,t
 
 sound.add(SoundLabel.VICTORY_STATE_MUSIC,'Game/Assets/sound/musicVictory.mp3',0.2,true,false);
 
-// on window loaded event
-$(window).on("load", function() {
+function pageFilesReady(){
+
+  $(".loader-frame").fadeTo("slow",0, function(){
+    $(this).remove();
+  });
 
   // settting canvas dimensions based on DOM inner width/height
   CW = window.innerWidth;
@@ -81,7 +86,8 @@ $(window).on("load", function() {
     game.updateContext(CW,CH)
   });
 
-});
+}
+
 
 class Game {
 

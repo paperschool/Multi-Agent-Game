@@ -474,6 +474,10 @@
       self._rate = o.rate || 1;
       self._sprite = o.sprite || {};
       self._src = (typeof o.src !== 'string') ? o.src : [o.src];
+
+      // overlord addition for callbacks
+      self._callback = o.callback || (function(){});
+
       self._volume = o.volume !== undefined ? o.volume : 1;
       self._xhrWithCredentials = o.xhrWithCredentials || false;
 
@@ -2162,10 +2166,11 @@
         // Make sure we get a successful response back.
         var code = (xhr.status + '')[0];
         if (code !== '0' && code !== '2' && code !== '3') {
+          self._callback(false);
           self._emit('loaderror', null, 'Failed loading audio file with status: ' + xhr.status + '.');
           return;
         }
-
+        self._callback(true);
         decodeAudioData(xhr.response, self);
       };
       xhr.onerror = function() {

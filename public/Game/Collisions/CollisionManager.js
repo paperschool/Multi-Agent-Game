@@ -188,19 +188,25 @@ class CollisionManager {
 
     let r = player.collider.test(bullet.collider);
     if(r){
-      // console.log("Bullet hit player")
-      // bullet.setAlive(false);
-      // player.setShot(true);
-
-      player.applyDamage(bullet);
 
       // remove particle on collision
       bullet.setAlive(false);
 
-      // adding blood particles to world when shot
-      this.level.ParticleSystem.addParticle(bullet.pos.x,bullet.pos.y,bullet.getDirection(),ParticleType.BLOOD);
+      // checking player is not invincible
+      if(player.getInvincibility()){
+
+        this.level.ParticleSystem.addParticle(bullet.pos.x,bullet.pos.y,bullet.getDirection()+180,ParticleType.GUNSMOKE);
+
+      } else {
+        // applying bullets damage to player
+        player.applyDamage(bullet);
+
+        // adding blood particles to world when shot
+        this.level.ParticleSystem.addParticle(bullet.pos.x,bullet.pos.y,bullet.getDirection(),ParticleType.BLOOD);
+      }
 
     }
+
   }
 
   checkBulletEnemy(bullet,enemy){

@@ -42,7 +42,8 @@ var ParticleType = {
   BLOOD    :3,
   DEBRIS   :4,
   GUNSMOKE :5,
-  FIREWORK :6
+  FIREWORK :6,
+  GLITTER  :7
 }
 
 var AgentType = {

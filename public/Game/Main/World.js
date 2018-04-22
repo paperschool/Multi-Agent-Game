@@ -33,12 +33,18 @@ class World {
 
     this.levelManager = new LevelManager();
 
-    this.levelManager.loadLevel("Game/Assets/Levels/11.json",0,this.addLevelData.bind(this));
-    // this.levelManager.loadLevel("Game/Assets/Levels/2.json",1,this.addLevelData.bind(this));
-    // this.levelManager.loadLevel("Game/Assets/Levels/7.json",4,this.addLevelData.bind(this));
-    // this.levelManager.loadLevel("Game/Assets/Levels/5.json",2,this.addLevelData.bind(this));
-    // this.levelManager.loadLevel("Game/Assets/Levels/6.json",3,this.addLevelData.bind(this));
-    // this.levelManager.loadLevel("Game/Assets/Levels/5.json",5,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/1.json",0,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/2.json",1,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/3.json",2,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/4.json",3,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/5.json",4,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/6.json",5,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/7.json",6,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/8.json",7,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/9.json",8,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/10.json",9,this.addLevelData.bind(this));
+
+    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/15.json",0,this.addLevelData.bind(this));
 
     this.currentLevel = -1;
 

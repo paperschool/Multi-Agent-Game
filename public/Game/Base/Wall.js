@@ -30,23 +30,26 @@ class Wall extends Rectangle {
 
   }
 
-  draw(camera){
+  draw(camera, cap = false){
 
     if(this.visibility) {
 
-      // drawing rectangle at tile position (vector position * grid size to allign with grid), and drawing over x,y tiles.
-      Draw.fillHex(gameTheme['WALL']);
-      Draw.polygon(Draw.axisAlignedRect(this.pos.x-camera.x-1,this.pos.y-camera.y-1,this.size.x,this.size.y));
+      if(!cap){
+        // drawing rectangle at tile position (vector position * grid size to allign with grid), and drawing over x,y tiles.
+        Draw.fillHex(gameTheme['WALL']);
+        Draw.polygon(Draw.axisAlignedRect(this.pos.x-camera.x-1,this.pos.y-camera.y-1,this.size.x,this.size.y));
 
-      // drawing wall
-      Draw.fillHex(gameTheme['WALL-INNER']);
-      Draw.polygon(Draw.axisAlignedRect(
-        this.pos.x-camera.x-1+this.innerMargin+Utility.Random(-2,2),
-        this.pos.y-camera.y-1+this.innerMargin+Utility.Random(-2,2),
-        this.size.x-this.innerMargin*2+Utility.Random(-2,2),
-        this.size.y-this.innerMargin*2+Utility.Random(-2,2)
-        )
-      );
+      } else {
+
+        // drawing wall
+        Draw.fillHex(gameTheme['WALL-INNER']);
+        Draw.polygon(Draw.axisAlignedRect(
+          this.pos.x-camera.x-1+this.innerMargin+Utility.Random(-2,2),
+          this.pos.y-camera.y-1+this.innerMargin+Utility.Random(-2,2),
+          this.size.x-this.innerMargin*2+Utility.Random(-2,2),
+          this.size.y-this.innerMargin*2+Utility.Random(-2,2))
+        );
+      }
 
     }
 

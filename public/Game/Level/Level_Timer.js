@@ -1,6 +1,6 @@
 class LevelTimer {
 
-  constructor(duration,direction = -1,size){
+  constructor(duration,direction = -1,renderable,size = {x:0,y:0},pos = {x:0,y:0}){
 
     this.direction = direction;
 
@@ -27,16 +27,44 @@ class LevelTimer {
     // time accumulated during a pause state
     this.pauseTime = -1;
 
+    // RENDER PARAMS
+
+    // this.margin = 50;
+    // this.shadowOffset = 10;
+    // this.fontSize = 100;
+    // this.charSize = 80;
+
     // boolean to track if game paused or not
     this.paused = false;
 
     // size of timer?
     this.size = new SAT.Vector(size.x,size.y);
 
+    // renders within the class
+    this.renderable = renderable || false;
+
     // position
-    // this.pos = new SAT.Vector(x,y);
+    // this.pos = new SAT.Vector(pos.x,pos.y);
 
   }
+
+  getHour(){
+    return this.timeHour;
+  }
+
+  getMinute(){
+    return this.timeMinute;
+  }
+
+  getSecond(){
+    return this.timeSecond;
+  }
+
+  getMillis(){
+    return this.timeMillis;
+  }
+
+
 
   pauseTimer(){
     this.pauseTime = Date.now();
@@ -60,52 +88,28 @@ class LevelTimer {
 
   draw(camera){
 
-    // Draw.fill(0,0,0,(this.isEnded() ? 0.0 : 0.9));
-    Draw.fillHex(gameTheme['TIMER']);
-
-    // if(this.isEnded() && !this.paused){
-    //   Draw.text(150,"wdata","center",new SAT.Vector((this.size.x/2)-camera.x,(this.size.y/2)-camera.y),this.defaultString);
-    // } else {
-    //   Draw.text(150,"wdata","center",new SAT.Vector((this.size.x/2)-camera.x,(this.size.y/2)-camera.y),this.timeString);
+    // if(this.renderable){
+    //   // Draw.fill(0,0,0,(this.isEnded() ? 0.0 : 0.9));
+    //   Draw.fillHex(gameTheme['TIMER']);
+    //   if(this.isEnded() && !this.paused){
+    //     // needs to be formated
+    //   } else {
+    //     Draw.fill(51,51,51);
+    //     Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 10,160),this.timeMinute);
+    //     Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 230,160),this.timeSecond);
+    //     Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 450,160),this.timeMillis);
+    //     // Draw.fillHex(gameTheme['TIMER']);
+    //     Draw.fill(255,255,255);
+    //     Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 0,150),this.timeMinute);
+    //     Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 220,150),this.timeSecond);
+    //     Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 440,150),this.timeMillis);
+    //   }
     // }
-
-    // if(this.isEnded() && !this.paused){
-    //   Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-camera.x,(this.size.y/2)-camera.y),'00');
-    //   Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-camera.x + 140,(this.size.y/2)-camera.y),'00');
-    //   Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-camera.x + 280,(this.size.y/2)-camera.y),'00');
-    // } else {
-    //   Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-camera.x,(this.size.y/2)-camera.y),this.timeMinute);
-    //   Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-camera.x + 220,(this.size.y/2)-camera.y),this.timeSecond);
-    //   Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-camera.x + 440,(this.size.y/2)-camera.y),this.timeMillis);
-    // }
-
-    if(this.isEnded() && !this.paused){
-      Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2),(this.size.y/2)-camera.y),'00');
-      Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2) + 220,150),'00');
-      Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2) + 440,150),'00');
-    } else {
-
-      Draw.fill(51,51,51);
-
-      Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 10,160),this.timeMinute);
-      Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 230,160),this.timeSecond);
-      Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 450,160),this.timeMillis);
-
-      Draw.fillHex(gameTheme['TIMER']);
-
-      Draw.fill(255,255,255);
-
-      Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 0,150),this.timeMinute);
-      Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 220,150),this.timeSecond);
-      Draw.text(150,"wdata","left",new SAT.Vector((this.size.x/2)-330 + 440,150),this.timeMillis);
-
-    }
-
 
   }
 
   getPercentageComplete(){
-    return (1.0 / this.duration) * (this.endTime - Date.now());
+    return (this.isEnded() ? 1 : (1.0 / this.duration) * (Date.now() - this.startTime) );
   }
 
   getFormatTime(){

@@ -63,23 +63,13 @@ class Input {
 
   removeCallBack(key,id){
     let callbacks = this.singlePressedKeys[key].callbacks;
-
     delete callbacks[id];
-
-    // for(let c = 0 ; c < callbacks.length ; c++){
-    //   if(callbacks[c].id === id) callbacks.splice(c,1);
-    // }
-
   }
 
   mouseMoveEvent(e){
-
     this.mouse.x = e.offsetX;
-
     this.mouse.y = e.offsetY;
-
     this.mouseFocusable = {pos:{x:this.mouse.x,y:this.mouse.y}}
-
   }
 
   mouseDownEvent(e){
@@ -92,18 +82,14 @@ class Input {
             this.mouse.button = "LEFT";
         break;
         case 1:
-            console.log('Middle button clicked.');
             this.mouse.click = true;
             this.mouse.button = "MIDDLE";
         break;
         case 2:
-            console.log('Right button clicked.');
             this.mouse.click = true;
             this.mouse.button = "RIGHT";
         break;
     }
-
-
 
   }
 

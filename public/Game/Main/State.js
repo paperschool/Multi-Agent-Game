@@ -280,7 +280,9 @@ class LevelSwitchState extends State {
 
   setup(){
 
-    this.timer = new LevelTimer(1000,-1,new SAT.Vector(100,100));
+    this.timer = new LevelTimer(2000,-1,false,new SAT.Vector(100,100));
+
+    this.hud = new HUD(null,this.timer);
 
   }
 
@@ -295,10 +297,10 @@ class LevelSwitchState extends State {
   draw(){
 
 
-    Draw.fill(255,255,255,this.timer.getPercentageComplete());
+    Draw.fill(255,255,255,0.1*Math.log(1-this.timer.getPercentageComplete())+1);
     Draw.rect(0,0,CW,CH);
 
-    this.timer.draw({x:-CW/2,y:-CH/2});
+    this.hud.draw();
 
   }
 

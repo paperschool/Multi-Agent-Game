@@ -80,6 +80,11 @@ class Colour {
     return this;
   }
 
+  randomA(min = 0,max = 255){
+      this.a = Math.floor(Utility.Random(min,max));
+    return this;
+  }
+
   randomRGB(r,g,b){
     this.r = (r ? Math.floor(Utility.Random(0,255)) : 0);
     this.g = (g ? Math.floor(Utility.Random(0,255)) : 0);
@@ -104,9 +109,9 @@ class Colour {
   }
 
   setColour(colour){
-    this.r = colour.r || 255;
-    this.g = colour.g || 255;
-    this.b = colour.b || 255;
+    this.r = colour.r;
+    this.g = colour.g;
+    this.b = colour.b;
     this.a = colour.a || 1.0;
     return this;
   }

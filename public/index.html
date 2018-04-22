@@ -3,13 +3,12 @@
 <head>
 	<title>Hotline (Sillicon) Valley</title>
 
+	<link rel="stylesheet" href="loader.css">
 	<link rel="stylesheet" href="stylesheet.css">
 
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
 	<!-- Libries -->
-
-	<script src="Game/Libs/mainloop.js" type="text/javascript"></script>
 
 	<script src="Game/Libs/quadtrees.js" type="text/javascript"></script>
 
@@ -36,6 +35,8 @@
 	<script src="Game/Base/Floor.js" type="text/javascript"></script>
 
 	<!-- GUI Classes -->
+
+	<script src="Game/HUD/HUD.js" type="text/javascript"></script>
 
 	<script src="Game/HUD/HUDMap.js" type="text/javascript"></script>
 
@@ -133,8 +134,15 @@
 
 		<canvas id="game_canvas" class="game_canvas" width="0" height="0"></canvas>
 
+		<div class="loader-frame">
+			<div class="loader-container">
+				<div class="outerCircle"></div>
+				<div class="innerCircle"></div>
+			</div>
+		</div>
+
 	</body>
 
 </html>
 
-<div class="modal"><h1>PAGE LOADING</h1></div>
+<!-- <div class="modal"><h1>PAGE LOADING</h1></div> -->

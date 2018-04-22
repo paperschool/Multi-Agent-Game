@@ -5,7 +5,7 @@ class Agent extends Actor {
 
     super(x,y,0.9,0.9,3.0,6.0);
 
-    this.setLife(100);
+    this.setLife(10);
 
     this.setAlive(true);
 
