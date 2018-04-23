@@ -112,7 +112,7 @@ class Particle_Blood {
 
     this.drops = [];
 
-    for(let drop = 0 ; drop < Utility.RandomInt(5,10) ; drop++){
+    for(let drop = 0 ; drop < Utility.RandomInt(5,20) ; drop++){
       this.drops.push(new Blood_Splatter(x,y,d));
     }
 
@@ -141,7 +141,7 @@ class Blood_Splatter extends Particle {
     this.colour.randomR(50,255);
     this.colour.randomA(0,255);
 
-    this.life = 200;
+    this.life = 500;
 
     this.setSize(new SAT.Vector(Utility.RandomInt(5,20),Utility.RandomInt(5,20)));
 

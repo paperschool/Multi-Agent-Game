@@ -1,5 +1,3 @@
-
-
 class Level {
 
   constructor(world,worldsize,levelsize,player,grid){

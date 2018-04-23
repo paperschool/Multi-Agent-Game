@@ -121,7 +121,6 @@ class PlayState extends State{
 
        this.changeState(GameState.GAMEOVER_STATE);
 
-
        sound.play(SoundLabel.STATE_GAMEOVER_1);
        sound.play(SoundLabel.STATE_GAMEOVER_2);
 
@@ -193,14 +192,27 @@ class VictoryState extends State {
 
     this.titleOffset = 0;
 
+    this.redirectAttempted = false;
+
   }
 
   setup(){
     sound.stopAll();
     sound.play(SoundLabel.VICTORY_STATE_MUSIC);
+
+    this.timer = new LevelTimer(2000,-1,false,new SAT.Vector(100,100));
   }
 
   update(deltaTime){
+
+    // stuff for testing survey redirect
+    this.timer.update(deltaTime);
+
+    if(this.timer.isEnded() && !this.redirectAttempted) {
+      this.redirectAttempted = true;
+      window.location.href = ("https://www.dominicjomaa.com/Dissertation/index.php");
+    }
+
     this.titleOffset = this.titleOffset < 360 ? this.titleOffset-4 : 0;
 
     if(Utility.Random(0,100) < 5){
@@ -233,10 +245,11 @@ class VictoryState extends State {
       0.3,0.3,0.3,4,2,0,100,155
     );
 
-    Draw.gameText(
-      'PRESS SPACE TO RESTART',40,80,0,2.5,4,100,true,false,this.titleOffset,
-      0.3,0.3,0.3,4,2,0,100,155
-    );
+    // hidden for survey jump
+    // Draw.gameText(
+    //   'PRESS SPACE TO RESTART',40,80,0,2.5,4,100,true,false,this.titleOffset,
+    //   0.3,0.3,0.3,4,2,0,100,155
+    // );
 
   }
 
@@ -297,7 +310,7 @@ class LevelSwitchState extends State {
   draw(){
 
 
-    Draw.fill(255,255,255,0.1*Math.log(1-this.timer.getPercentageComplete())+1);
+    Draw.fill(255,255,255,0.2*Math.log(1-this.timer.getPercentageComplete())+1);
     Draw.rect(0,0,CW,CH);
 
     this.hud.draw();
