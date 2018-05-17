@@ -1,0 +1,51 @@
+.sound_gesture_body {
+  position: relative;
+  width: 400px;
+  height: 105px;
+  z-index: 20;
+  left:50%;
+  top:0;
+  margin-left: -200px;
+  background-color: #70a1ff;
+
+}
+
+.sound_gesture_title {
+  background-color: #5352ed;
+  color:white;
+  font-family: 'cherry';
+  width: 96%;
+  height: 40px;
+  margin: 2%;
+  padding: 2%;
+}
+
+.sound_gesture_button_container {
+  width: 96%;
+  height: 40px;
+  margin: 2%;
+}
+
+.sound_gesture_button {
+  background-color: #5352ed;
+  color:white;
+  font-family: 'cherry';
+  width: 48%;
+  height: 40px;
+  padding: 2%;
+  margin-right: 7px;
+  float:left;
+}
+
+.sound_gesture_button_yes {
+  background-color: #2ed573;
+}
+
+.sound_gesture_button_no {
+  background-color: #ff4757;
+}
+
+.sound_gesture_button:hover {
+  background-color: #ffffff;
+  color: black;
+}

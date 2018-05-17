@@ -11,39 +11,20 @@ let keys = {
     }
   },
   87 : { label:'w',pressed:false,fired:false,callback:function(){
-      // console.log("UP pressed");
-      if(keys[16].pressed){
-        imgGuide.up();
-      } else {
-        camera.up();
-      }
+      camera.up();
     }
   },
   83 : { label:'s',pressed:false,fired:false,callback:function(){
-      // console.log("DOWN pressed");
-      if(keys[16].pressed){
-        imgGuide.down();
-      } else {
-        camera.down();
-      }
+      camera.down();
     }
   },
   65 : { label:'a',pressed:false,fired:false,callback:function(){
-      // console.log("LEFT pressed");
-      if(keys[16].pressed){
-        imgGuide.left();
-      } else {
-        camera.left();
-      }
+      camera.left();
     }
   },
   68 : { label:'d',pressed:false,fired:false,callback:function(){
-      // console.log("RIGHT pressed");
-      if(keys[16].pressed){
-        imgGuide.right();
-      } else {
-        camera.right();
-      }
+      // console.log("RIGHT pressed")
+      camera.right();
     }
   },
   72 : { label:'h',pressed:false,fired:false,callback:function(){
@@ -60,7 +41,24 @@ let keys = {
   },
   16 : { label:'shift',pressed:false,fired:false,callback:function(){
     }
-  }
+  },
+  73 : { label:'l',pressed:false,fired:false,callback:function(){
+      imgGuide.up();
+    }
+  },
+  75 : { label:'k',pressed:false,fired:false,callback:function(){
+      imgGuide.down();
+    }
+  },
+  74 : { label:'j',pressed:false,fired:false,callback:function(){
+      imgGuide.left();
+    }
+  },
+  76 : { label:'l ',pressed:false,fired:false,callback:function(){
+      imgGuide.right();
+    }
+  },
+
 
 }
 

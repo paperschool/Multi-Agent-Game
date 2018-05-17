@@ -260,13 +260,13 @@ class Actor extends Rectangle {
   updateShoulders(){
     // updating should positions
     this.leftShoulder.set2(
-      50*Math.cos(Utility.Radians(this.getDirection()-90))+this.getPos().x,
-      50*Math.sin(Utility.Radians(this.getDirection()-90))+this.getPos().y
+      30*Math.cos(Utility.Radians(this.getDirection()-90))+this.getPos().x,
+      30*Math.sin(Utility.Radians(this.getDirection()-90))+this.getPos().y
     );
 
     this.rightShoulder.set2(
-      50*Math.cos(Utility.Radians(this.getDirection()+90))+this.getPos().x,
-      50*Math.sin(Utility.Radians(this.getDirection()+90))+this.getPos().y
+      30*Math.cos(Utility.Radians(this.getDirection()+90))+this.getPos().x,
+      30*Math.sin(Utility.Radians(this.getDirection()+90))+this.getPos().y
     );
   }
 
@@ -346,6 +346,11 @@ class Actor extends Rectangle {
 
   draw(camera){
     super.draw(camera);
+
+    Draw.fill(255,255,255);
+    Draw.circle(this.leftShoulder.x-camera.x,this.leftShoulder.y-camera.y,7);
+    Draw.circle(this.rightShoulder.x-camera.x,this.rightShoulder.y-camera.y,7);
+
   }
 
 }

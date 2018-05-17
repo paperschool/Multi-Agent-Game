@@ -114,8 +114,6 @@ class Level {
     //   this.camera.setFocus(this.player,new SAT.Vector(CW/2,CH/2));
     // }
 
-    this.camera.update(deltaTime);
-
     this.background.update(deltaTime);
 
     for(let floor of this.floors){
@@ -127,14 +125,14 @@ class Level {
     for(var i = 0 ; i < this.walls.length ; i++)
       this.walls[i].update(deltaTime);
 
-    // update player
-    this.player.update(deltaTime);
-
     this.pickups.update(deltaTime,this.player);
 
     this.agents.update(deltaTime);
 
     this.ParticleSystem.update(deltaTime);
+
+    // update player
+    this.player.update(deltaTime);
 
     this.CollisionManager.checkAll();
 
@@ -151,6 +149,13 @@ class Level {
     this.updateLevelState();
 
     this.hud.update(deltaTime);
+
+    // updating camera offset and focus position (incase of screen resize)
+    this.camera.setCameraSize(new SAT.Vector(CW/2,CH/2))
+
+    this.camera.setFocus(this.player,new SAT.Vector(CW/2,CH/2));
+
+    this.camera.update(deltaTime);
 
   }
 

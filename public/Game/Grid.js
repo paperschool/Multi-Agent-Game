@@ -471,9 +471,16 @@ class Grid {
         // obstacle position, if true, the method will return false denoting
         // no line of sight
         if(this.isWall(p)){
+
           returnPath[returnPath.length-1].ok = false;
-          if(!this.lineOfSightComplete) return returnPath;
+
+          if(!this.lineOfSightComplete){
+            returnPath[0].success = false;
+            return returnPath;
+          }
+
           success = false;
+
         }
 
       }

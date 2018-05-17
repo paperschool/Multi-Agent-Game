@@ -29,8 +29,8 @@ class ImageGuide {
   }
 
   scale(direction){
-    this.scaleSize.x *= 1 + (direction/10);
-    this.scaleSize.y *= 1 + (direction/10);
+    this.scaleSize.x *= 1 + (direction/50);
+    this.scaleSize.y *= 1 + (direction/50);
     this.img.resize(this.scaleSize.x, this.scaleSize.y);
 
   }

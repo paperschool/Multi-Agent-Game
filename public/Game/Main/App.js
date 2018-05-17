@@ -22,6 +22,27 @@ var chart = null;
 var sound =  new EngineSounds(pageFilesReady);
 // TODO commented out for specified
 
+$(window).ready(function(){
+
+  // forced call back if no sounds are added
+  // sound.forceReady();
+  // $('.sound_gesture_body').remove();
+
+  $('.sound_gesture_button_yes').on('click',(function(){
+    sound.setGesture(true);
+    sound.checkReady();
+    $('.sound_gesture_body').remove();
+  }).bind(this));
+
+  $('.sound_gesture_button_no').on('click',(function(){
+    sound.setGesture(true);
+    sound.mute();
+    sound.forceReady();
+    $('.sound_gesture_body').remove();
+  }).bind(this));
+
+});
+
 // // loading in relevant sound file locations and sound labels into sound engine
 sound.add(SoundLabel.PISTOL,'Game/Assets/sound/snd9mm.wav',0.1);
 sound.add(SoundLabel.SHOTGUN,'Game/Assets/sound/sndShotgun.wav',0.05);
@@ -43,7 +64,6 @@ sound.add(SoundLabel.STATE_PLAY,'Game/Assets/sound/sndUnPause.wav',0.1);
 
 sound.add(SoundLabel.STATE_GAMEOVER_1,'Game/Assets/sound/sndSplashLogo.wav',0.1);
 sound.add(SoundLabel.STATE_GAMEOVER_2,'Game/Assets/sound/sndStopButton.wav',0.1);
-
 
 // music libraries
 sound.add(SoundLabel.START_STATE_MUSIC,'Game/Assets/sound/musicStart.mp3',0.2,true,false);

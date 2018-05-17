@@ -15,6 +15,7 @@ class World {
       new LevelSwitchState(null,this.setState.bind(this))
     ];
 
+    // performing set up on the current state
     this.states[this.CURRENT_STATE].setup();
 
     // size of the virtual world (that needs to be projected to the canvas)
@@ -29,25 +30,30 @@ class World {
     // current level object
     this.levels = null;
 
+    // counter to track number of levels requested
     this.requestedLevelCount = 0;
 
+    // setting up ajax level loader
     this.levelManager = new LevelManager();
 
-    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/1.json",0,this.addLevelData.bind(this));
-    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/2.json",1,this.addLevelData.bind(this));
-    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/3.json",2,this.addLevelData.bind(this));
-    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/4.json",3,this.addLevelData.bind(this));
-    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/5.json",4,this.addLevelData.bind(this));
-    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/6.json",5,this.addLevelData.bind(this));
-    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/7.json",6,this.addLevelData.bind(this));
-    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/8.json",7,this.addLevelData.bind(this));
-    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/9.json",8,this.addLevelData.bind(this));
-    this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/10.json",9,this.addLevelData.bind(this));
-    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/15.json",0,this.addLevelData.bind(this));
+    // Main Sequence Levels
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/1.json",0,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/2.json",1,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/3.json",2,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/4.json",3,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/5.json",4,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/6.json",5,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/7.json",6,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/8.json",7,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/9.json",8,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/10.json",9,this.addLevelData.bind(this));
 
+    this.levelManager.loadLevel("Game/Assets/Levels/Demo/patrol.json",0,this.addLevelData.bind(this));
 
+    // index of current level
     this.currentLevel = -1;
 
+    // registering input call backs for state switching purposes (pause -> play or play -> pause)
     input.setCallBack(InputKeys.PAUSE,'worldpause',(function(){
 
       if(this.CURRENT_STATE === GameState.PAUSE_STATE){
@@ -66,6 +72,7 @@ class World {
 
     }).bind(this));
 
+    // registering input call backs for state switching purposes (gameover -> play)
     input.setCallBack(InputKeys.REPLAY,'worldrestart',(function(){
 
       if(this.CURRENT_STATE === GameState.GAMEOVER_STATE){
@@ -74,6 +81,7 @@ class World {
 
     }).bind(this));
 
+    // registering input call backs for state switching purposes (start -> play or victory -> start)
     input.setCallBack(InputKeys.SPACE,'worldstart',(function(){
 
       if(this.levelManager.levelsLoaded()) {
@@ -102,6 +110,7 @@ class World {
 
   addLevel(data){
 
+    // level variable
     let newLevel = null;
 
     // create new Level;
@@ -212,17 +221,20 @@ class World {
 
   }
 
+  // method invoked when a level needs to be restarted
   reloadLevel(){
 
+    // nulling level
     this.level = null;
 
+    // re creating level from file
     this.level = this.addLevel(this.levelData[this.currentLevel])
 
+    // setting current states level to the current level
     this.states[GameState.PLAY_STATE].setLevel(this.level);
 
+    // resetting play state
     this.CURRENT_STATE = GameState.PLAY_STATE;
-
-    // this.states[this.CURRENT_STATE].setup();
 
   }
 
@@ -236,17 +248,23 @@ class World {
 
     } else {
 
+      // incrementing current level
       this.currentLevel++;
 
+      // setting up new level
       this.level = this.addLevel(this.levelData[this.currentLevel])
 
-      this.level.update(0);
-
-      this.level.levelInit();
-
+      // setting level in state
       this.states[GameState.PLAY_STATE].setLevel(this.level);
 
+      // setting state to switch state for count down
       this.CURRENT_STATE = GameState.LEVEL_SWITCH_STATE;
+
+      // running intial update for safety
+      this.level.update(0);
+
+      // initialising level
+      this.level.levelInit();
 
     }
 
@@ -255,17 +273,19 @@ class World {
 
   update(deltaTime){
 
+    // setting up level when start state is first loaded in
     if(this.levelManager.levelsLoaded() && this.CURRENT_STATE === GameState.START_STATE){
       this.states[this.CURRENT_STATE].setReady();
     }
 
+    // updating current state of generator
     this.states[this.CURRENT_STATE].update(deltaTime);
 
   }
 
   draw() {
 
-    // draw game screen with paused overlay
+    // drawing to screen depending on state rendering specific layers  as required
     if(this.CURRENT_STATE === GameState.PAUSE_STATE){
       this.states[GameState.PLAY_STATE].draw();
       this.states[GameState.PAUSE_STATE].draw();
@@ -284,23 +304,24 @@ class World {
   setState(state){
 
 
+    // switching to level switch state
     if(state === GameState.LEVEL_SWITCH_STATE){
 
+      // setting up next level while count down operates
       this.nextLevel();
-
       this.states[this.CURRENT_STATE].setup();
 
 
     } else if (state === GameState.PLAY_STATE && this.CURRENT_STATE === GameState.GAMEOVER_STATE) {
 
+      // reloading level due to gameover
       this.reloadLevel();
-
       this.states[this.CURRENT_STATE].setup();
 
     } else {
 
+      // remaining default behavuour
       this.CURRENT_STATE = state;
-
       this.states[this.CURRENT_STATE].setup();
 
     }

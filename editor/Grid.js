@@ -21,9 +21,16 @@ class Grid {
 
     this.newWall = null;
     this.newSpace = null;
+    this.newEntity = null;
 
     this.history = new History(this);
 
+  }
+
+  switchTools(){
+    this.newWall = null;
+    this.newSpace = null;
+    this.newEntity = null;
   }
 
   updateMax(){
@@ -32,8 +39,6 @@ class Grid {
     this.levelMin.y = 100000;
     this.levelSize.x = -1;
     this.levelSize.y = -1;
-
-
 
     if(this.player !== null){
 
@@ -103,9 +108,130 @@ class Grid {
 
     console.log(level);
 
-    // if(level.player){
-    //   this.player = new Player(0,{x:level.player.x*gridSize,y:level.player.y*gridSize});
-    // }
+    if(level.player){
+      this.player = new Player(0,{x:level.player.x*gridSize,y:level.player.y*gridSize});
+    }
+
+    if(level.walls){
+
+      level.walls.splice(0,1);
+
+      for(let wall of level.walls){
+
+        let newWall = new Wall(this.walls.length);
+
+        newWall.setStart(
+          {
+            x:wall.x*gridSize,
+            y:wall.y*gridSize
+          }
+        );
+
+        newWall.setEnd(
+          {
+            x:(wall.x+wall.w-1)*gridSize || wall.x*gridSize,
+            y:(wall.y+wall.h-1)*gridSize || wall.y*gridSize
+          }
+        );
+
+        this.walls.push(newWall);
+
+      }
+
+    }
+
+    if(level.floors){
+
+      for(let floor of level.floors){
+
+        let newFloor = new Floor(this.floors.length);
+
+        newFloor.setStart(
+          {
+            x:floor.x*gridSize,
+            y:floor.y*gridSize
+          }
+        );
+
+        newFloor.setEnd(
+          {
+            x:(floor.x+floor.w-1)*gridSize || floor.x*gridSize,
+            y:(floor.y+floor.h-1)*gridSize || floor.y*gridSize
+          }
+        );
+
+        this.floors.push(newFloor);
+
+      }
+
+    }
+
+    if(level.deadspaces){
+
+      for(let deadspace of level.deadspaces){
+
+        let newdeadspace = new Deadspace(this.deadspaces.length);
+
+        newdeadspace.setStart(
+          {
+            x:deadspace.x*gridSize,
+            y:deadspace.y*gridSize
+          }
+        );
+
+        newdeadspace.setEnd(
+          {
+            x:(deadspace.x+deadspace.w-1)*gridSize || deadspace.x*gridSize,
+            y:(deadspace.y+deadspace.h-1)*gridSize || deadspace.y*gridSize
+          }
+        );
+
+        this.deadspaces.push(newdeadspace);
+
+      }
+
+    }
+
+    if(level.enemy){
+
+      for(let enemy of level.enemy){
+
+        switch(enemy.type){
+          case 'generic' :
+            this.enemies.push(new Enemy(this.enemies.length,
+              {
+                x:enemy.x*gridSize,
+                y:enemy.y*gridSize
+              },
+            'generic','shotgun'));
+            break;
+          case 'patrol' :
+
+            let newPatrol = new Patrol(this.enemies.length,{x:enemy.x*gridSize,y:enemy.y*gridSize},'patrol','shotgun');
+
+            // newPatrol.loop      = enemy.loop;
+            //
+            // newPatrol.direction = enemy.direction;
+
+            for(let point of enemy.patrol.points){
+              newPatrol.addPatrolPoint({
+                x:point.x*gridSize,
+                y:point.y*gridSize
+              });
+            }
+
+            this.enemies.push(newPatrol);
+
+            break;
+          case 'wander' : break;
+        }
+
+
+
+      }
+
+    }
+
     //
     // if(level.enemy.length > 0){
     //   for(let entity of level.enemy){
@@ -212,6 +338,8 @@ class Grid {
 
   update(){
 
+    if(this.player) this.player.update()
+
     // updating new wall draw/update loop
     if(this.newWall != null) this.newWall.update();
 
@@ -227,6 +355,14 @@ class Grid {
 
     for(let deadspace of this.deadspaces){
       deadspace.update();
+    }
+
+    for(let enemy of this.enemies){
+      enemy.update();
+    }
+
+    for(let pickup of this.pickups){
+      pickup.update();
     }
 
 
@@ -334,12 +470,39 @@ class Grid {
           this.newSpace = new Deadspace(this.deadspaces.length);
           this.newSpace.setStart(cursor.get());
           break;
+        case 6:
+          if(this.enemies.reduce( (t,c) => c.start.x === cursor.x && c.start.y === cursor.y ? t = false : t = t ,true)){
+
+            if(this.newEntity === null) {
+              // creating patrol object
+              this.newEntity = new Patrol(this.enemies.length,cursor.get().copy(),'patrol','machinegun');
+
+              // adding event to undo stack
+              this.history.add(this.enemies.length,EventTypes.PATROL);
+
+              // adding enemy to enemy collection
+              this.enemies.push(this.newEntity);
+
+              // pushing first patrol point
+              this.newEntity.addPatrolPoint(cursor.get().copy())
+
+            } else {
+
+              // pushing first patrol point
+              this.newEntity.addPatrolPoint(cursor.get().copy())
+
+            }
+
+          }
+          break;
       }
 
     }
 
+    // mouse unclicked behaviour trap
     if(!mouseIsPressed && this.mouseDown && !overlayOpen){
 
+      // reseting trap
       this.mouseDown = false;
 
       switch(activeTool){
@@ -383,6 +546,7 @@ class Grid {
           this.deadspaces.push(this.newSpace);
           this.newSpace = null;
           break;
+      case 6: break;
       }
 
     }
@@ -451,69 +615,3 @@ class Grid {
   }
 
 }
-
-
-
-    // // wall tool
-    // if(activeTool === 0){
-    //
-    //   if(mouseIsPressed && !this.mouseDown && !cursor.offscreen()){
-    //     this.mouseDown = true;
-    //     this.drawing = true;
-    //     this.newWall = new Wall();
-    //     this.newWall.start(cursor.get());
-    //   }
-    //
-    //   if(!mouseIsPressed && this.mouseDown){
-    //
-    //     this.mouseDown = false;
-    //
-    //     this.newWall.end(cursor.get());
-    //
-    //     if(this.newWall.alignment() && !this.newWall.single()){
-    //       this.newWall.normalise();
-    //       this.walls.push(this.newWall);
-    //       this.updateMax();
-    //     }
-    //
-    //     this.newWall = null;
-    //
-    //   }
-
-    // }
-
-    // // player tool
-    // if(activeTool === 1){
-    //   if(mouseIsPressed && !this.mouseDown && !cursor.offscreen()){
-    //     this.player = cursor.get().copy();
-    //     this.updateMax();
-    //   }
-    // }
-
-    // enemy tool
-    // if(activeTool === 2){
-    //   if(mouseIsPressed && !this.mouseDown && !cursor.offscreen()){
-    //     this.mouseDown = true;
-    //     if(this.enemies.reduce( (t,c) => c.x === cursor.x && c.y === cursor.y ? t = false : t = t ,true)){
-    //       this.enemies.push(cursor.get().copy());
-    //       this.updateMax();
-    //     }
-    //   }
-    //   if(!mouseIsPressed && this.mouseDown){
-    //     this.mouseDown = false;
-    //   }
-    // }
-
-    // // pickup tool
-    // if(activeTool === 3){
-    //   if(mouseIsPressed && !this.mouseDown && !cursor.offscreen()){
-    //     this.mouseDown = true;
-    //     if(this.pickups.reduce( (t,c) => c.x === cursor.x && c.y === cursor.y ? t = false : t = t ,true)){
-    //       this.pickups.push(cursor.get().copy());
-    //       this.updateMax();
-    //     }
-    //   }
-    //   if(!mouseIsPressed && this.mouseDown){
-    //     this.mouseDown = false;
-    //   }
-    // }

@@ -1,0 +1,741 @@
+{
+  "level": {
+    "size": {
+      "x": 176,
+      "y": 176
+    },
+    "player": {
+      "x": 6,
+      "y": 6
+    },
+    "enemy": [
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" },
+      { "x":30, "y":30, "type":"generic", "weapon":"shotgun" }
+    ],
+    "pickups": [
+      {
+        "x": 8,
+        "y": 6,
+        "type": "shotgun"
+      }
+    ],
+    "deadspaces": [
+      {
+        "id": 0,
+        "visible": false,
+        "x": 64,
+        "y": 0,
+        "w": 8,
+        "h": 33
+      },
+      {
+        "id": 1,
+        "visible": false,
+        "x": 15,
+        "y": 17,
+        "w": 29,
+        "h": 11
+      },
+      {
+        "id": 2,
+        "visible": false,
+        "x": 0,
+        "y": 45,
+        "w": 21,
+        "h": 94
+      },
+      {
+        "id": 3,
+        "visible": false,
+        "x": 21,
+        "y": 74,
+        "w": 6,
+        "h": 65
+      },
+      {
+        "id": 4,
+        "visible": false,
+        "x": 51,
+        "y": 74,
+        "w": 21,
+        "h": 65
+      },
+      {
+        "id": 5,
+        "visible": false,
+        "x": 109,
+        "y": 138,
+        "w": 17,
+        "h": 14
+      },
+      {
+        "id": 6,
+        "visible": false,
+        "x": 97,
+        "y": 74,
+        "w": 23,
+        "h": 64
+      },
+      {
+        "id": 7,
+        "visible": false,
+        "x": 103,
+        "y": 45,
+        "w": 17,
+        "h": 29
+      },
+      {
+        "id": 8,
+        "visible": false,
+        "x": 138,
+        "y": 13,
+        "w": 20,
+        "h": 21
+      },
+      {
+        "id": 9,
+        "visible": false,
+        "x": 152,
+        "y": 70,
+        "w": 24,
+        "h": 87
+      },
+      {
+        "id": 10,
+        "visible": false,
+        "x": 152,
+        "y": 156,
+        "w": 24,
+        "h": 20
+      }
+    ],
+    "floors": [
+      {
+        "id": 0,
+        "visible": true,
+        "x": 1,
+        "y": 1,
+        "w": 64,
+        "h": 17
+      },
+      {
+        "id": 1,
+        "visible": true,
+        "x": 0,
+        "y": 18,
+        "w": 16,
+        "h": 28
+      },
+      {
+        "id": 2,
+        "visible": true,
+        "x": 16,
+        "y": 27,
+        "w": 49,
+        "h": 19
+      },
+      {
+        "id": 3,
+        "visible": true,
+        "x": 43,
+        "y": 18,
+        "w": 22,
+        "h": 9
+      },
+      {
+        "id": 4,
+        "visible": true,
+        "x": 20,
+        "y": 46,
+        "w": 84,
+        "h": 29
+      },
+      {
+        "id": 5,
+        "visible": true,
+        "x": 71,
+        "y": 0,
+        "w": 68,
+        "h": 46
+      },
+      {
+        "id": 6,
+        "visible": true,
+        "x": 65,
+        "y": 32,
+        "w": 6,
+        "h": 14
+      },
+      {
+        "id": 7,
+        "visible": true,
+        "x": 139,
+        "y": 0,
+        "w": 37,
+        "h": 14
+      },
+      {
+        "id": 8,
+        "visible": true,
+        "x": 157,
+        "y": 14,
+        "w": 19,
+        "h": 57
+      },
+      {
+        "id": 9,
+        "visible": true,
+        "x": 139,
+        "y": 33,
+        "w": 18,
+        "h": 38
+      },
+      {
+        "id": 10,
+        "visible": true,
+        "x": 119,
+        "y": 46,
+        "w": 20,
+        "h": 93
+      },
+      {
+        "id": 11,
+        "visible": true,
+        "x": 139,
+        "y": 71,
+        "w": 14,
+        "h": 68
+      },
+      {
+        "id": 12,
+        "visible": true,
+        "x": 125,
+        "y": 139,
+        "w": 28,
+        "h": 37
+      },
+      {
+        "id": 13,
+        "visible": true,
+        "x": 0,
+        "y": 138,
+        "w": 110,
+        "h": 38
+      },
+      {
+        "id": 14,
+        "visible": true,
+        "x": 110,
+        "y": 151,
+        "w": 15,
+        "h": 25
+      },
+      {
+        "id": 15,
+        "visible": true,
+        "x": 26,
+        "y": 75,
+        "w": 26,
+        "h": 63
+      },
+      {
+        "id": 16,
+        "visible": true,
+        "x": 71,
+        "y": 75,
+        "w": 27,
+        "h": 63
+      }
+    ],
+    "walls": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1,
+        "id": "null wall",
+        "visible": false
+      },
+      {
+        "id": 0,
+        "visible": true,
+        "x": 0,
+        "y": 0,
+        "w": 65,
+        "h": 1
+      },
+      {
+        "id": 1,
+        "visible": true,
+        "x": 64,
+        "y": 0,
+        "w": 1,
+        "h": 33
+      },
+      {
+        "id": 2,
+        "visible": true,
+        "x": 65,
+        "y": 32,
+        "w": 7,
+        "h": 1
+      },
+      {
+        "id": 3,
+        "visible": true,
+        "x": 71,
+        "y": 0,
+        "w": 1,
+        "h": 33
+      },
+      {
+        "id": 4,
+        "visible": true,
+        "x": 72,
+        "y": 0,
+        "w": 104,
+        "h": 1
+      },
+      {
+        "id": 5,
+        "visible": true,
+        "x": 175,
+        "y": 1,
+        "w": 1,
+        "h": 70
+      },
+      {
+        "id": 6,
+        "visible": true,
+        "x": 152,
+        "y": 70,
+        "w": 23,
+        "h": 1
+      },
+      {
+        "id": 7,
+        "visible": true,
+        "x": 152,
+        "y": 71,
+        "w": 1,
+        "h": 105
+      },
+      {
+        "id": 8,
+        "visible": true,
+        "x": 0,
+        "y": 175,
+        "w": 152,
+        "h": 1
+      },
+      {
+        "id": 9,
+        "visible": true,
+        "x": 0,
+        "y": 138,
+        "w": 1,
+        "h": 38
+      },
+      {
+        "id": 10,
+        "visible": true,
+        "x": 1,
+        "y": 138,
+        "w": 26,
+        "h": 1
+      },
+      {
+        "id": 11,
+        "visible": true,
+        "x": 26,
+        "y": 74,
+        "w": 1,
+        "h": 64
+      },
+      {
+        "id": 12,
+        "visible": true,
+        "x": 20,
+        "y": 74,
+        "w": 6,
+        "h": 1
+      },
+      {
+        "id": 13,
+        "visible": true,
+        "x": 20,
+        "y": 45,
+        "w": 1,
+        "h": 29
+      },
+      {
+        "id": 14,
+        "visible": true,
+        "x": 0,
+        "y": 45,
+        "w": 20,
+        "h": 1
+      },
+      {
+        "id": 15,
+        "visible": true,
+        "x": 0,
+        "y": 1,
+        "w": 1,
+        "h": 44
+      },
+      {
+        "id": 16,
+        "visible": true,
+        "x": 15,
+        "y": 17,
+        "w": 29,
+        "h": 1
+      },
+      {
+        "id": 17,
+        "visible": true,
+        "x": 43,
+        "y": 17,
+        "w": 1,
+        "h": 11
+      },
+      {
+        "id": 18,
+        "visible": true,
+        "x": 15,
+        "y": 27,
+        "w": 29,
+        "h": 1
+      },
+      {
+        "id": 19,
+        "visible": true,
+        "x": 15,
+        "y": 17,
+        "w": 1,
+        "h": 11
+      },
+      {
+        "id": 20,
+        "visible": true,
+        "x": 138,
+        "y": 13,
+        "w": 20,
+        "h": 1
+      },
+      {
+        "id": 21,
+        "visible": true,
+        "x": 157,
+        "y": 13,
+        "w": 1,
+        "h": 21
+      },
+      {
+        "id": 22,
+        "visible": true,
+        "x": 138,
+        "y": 33,
+        "w": 20,
+        "h": 1
+      },
+      {
+        "id": 23,
+        "visible": true,
+        "x": 138,
+        "y": 13,
+        "w": 1,
+        "h": 21
+      },
+      {
+        "id": 24,
+        "visible": true,
+        "x": 51,
+        "y": 74,
+        "w": 21,
+        "h": 1
+      },
+      {
+        "id": 25,
+        "visible": true,
+        "x": 71,
+        "y": 75,
+        "w": 1,
+        "h": 64
+      },
+      {
+        "id": 26,
+        "visible": true,
+        "x": 51,
+        "y": 138,
+        "w": 20,
+        "h": 1
+      },
+      {
+        "id": 27,
+        "visible": true,
+        "x": 51,
+        "y": 75,
+        "w": 1,
+        "h": 63
+      },
+      {
+        "id": 28,
+        "visible": true,
+        "x": 97,
+        "y": 74,
+        "w": 7,
+        "h": 1
+      },
+      {
+        "id": 29,
+        "visible": true,
+        "x": 103,
+        "y": 45,
+        "w": 1,
+        "h": 29
+      },
+      {
+        "id": 30,
+        "visible": true,
+        "x": 104,
+        "y": 45,
+        "w": 16,
+        "h": 1
+      },
+      {
+        "id": 31,
+        "visible": true,
+        "x": 119,
+        "y": 46,
+        "w": 1,
+        "h": 93
+      },
+      {
+        "id": 32,
+        "visible": true,
+        "x": 119,
+        "y": 138,
+        "w": 7,
+        "h": 1
+      },
+      {
+        "id": 33,
+        "visible": true,
+        "x": 125,
+        "y": 138,
+        "w": 1,
+        "h": 14
+      },
+      {
+        "id": 34,
+        "visible": true,
+        "x": 109,
+        "y": 151,
+        "w": 16,
+        "h": 1
+      },
+      {
+        "id": 35,
+        "visible": true,
+        "x": 109,
+        "y": 138,
+        "w": 1,
+        "h": 13
+      },
+      {
+        "id": 36,
+        "visible": true,
+        "x": 97,
+        "y": 138,
+        "w": 12,
+        "h": 1
+      },
+      {
+        "id": 37,
+        "visible": true,
+        "x": 97,
+        "y": 75,
+        "w": 1,
+        "h": 63
+      }
+    ]
+  }
+}

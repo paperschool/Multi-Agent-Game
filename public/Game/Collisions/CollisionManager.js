@@ -33,14 +33,14 @@ class CollisionManager {
       // structure so player bullets are checked against walls and enemies
       for(let bullet of this.level.player.weapon.bullets){
 
-        // checking bullets against enemies
-        for(let agent of agents){
-          if(agent.getAlive()) this.checkBulletEnemy(bullet,agent);
-        }
-
         // structure so walls are checked against players and enemies
         for(let wall of walls){
           this.checkWallBullet(wall,bullet);
+        }
+
+        // checking bullets against enemies
+        for(let agent of agents){
+          if(agent.getAlive()) this.checkBulletEnemy(bullet,agent);
         }
 
       }
@@ -148,16 +148,20 @@ class CollisionManager {
     let r = wall.collider.test(player.collider);
     if(r){
 
-      // this.level.camera.resetShake();
-
+      // moving player collider back outside of the collided wall
       player.collider.getPos().add(r.overlapV);
 
-      player.pos.set(player.collider.getPos());
+      // setting player position to non-collision position
+      player.setPos(player.collider.getPos());
 
-      player.updateWeaponPos()
+      player.updateWeaponPos();
+
+      player.updateShoulders();
 
     } else {
+
       player.collider.setPos(player.pos);
+
     }
   }
 

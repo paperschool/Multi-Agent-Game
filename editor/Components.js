@@ -54,19 +54,26 @@ class Component {
   }
 
   // checking cursor
-  within(){
+  within(singleton = false){
 
     if(activeTool !== -1) return false
 
-    // needs to be fixed for singleton objexts
-    if(this.end === null) return false;
-
     let c = cursor.get();
 
-    return c.x > this.start.x - gridSize &&
-           c.x < this.end.x   + gridSize*wallThickness &&
-           c.y > this.start.y - gridSize &&
-           c.y < this.end.y   + gridSize*wallThickness
+    if(singleton){
+
+      return c.x === this.start.x && c.y === this.start.y;
+
+    } else {
+
+      if(this.end === null) return false;
+
+      return c.x > this.start.x - gridSize &&
+             c.x < this.end.x   + gridSize*wallThickness &&
+             c.y > this.start.y - gridSize &&
+             c.y < this.end.y   + gridSize*wallThickness
+
+    }
 
   }
 
@@ -89,11 +96,48 @@ class Enemy extends Component {
     this.start = createVector(pos.x,pos.y);
 
     this.type = type;
+
     this.weapon = weapon;
+
+  }
+
+  get(offset){
+
+    let enemy = {
+      'x':(this.start.x / gridSize) - offset.x,
+      'y':(this.start.y / gridSize) - offset.y,
+      'type':this.type,
+      'weapon':this.weapon
+    };
+
+    return enemy;
+
+  }
+
+  update(){
+    this.highlighted = this.within(true);
+  }
+
+  draw(){
+    fill(0,255,255);
+    rect(this.start.x-camera.x,this.start.y-camera.y,gridSize,gridSize);
+  }
+
+}
+
+class Patrol extends Enemy {
+
+  constructor(id,pos,type,weapon){
+
+    super(id,pos,type,weapon);
+
+    this.type = 'patrol';
 
     // patrol
     this.points = [];
-    this.loop = false;
+
+    this.loop = true;
+
     this.direction = 1;
 
   }
@@ -106,39 +150,58 @@ class Enemy extends Component {
     this.loop = direction;
   }
 
-  addPatrolPoint(x,y){
-    this.points.push({'x':x,'y':y});
+  addPatrolPoint(point){
+    this.points.push(point);
   }
 
   get(offset){
 
-    let enemy = {
-      'x':(this.start.x / gridSize) - offset.x,
-      'y':(this.start.y / gridSize) - offset.y,
-      'type':this.type,
-      'weapon':this.weapon
+    let enemy = super.get(offset);
+
+    enemy['patrol'] = {
+      'loop' : this.loop,
+      'direction' : this.direction,
+      'points' : []
     };
 
-    if(this.type === 'patrol'){
-
-      enemy['patrol'] = {
-        'loop' : this.loop,
-        'direction' : this.direction,
-        'points' : []
-      };
-
-      for(let p = 0 ; p < this.points.length ; p++){
-        enemy['patrol']['points'].push(this.points[p]);
-      }
+    for( let patrol of this.points ){
+      enemy['patrol']['points'].push(
+        {
+          'x':(patrol.x / gridSize) - offset.x,
+          'y':(patrol.y / gridSize) - offset.y,
+        }
+      );
     }
 
     return enemy;
 
   }
 
+  update(){
+    this.highlighted = this.within(true);
+  }
+
   draw(){
-    fill(0,255,255);
-    rect(this.start.x-camera.x,this.start.y-camera.y,gridSize,gridSize);
+    super.draw();
+
+    if(this.points.length <= 1) return;
+
+    for(let p = 0 ; p < this.points.length ; p++){
+
+      let from = this.points[ p ];
+      let to   = this.points[ ( p + 1 ) % this.points.length];
+
+      stroke(255,100,100);
+      strokeWeight(2);
+      line(
+        (from.x+gridSize/2)-camera.x,
+        (from.y+gridSize/2)-camera.y,
+        (to.x+gridSize/2)-camera.x,
+        (to.y+gridSize/2)-camera.y
+      );
+
+    }
+
   }
 
 }
@@ -160,6 +223,10 @@ class Player extends Component {
 
     return player;
 
+  }
+
+  update(){
+    this.highlighted = this.within(true);
   }
 
   draw(){
@@ -190,6 +257,10 @@ class Pickup extends Component {
 
     return pickup;
 
+  }
+
+  update(){
+    this.highlighted = this.within(true);
   }
 
   draw(){
@@ -304,7 +375,6 @@ class Wall extends Component {
   }
 
 }
-
 
 class Floor extends Component{
 

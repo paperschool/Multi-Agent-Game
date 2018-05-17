@@ -8,6 +8,8 @@ class EngineSounds {
 
     this.ready = false;
 
+    this.gestureReady = false;
+
     this.readyCallback = readyCallback;
 
   }
@@ -22,6 +24,14 @@ class EngineSounds {
 
   mute(){
     this.isMute = true;
+  }
+
+  getGestureReady(){
+    return this.gestureReady;
+  }
+
+  setGesture(gestureReady){
+    this.gestureReady = gestureReady;
   }
 
   unmute(){
@@ -42,9 +52,19 @@ class EngineSounds {
 
   }
 
+  forceReady(){
+    this.readyCallback();
+  }
+
   addedCallback(label){
 
     this.sounds[label].ready = true;
+
+    this.checkReady();
+
+  }
+
+  checkReady(){
 
     let ready = false;
 
@@ -53,7 +73,9 @@ class EngineSounds {
       if(!ready) { break; }
     }
 
-    if(ready) { this.readyCallback(); }
+    if(ready && this.gestureReady)
+      this.readyCallback();
+
   }
 
   play(label,delay){

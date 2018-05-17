@@ -5,6 +5,7 @@ var EventTypes = {
   PICKUP:4,
   FLOOR:5,
   DEADSPACE:6,
+  PATROL:7
 }
 
 class History {
@@ -57,6 +58,8 @@ class History {
         return this.genericRemove(this.grid.floors,e.id);
       case EventTypes.DEADSPACE :
         return this.genericRemove(this.grid.deadspaces,e.id);
+      case EventTypes.PATROL :
+        return this.genericRemove(this.grid.enemies,e.id);
       default : return false;
     }
 

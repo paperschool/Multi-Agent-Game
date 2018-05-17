@@ -1,4 +1,7 @@
 
+// the state class is a generic state object that is subtyped for various states
+// of the game state (play, pause etc)
+
 class State {
 
   constructor(level,changeState){
@@ -15,8 +18,10 @@ class State {
 
   setup(){}
 
-}
+  update(){}
 
+  draw(){}
+}
 
 class StartState extends State{
 
@@ -92,7 +97,7 @@ class StartState extends State{
 
 }
 
-class PlayState extends State{
+class PlayState extends State {
 
   constructor(level,changeState,reloadLevel,nextLevel) {
 
@@ -128,7 +133,7 @@ class PlayState extends State{
     }
 
     if(this.level.getLevelState() === LevelState.ENEMY_DEAD){
-      this.changeState(GameState.LEVEL_SWITCH_STATE);
+      // this.changeState(GameState.LEVEL_SWITCH_STATE);
       // this.nextLevel();
     }
 
@@ -141,7 +146,6 @@ class PlayState extends State{
   }
 
 }
-
 
 class GameOverState extends State {
 

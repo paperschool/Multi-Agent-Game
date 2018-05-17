@@ -26,18 +26,22 @@ class Colour {
 
   setR(r){
     this.r = r;
+    return this;
   }
 
   setG(g){
     this.g = g;
+    return this;
   }
 
   setB(b){
     this.b = b;
+    return this;
   }
 
   setA(a){
     this.a = a;
+    return this;
   }
 
   getHexComponent(v){
@@ -159,6 +163,34 @@ class PulseColour {
 
     this.cb = 0;
 
+    this.minr = 0;
+    this.maxr = 255;
+
+    this.ming = 0;
+    this.maxg = 255;
+
+    this.minb = 0;
+    this.maxb = 255;
+
+  }
+
+  setR(min = 0, max = 255){
+    this.minr = min;
+    this.maxr = max;
+  }
+
+  setG(min = 0, max = 255){
+    this.ming = min;
+    this.maxg = max;
+  }
+
+  setB(min = 0, max = 255){
+    this.minb = min;
+    this.maxb = max;
+  }
+
+  getRGBA(){
+    return 'rgb('+this.base.getA()+','+Math.floor(this.base.r)+','+Math.floor(this.base.g)+','+Math.floor(this.base.b)+','+this.base.a+')';
   }
 
   step(inc = 0.01){
@@ -171,9 +203,9 @@ class PulseColour {
     if(this.cb >= 2*Math.PI) this.cg = 0;
     if(this.cg >= 2*Math.PI) this.cb = 0;
 
-    this.base.r = Utility.Map(Math.sin(this.cr),-1,1,0,255);
-    this.base.g = Utility.Map(Math.sin(this.cg*2),-1,1,0,255);
-    this.base.b = Utility.Map(Math.sin(this.cb*4),-1,1,0,255);
+    this.base.r = Utility.Map(Math.sin(this.cr)  ,-1,1,this.minr,this.maxr);
+    this.base.g = Utility.Map(Math.sin(this.cg*2),-1,1,this.ming,this.maxg);
+    this.base.b = Utility.Map(Math.sin(this.cb*4),-1,1,this.minb,this.maxb);
 
   }
 

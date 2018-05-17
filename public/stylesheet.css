@@ -55,11 +55,12 @@
   margin:0;
   padding:0;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 a {
-  font-family: 'poiret one' ;
-  font-family: 'techno-hideo' ;
+  font-family: 'cherry';
+  color: white;
 }
 
 .game_canvas {

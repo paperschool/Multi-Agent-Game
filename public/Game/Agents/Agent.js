@@ -570,6 +570,8 @@ class Agent extends Actor {
       return true;
     }
 
+    console.log("NO LOS");
+
     this.setWithinLineOfSight(false);
     return false;
 

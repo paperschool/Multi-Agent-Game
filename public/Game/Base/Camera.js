@@ -71,8 +71,12 @@ class Camera {
 
   }
 
+  setCameraSize(size){
+    this.camera.set(size);
+  }
+
   setFocus(focus,focusOffset){
-    
+
     this.focus = focus
 
     this.focusOffset.set(focusOffset);

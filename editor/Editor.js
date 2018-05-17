@@ -8,7 +8,7 @@ let overlayOpen = false;
 
 var can;
 
-var gridSize = 10;
+var gridSize = 20;
 
 var grid = null;
 
@@ -42,6 +42,7 @@ $(document).ready(function(){
   let wall       = $('#wall-button');
   let player     = $('#player-button');
   let enemy      = $('#enemy-button');
+  let patrol     = $('#patrol-button');
   let pickup     = $('#pickup-button');
   let build      = $('#build-button');
   let load       = $('#load-button');
@@ -74,6 +75,7 @@ $(document).ready(function(){
 
   pickup.on('click',function(){
     activeTool = 3;
+
     clicked();
 
     let submenu = $('<div class="toolbar-submenu-container"></div>')
@@ -106,6 +108,11 @@ $(document).ready(function(){
 
   deadspace.on('click',function(){
     activeTool = 5;
+    clicked();
+  });
+
+  patrol.on('click',function(){
+    activeTool = 6;
     clicked();
   });
 
@@ -189,13 +196,20 @@ $(document).ready(function(){
 
 
   function clicked(){
+
     $('.submenu-container').empty();
+
+    grid.switchTools();
+
     erase.css({'background-color':(activeTool === -1 ? '#e74c3c' : '#f39c12')});
     wall.css({'background-color':(activeTool === 0 ? '#e74c3c' : '#f39c12')});
     player.css({'background-color':(activeTool === 1 ? '#e74c3c' : '#f39c12')});
     enemy.css({'background-color':(activeTool === 2 ? '#e74c3c' : '#f39c12')});
     pickup.css({'background-color':(activeTool === 3 ? '#e74c3c' : '#f39c12')});
     floor.css({'background-color':(activeTool === 4 ? '#e74c3c' : '#f39c12')});
+    patrol.css({'background-color':(activeTool === 6 ? '#e74c3c' : '#f39c12')});
+
+
   }
 
   clicked();
@@ -203,7 +217,7 @@ $(document).ready(function(){
 });
 
 function preload(){
-    refImg = loadImage('/leveldesigns/multi-7.jpg');
+    refImg = loadImage('/leveldesigns/demo-patrol.jpg');
 }
 
 function setup(){
