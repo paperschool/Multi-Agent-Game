@@ -42,6 +42,7 @@ $(document).ready(function(){
   let wall       = $('#wall-button');
   let player     = $('#player-button');
   let enemy      = $('#enemy-button');
+  let team       = $('#team-button');
   let patrol     = $('#patrol-button');
   let pickup     = $('#pickup-button');
   let build      = $('#build-button');
@@ -59,22 +60,22 @@ $(document).ready(function(){
   })
 
   wall.on('click',function(){
-    activeTool = 0;
+    grid.switchTools(0);
     clicked();
   });
 
   player.on('click',function(){
-    activeTool = 1;
+    grid.switchTools(1);
     clicked();
   });
 
   enemy.on('click',function(){
-    activeTool = 2;
+    grid.switchTools(2);
     clicked();
   });
 
   pickup.on('click',function(){
-    activeTool = 3;
+    grid.switchTools(3);
 
     clicked();
 
@@ -102,22 +103,27 @@ $(document).ready(function(){
   });
 
   floor.on('click',function(){
-    activeTool = 4;
+    grid.switchTools(4);
     clicked();
   });
 
   deadspace.on('click',function(){
-    activeTool = 5;
+    grid.switchTools(5);
     clicked();
   });
 
   patrol.on('click',function(){
-    activeTool = 6;
+    grid.switchTools(6);
+    clicked();
+  });
+
+  team.on('click',function(){
+    grid.switchTools(7);
     clicked();
   });
 
   erase.on('click',function(){
-    activeTool = -1;
+    grid.switchTools(-1);
     clicked();
   });
 
@@ -128,7 +134,12 @@ $(document).ready(function(){
 
     let close = $('<div class="dialogue-close"></div>');
 
-    let code = $('<div class="dialogue-content"><pre>'+JSON.stringify(grid.buildLevel(),null, 2)+'</pre></div>')
+    let code = $(
+      '<div class="dialogue-content">' +
+        '<textarea class="dialogue-textarea" style="resize:none" name="codearea" cols="40" rows="5">'+JSON.stringify(grid.buildLevel(),null, 2)+'</textarea>'+
+        '<input type="submit" class="copy-built-level" id="copy-built-level" value="Copy">'+
+      '</div>'
+    );
 
     let dialogue = $('<div class="overlay-dialogue"></div>');
 
@@ -138,6 +149,11 @@ $(document).ready(function(){
 
     dialogue.append(close);
     dialogue.append(code);
+
+    $('.copy-built-level').on('click',function(){
+      $('.dialogue-textarea').select();
+      document.execCommand('copy');
+    });
 
     close.on('click',function(){
       dialogue.remove();
@@ -155,7 +171,7 @@ $(document).ready(function(){
     let content = $(
       '<div class="dialogue-input">' +
         '<form>' +
-          '<input id="load-level-input" type="text" >' +
+          '<textarea class="dialogue-textarea" id="load-level-input" type="text" name="codearea" cols="40" rows="5"></textarea>' +
           '<input type="submit" value=" Load! ">' +
         '</form>' +
       '</div>'
@@ -172,6 +188,10 @@ $(document).ready(function(){
       // console.log(event);
 
       event.preventDefault();
+
+      dialogue.remove();
+      
+      overlayOpen = false;
 
     });
 
@@ -198,9 +218,6 @@ $(document).ready(function(){
   function clicked(){
 
     $('.submenu-container').empty();
-
-    grid.switchTools();
-
     erase.css({'background-color':(activeTool === -1 ? '#e74c3c' : '#f39c12')});
     wall.css({'background-color':(activeTool === 0 ? '#e74c3c' : '#f39c12')});
     player.css({'background-color':(activeTool === 1 ? '#e74c3c' : '#f39c12')});
@@ -208,8 +225,7 @@ $(document).ready(function(){
     pickup.css({'background-color':(activeTool === 3 ? '#e74c3c' : '#f39c12')});
     floor.css({'background-color':(activeTool === 4 ? '#e74c3c' : '#f39c12')});
     patrol.css({'background-color':(activeTool === 6 ? '#e74c3c' : '#f39c12')});
-
-
+    team.css({'background-color':(activeTool === 7 ? '#e74c3c' : '#f39c12')});
   }
 
   clicked();

@@ -48,7 +48,9 @@ class World {
     // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/9.json",8,this.addLevelData.bind(this));
     // this.levelManager.loadLevel("Game/Assets/Levels/PatrolLevels/10.json",9,this.addLevelData.bind(this));
 
-    this.levelManager.loadLevel("Game/Assets/Levels/Demo/patrol.json",0,this.addLevelData.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/Demo/reactive.json",0,this.addLevelData.bind(this));
+    this.levelManager.loadLevel("Game/Assets/Levels/Demo/team.json",1,this.addLevelData.bind(this));
+    // this.levelManager.loadLevel("Game/Assets/Levels/Demo/patrol.json",2,this.addLevelData.bind(this));
 
     // index of current level
     this.currentLevel = -1;

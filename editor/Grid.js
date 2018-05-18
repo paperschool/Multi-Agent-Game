@@ -19,6 +19,8 @@ class Grid {
     this.floors = [];
     this.deadspaces = [];
 
+    this.teamIndex = 0;
+
     this.newWall = null;
     this.newSpace = null;
     this.newEntity = null;
@@ -27,7 +29,15 @@ class Grid {
 
   }
 
-  switchTools(){
+  switchTools(toolIndex){
+
+    // if the team tool is exited increment the team count
+    if(activeTool === 7) this.teamIndex++;
+
+    // setting tool index
+    activeTool = toolIndex;
+
+    // resetting all important variables for tool change
     this.newWall = null;
     this.newSpace = null;
     this.newEntity = null;
@@ -224,6 +234,15 @@ class Grid {
 
             break;
           case 'wander' : break;
+          case 'multiagent' :
+            this.enemies.push(new Team(this.enemies.length,
+              {
+                x:enemy.x*gridSize,
+                y:enemy.y*gridSize
+              },
+            'generic','shotgun',enemy.team));
+            break;
+
         }
 
 
@@ -493,6 +512,14 @@ class Grid {
 
             }
 
+          }
+          break;
+        case 7:
+          if(this.enemies.reduce( (t,c) => c.start.x === cursor.x && c.start.y === cursor.y ? t = false : t = t ,true)){
+            // adding event to undo stack
+            this.history.add(this.enemies.length,EventTypes.ENEMY);
+
+            this.enemies.push(new Team(this.enemies.length,cursor.get().copy(),'generic','shotgun',this.teamIndex));
           }
           break;
       }

@@ -125,6 +125,41 @@ class Enemy extends Component {
 
 }
 
+class Team extends Enemy {
+
+  constructor(id,pos,type,weapon,team){
+
+    super(id,pos,type,weapon);
+
+    this.team = team;
+
+    this.type = 'multiagent'
+
+  }
+
+  get(offset){
+
+    let enemy = super.get(offset);
+
+    enemy['type'] = this.type;
+    
+    enemy['team'] = this.team;
+
+    return enemy;
+
+  }
+
+  update(){
+    this.highlighted = this.within(true);
+  }
+
+  draw(){
+    fill(0,255,255);
+    rect(this.start.x-camera.x,this.start.y-camera.y,gridSize,gridSize);
+  }
+
+}
+
 class Patrol extends Enemy {
 
   constructor(id,pos,type,weapon){
