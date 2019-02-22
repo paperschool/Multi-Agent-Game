@@ -20,17 +20,17 @@ The game engine makes use of several libraries:
 
 ### Screen Shots
 
-![](screenshots/start_3.png)
+![](/screenshots/start_3.png)
 - - -
-![](screenshots/game_2.png)
+![](/screenshots/game_2.png)
 - - -
-![](screenshots/game_3.png)
+![](/screenshots/game_3.png)
 - - -
-![](screenshots/game_4.png)
+![](/screenshots/game_4.png)
 - - -
-![](screenshots/pause_1.png)
+![](/screenshots/pause_1.png)
 - - -
-![](screenshots/game_1.png)
+![](/screenshots/game_1.png)
 - - -
-![](screenshots/end_2.png)
+![](/screenshots/end_2.png)
 - - -
